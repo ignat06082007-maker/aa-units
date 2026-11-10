@@ -7,6 +7,7 @@ import json, os, sys, datetime
 sys.stdout.reconfigure(encoding='utf-8')
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_units as B
+import web_en as EN
 
 OUT = os.path.join(B.ROOT, 'web', 'units.js')
 
@@ -38,10 +39,10 @@ def main():
         rowKeys=ROW_KEYS,
         rarityOrder=B.RARITY_ORDER, rarityRu=B.RARITY_RU,
         lvl100=B.LVL100, lvl110=B.LVL110,
-        buffs=[dict(n=b[0], kind=b[1], v=b[2], who=b[3], note=b[4]) for b in B.BUFFS],
+        buffs=[dict(n=b[0], kind=b[1], v=b[2], who=b[3], note=b[4], noteEn=EN.BUFF_NOTE_EN.get(b[0], '')) for b in B.BUFFS],
         noStack=[dict(kind=k, a=list(a), b=list(b)) for k, a, b in B.NO_STACK],
-        traits=[dict(n=t[0], d=t[1], s=t[2], r=t[3], note=t[4]) for t in B.TRAITS],
-        relics=[dict(n=t[0], d1=t[1], t1=t[2], d2=t[3], t2=t[4], c=t[5], ct=t[6], cd=t[7], sit=t[8], note=t[9],
+        traits=[dict(n=t[0], d=t[1], s=t[2], r=t[3], note=t[4], noteEn=EN.TRAIT_NOTE_EN.get(t[0], '')) for t in B.TRAITS],
+        relics=[dict(n=t[0], d1=t[1], t1=t[2], d2=t[3], t2=t[4], c=t[5], ct=t[6], cd=t[7], sit=t[8], note=t[9], noteEn=EN.RELIC_NOTE_EN.get(t[0], ''),
                      dot=B.RELIC_DOT.get(t[0], (0, ''))[0], dotk=B.RELIC_DOT.get(t[0], (0, ''))[1],
                      pen=B.RELIC_PEN.get(t[0], (0, ''))[0], penk=B.RELIC_PEN.get(t[0], (0, ''))[1],
                      clkn=B.RELIC_CLOCK.get(t[0], (0, 0))[0], clkp=B.RELIC_CLOCK.get(t[0], (0, 0))[1],
@@ -50,6 +51,7 @@ def main():
         dotKinds=list(B.DOT_KINDS),
         elems=list(B.ELEM_RU.values()),
         ramExclude=list(B.RAM_EXCLUDE),
+        special=list(B.SPECIAL),
         atypes=['Single', 'AoE (Circle)', 'AoE (Cone)', 'AoE (Line)', 'AoE (Full)', '(нет данных)'],
         units=out_units,
     )

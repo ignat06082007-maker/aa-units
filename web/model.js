@@ -164,10 +164,12 @@
       + Math.max(0, (T * (nat - nfull) - spa * (nfull + nat - 1) * (nat - nfull) / 2) / tick));
     const totSum = sumdps * Math.max(0, T - S.walk);
     const tot = totHit + totDot + totSum;
+    // «разгон» DoT: сколько % базового урона (вики × уровень) DoT наносит за одну атаку; dotpct2 — с усилителями
+    const dotpct = dk && S.dot && E ? row.ticks * row.mult * dmgdot / (E * lvl) : 0;
 
     return {
       upg, maxUpg: u.rows.length - 1, row, cost, dmg, maxhit: dmg * (crit > 0 ? cm : 1), spa, rng, tg, crit, cm,
-      dotkind: dk, eff: row.eff, dottick, dotatk, amp, hitdps, dotdps, sumhit, sumdps, dps,
+      dotkind: dk, eff: row.eff, dottick, dotatk, amp, dotpct, dotpct2: dotpct * (1 + amp / 100), hitdps, dotdps, sumhit, sumdps, dps,
       dpsk: cost ? dps / cost * 1000 : 0, dps0, gain: dps0 ? dps / dps0 - 1 : 0,
       tot, totHit, totDot, totSum, avgdps: T ? tot / T : 0, ownHit, disc,
       // что дали трейт / реликвия / пассивка / проклятия этому юниту — для подсказок в интерфейсе
@@ -208,8 +210,10 @@
   // данные с правками пользователя: свои значения реликвий/трейтов и свои копии реликвий
   function withEdits(D, edits) {
     edits = edits || {};
-    const rel = edits.relics || {}, trt = edits.traits || {};
+    const rel = edits.relics || {}, trt = edits.traits || {}, bf = edits.buffs || {};
     return Object.assign({}, D, {
+      // бафы: свои значения у готовых + свои бафы (как пустые строки бафов в «Настройках» Excel)
+      buffs: D.buffs.map(x => Object.assign({}, x, bf[x.n] || {})).concat((edits.customBuffs || []).map(x => Object.assign({}, x))),
       relics: D.relics.map(r => Object.assign({}, r, rel[r.n] || {})).concat((edits.customRelics || []).map(r => Object.assign({}, r))),
       traits: D.traits.map(t => Object.assign({}, t, trt[t.n] || {})),
       _buffBy: null,

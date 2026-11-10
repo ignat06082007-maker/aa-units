@@ -17,6 +17,7 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 'Segoe UI', system-ui, sans-serif; }
 body { min-height: 100vh; }
+* { scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
 a { color: var(--accent2); }
 button, input, select { font: inherit; color: inherit; }
 input, select {
@@ -134,7 +135,9 @@ footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(
   /* на телефоне в списке: ★, имя, редкость, цена, SPA, DPS, DPS/1000, тир */
   #unitTable th:nth-child(4), #unitTable td:nth-child(4), #unitTable th:nth-child(5), #unitTable td:nth-child(5),
   #unitTable th:nth-child(6), #unitTable td:nth-child(6), #unitTable th:nth-child(8), #unitTable td:nth-child(8),
-  #unitTable th:nth-child(10), #unitTable td:nth-child(10) { display: none; }
+  #unitTable th:nth-child(10), #unitTable td:nth-child(10), #unitTable th:nth-child(15), #unitTable td:nth-child(15),
+  #unitTable th:nth-child(17), #unitTable td:nth-child(17) { display: none; }
+  .home-grid { grid-template-columns: 1fr !important; }
   .uname { white-space: normal; min-width: 120px; }
 }
 </style>
@@ -155,8 +158,10 @@ footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(
       <div class="lang"><button data-lang="ru">RU</button><button data-lang="en">EN</button></div>
     </div>
     <nav>
+      <button data-tab="home" data-ru="Главная" data-en="Home"></button>
       <button data-tab="units" data-ru="Юниты" data-en="Units"></button>
       <button data-tab="compare"><span data-ru="Сравнение" data-en="Compare"></span><span class="count" id="cmpCount">0</span></button>
+      <button data-tab="upgrades" data-ru="Апгрейды" data-en="Upgrades"></button>
       <button data-tab="team"><span data-ru="Команда" data-en="Team"></span><span class="count" id="teamCount">0</span></button>
       <button data-tab="settings" data-ru="Настройки" data-en="Settings"></button>
       <button data-tab="about" data-ru="Как считается" data-en="How it works"></button>
@@ -185,6 +190,12 @@ footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(
     </div>
   </section>
 
+  <!-- ГЛАВНАЯ -->
+  <section class="tab" id="tab-home">
+    <div class="hint" style="margin-bottom:10px" data-ru="Топы считаются с твоими настройками, постоянными бафами, трейтами и реликвиями. Нажми на юнита — откроется карточка. «Лучшие из моих» — юниты, отмеченные ★." data-en="Tops use your settings, always-on buffs, traits and relics. Click a unit to open its card. “Best of mine” — units marked ★."></div>
+    <div class="grid home-grid" id="homeGrid" style="grid-template-columns:repeat(auto-fill,minmax(430px,1fr))"></div>
+  </section>
+
   <!-- СРАВНЕНИЕ -->
   <section class="tab" id="tab-compare">
     <div class="toolbar">
@@ -192,6 +203,7 @@ footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(
       <label><span data-ru="Время боя, с" data-en="Battle time, s"></span>
         <select id="cmpTime"><option>5</option><option>15</option><option>30</option><option>45</option><option>60</option><option>120</option></select></label>
       <label><input type="checkbox" id="cmpGlobal"> <span data-ru="+ бафы из «Настроек»" data-en="+ buffs from Settings"></span></label>
+      <label><input type="checkbox" id="cmpMore"> <span data-ru="Подробно (DoT, призывы, урон за бой по частям)" data-en="Details (DoT, summons, battle damage split)"></span></label>
       <span class="grow"></span>
       <button class="btn ghost" id="cmpClear" data-ru="Очистить всё" data-en="Clear all"></button>
     </div>
@@ -204,6 +216,20 @@ footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(
     </div>
     <div class="hint" style="margin-top:6px" data-ru="Один юнит можно добавить несколько раз с разными бафами/трейтами. Зелёная полоса — лучший в столбце. Пустое поле апгрейда = максимальный." data-en="Same unit can be added several times with different buffs/traits. Green bar = best in column. Empty upgrade = max."></div>
     <div class="charts" id="charts"></div>
+  </section>
+
+  <!-- АПГРЕЙДЫ -->
+  <section class="tab" id="tab-upgrades">
+    <div class="toolbar">
+      <input class="grow" id="uq" type="search" data-ph-ru="🔍 Юнит…" data-ph-en="🔍 Unit…">
+      <select id="uRarity"></select><select id="uType"></select>
+      <label><input type="checkbox" id="uMine"> <span data-ru="только мои" data-en="mine only"></span></label>
+      <label><input type="checkbox" id="uDmg" checked> <span data-ru="только с уроном" data-en="damage only"></span></label>
+      <span class="hint" id="uShown"></span>
+    </div>
+    <div class="hint" style="margin-bottom:8px" data-ru="Все апгрейды всех юнитов (как лист «Апгрейды» в Excel) — с твоими настройками, постоянными бафами, трейтами и реликвиями. «Прирост на 1000» — сколько DPS даёт этот шаг на каждую 1000 денег: чем больше, тем выгоднее его покупать. Нажми на строку — карточка юнита." data-en="All upgrades of all units (like the Upgrades sheet in Excel) — with your settings, always-on buffs, traits and relics. “Gain per 1000” — DPS this step adds per 1000 money: higher = better buy. Click a row — unit card."></div>
+    <div class="tbl-wrap" style="max-height:72vh"><table id="upgTable"><thead><tr></tr></thead><tbody></tbody></table></div>
+    <div style="text-align:center;margin-top:10px"><button class="btn" id="uMore" data-ru="Показать ещё 200" data-en="Show 200 more"></button></div>
   </section>
 
   <!-- КОМАНДА -->
@@ -271,7 +297,7 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&a
 const byName = Object.fromEntries(D.units.map(u => [u.n, u]));
 
 // ── состояние (localStorage — только удобство; без него страница тоже работает) ──
-let state = { lang: '', tab: 'units', settings: {}, profiles: {}, compare: [], team: [], edits: {}, sort: { key: 'dps', dir: -1 } };
+let state = { lang: '', tab: 'home', settings: {}, profiles: {}, compare: [], team: [], edits: {}, sort: { key: 'dps', dir: -1 } };
 try { const s = JSON.parse(localStorage.getItem(STORE) || 'null'); if (s) state = Object.assign(state, s); } catch (e) {}
 if (!state.lang) state.lang = (navigator.language || 'ru').toLowerCase().startsWith('ru') ? 'ru' : 'en';
 let saveT = 0;
@@ -281,7 +307,7 @@ if (!state.edits) state.edits = {};
 if (!state.team) state.team = [];
 // данные с правками пользователя (свои значения реликвий/трейтов и копии реликвий)
 let ED = M.withEdits(D, state.edits);
-function refreshAll() { ED = M.withEdits(D, state.edits); computeUnits(); renderUnits(); renderCompare(); renderTeam(); buildDatalist(); }
+function refreshAll() { ED = M.withEdits(D, state.edits); upgCache = null; computeUnits(); renderUnits(); renderCompare(); renderTeam(); buildDatalist(); }
 
 // ── язык ──
 const T = {
@@ -296,7 +322,11 @@ const T = {
     exported: 'Файл сохранён', imported: 'Данные загружены', importBad: 'Не тот файл', clearQ: 'Очистить всё сравнение?',
     toCmp: 'Добавлено в сравнение', profile: 'Мой юнит (для всех вкладок)', upgTable: 'Апгрейды', passive: 'Пассивки и особенности',
     mine: 'Есть у меня', step: 'Шаг', total: 'Всего', atype: 'Атака', eff: 'DoT', marg: 'Прирост DPS', crit: 'Крит', dtype: 'Тип урона',
-    elem: 'Стихии', place: 'Место', cap: 'Лимит', summNote: 'Призывы', yes: 'да', no: 'нет' },
+    elem: 'Стихии', place: 'Место', cap: 'Лимит', summNote: 'Призывы', yes: 'да', no: 'нет',
+    dotatk: 'DoT за атаку', dotpct: 'DoT, % урона', dotpct2: 'DoT, % с усил.', totHit: 'За бой: удары', totDot: 'За бой: DoT',
+    totSum: 'За бой: призывы', avgdps: 'Ср. DPS за бой', best: 'Лучш. DPS/1000', bestUp: 'на апгр.', tierv: 'Тир выгоды',
+    rankv: 'Место выгоды', topDps: 'Сильнейшие (DPS)', topVal: 'Самые выгодные (DPS на 1000)', topMine: 'Лучшие из моих (★)',
+    noMine: 'Отметь своих юнитов ★ во вкладке «Юниты» — здесь появится их топ.' },
   en: { all: 'All', allR: 'All rarities', allT: 'All types', allRole: 'All roles', shown: (a, b) => `${a} of ${b} shown`,
     unit: 'Unit', rarity: 'Rarity', type: 'Type', role: 'Role', upg: 'Upg', cost: 'Cost', dmg: 'Damage', spa: 'SPA', rng: 'Range',
     dps: 'DPS', dpsk: 'DPS/1000', tier: 'Tier', lvl: 'Lv', buffs: 'Buffs', trait: 'Trait', relic: 'Relic', pas: 'Pass.',
@@ -308,12 +338,25 @@ const T = {
     exported: 'File saved', imported: 'Data loaded', importBad: 'Wrong file', clearQ: 'Clear the whole comparison?',
     toCmp: 'Added to comparison', profile: 'My unit (all tabs)', upgTable: 'Upgrades', passive: 'Passives and notes',
     mine: 'I own it', step: 'Step', total: 'Total', atype: 'Attack', eff: 'DoT', marg: 'DPS gain', crit: 'Crit', dtype: 'Damage type',
-    elem: 'Elements', place: 'Placement', cap: 'Limit', summNote: 'Summons', yes: 'yes', no: 'no' },
+    elem: 'Elements', place: 'Placement', cap: 'Limit', summNote: 'Summons', yes: 'yes', no: 'no',
+    dotatk: 'DoT per attack', dotpct: 'DoT, % of dmg', dotpct2: 'DoT, % boosted', totHit: 'Battle: hits', totDot: 'Battle: DoT',
+    totSum: 'Battle: summons', avgdps: 'Avg battle DPS', best: 'Best DPS/1000', bestUp: 'at upg', tierv: 'Value tier',
+    rankv: 'Value rank', topDps: 'Strongest (DPS)', topVal: 'Best value (DPS per 1000)', topMine: 'Best of mine (★)',
+    noMine: 'Mark your units with ★ on the Units tab — their top will appear here.' },
 };
 const t = k => T[state.lang][k] ?? k;
 const RU_EN = { 'Физ': 'Phys', 'Маг': 'Magic', 'Чистый': 'True', 'Баффер': 'Buffer', 'Ферма': 'Farm', 'Призыв': 'Summoner', 'Саппорт': 'Support',
   'Урон': 'Damage', 'Холм': 'Hill', 'Земля': 'Ground', 'Гибрид': 'Hybrid', 'Кровотечение': 'Bleed', 'Горение': 'Burn', 'Яд': 'Poison', 'Иссушение': 'Wither' };
+Object.assign(RU_EN, { 'Радиус': 'Range', 'Крит': 'Crit', 'Скидка': 'Discount', 'Все': 'All', 'Огонь': 'Fire', 'Вода': 'Water', 'Роза': 'Rose',
+  'Воздух': 'Air', 'Шторм': 'Storm', 'Свет': 'Light', 'Тьма': 'Dark', 'Лёд': 'Ice', 'Нет': 'None' });
 const tr = s => state.lang === 'en' ? (RU_EN[s] || s) : s;
+// названия бафов/трейтов/реликвий: внутри всегда русские (ключи), на экране — по языку
+const NAME_EN = [[/^Дебафф: /, 'Debuff: '], [/ \(1 шт\.\)/, ' (1 pc)'], [/ \(бесконечный баф\)/, ' (infinite buff)'],
+  [/ \(макс\. апгрейд\)/, ' (max upgrade)'], [/ \(низкий апгрейд\)/, ' (low upgrade)'], [/ — урон$/, ' — damage'], [/ — скидка$/, ' — discount'],
+  [/ — радиус$/, ' — range'], [/ — в среднем$/, ' — average'], [/ \(соло, макс\.\)/, ' (solo, max)'], [/ \(кооп, макс\.\)/, ' (co-op, max)'],
+  [/×3,5/, '×3.5'], [/ \(по боссу\)/, ' (vs boss)'], [/^Нет$/, 'None']];
+const bn = n => state.lang === 'en' ? NAME_EN.reduce((a, [re, to]) => a.replace(re, to), n) : n;
+const bnote = b => state.lang === 'en' && b.noteEn ? b.noteEn : b.note || '';
 const rar = r => state.lang === 'ru' ? (D.rarityRu[r] || r) : r;
 const rarBadge = r => `<span class="rar r-${esc(r)}">${esc(rar(r))}</span>`;
 
@@ -323,7 +366,7 @@ function applyLang() {
   document.querySelectorAll('[data-ru-html]').forEach(el => { el.innerHTML = el.dataset[state.lang + 'Html']; });
   document.querySelectorAll('[data-ph-ru]').forEach(el => { el.placeholder = el.dataset['ph' + (state.lang === 'ru' ? 'Ru' : 'En')]; });
   document.querySelectorAll('.lang button').forEach(b => b.classList.toggle('on', b.dataset.lang === state.lang));
-  fillFilters(); renderUnits(); renderCompare(true); renderTeam(); renderSettings();
+  fillFilters(); renderUnits(); renderHome(); renderCompare(true); renderTeam(); renderSettings(); renderUpg();
 }
 
 // ── форматирование ──
@@ -346,9 +389,12 @@ function toast(msg) { const el = $('#toast'); el.textContent = msg; el.style.dis
 // ── профиль юнита (★, трейт, реликвия, свои %) ──
 const PROFILE_KEYS = ['pas', 'pasc', 'pascd', 'pasdot', 'cd', 'cs', 'cc', 'curD', 'curS', 'curR', 'trait', 'relic'];
 const prof = n => state.profiles[n] || {};
+const CURSE_STATS = { 'Урон': 'curD', 'SPA': 'curS', 'Радиус': 'curR' };
 function inpFor(n) {
   const p = prof(n), o = {};
   for (const k of PROFILE_KEYS) if (p[k] !== undefined && p[k] !== '') o[k] = ['trait', 'relic'].includes(k) ? p[k] : Number(p[k]);
+  // 4 слота проклятий, как в игре: стат + %; одинаковые статы складываются
+  for (let i = 1; i <= 4; i++) { const key = CURSE_STATS[p['k' + i + 's']]; if (key && p['k' + i + 'v'] !== undefined && p['k' + i + 'v'] !== '') o[key] = (o[key] || 0) + Number(p['k' + i + 'v']); }
   return o;
 }
 function setProf(n, k, v) {
@@ -366,16 +412,30 @@ const UCOLS = [
   { k: 'mine', h: '★', w: 1 }, { k: 'name', h: 'unit' }, { k: 'rarity', h: 'rarity' }, { k: 'dt', h: 'type' }, { k: 'role', h: 'role' },
   { k: 'upg', h: 'upg', num: 1 }, { k: 'cost', h: 'cost', num: 1 }, { k: 'dmg', h: 'dmg', num: 1 }, { k: 'spa', h: 'spa', num: 1 },
   { k: 'rng', h: 'rng', num: 1 }, { k: 'dps', h: 'dps', num: 1 }, { k: 'dpsk', h: 'dpsk', num: 1 }, { k: 'tier', h: 'tier' },
+  { k: 'best', h: 'best', num: 1 }, { k: 'bestUp', h: 'bestUp', num: 1 }, { k: 'tierv', h: 'tierv' }, { k: 'rankv', h: 'rankv', num: 1 },
 ];
 let unitRows = [];
 function computeUnits() {
+  upgCache = null;                 // таблица «Апгрейды» пересчитается при показе
   const s = S(), gb = gBuffs();
   unitRows = D.units.map(u => {
     const r = M.calc(ED, u, { buffs: gb, inp: inpFor(u.n) }, s);
     return { u, r, mine: !!prof(u.n).mine };
   });
-  const tiers = M.tiers(unitRows.map(x => x.r.dps));
-  unitRows.forEach((x, i) => { x.tier = tiers[i]; });
+  for (const x of unitRows) {
+    x.best = 0; x.bestUp = null;
+    for (let i = 0; i < x.u.rows.length; i++) {
+      const v = i === x.r.maxUpg ? x.r.dpsk : M.calc(ED, x.u, { upg: i, buffs: gb, inp: inpFor(x.u.n) }, s).dpsk;
+      if (v > x.best) { x.best = v; x.bestUp = i; }
+    }
+  }
+  // Griffin (Darkness)/(Reincarnation): цена не настоящая (жертва бафферов) — в тиры и места не входят
+  const ok = x => !D.special.includes(x.u.n);
+  const tiers = M.tiers(unitRows.map(x => ok(x) ? x.r.dps : 0)), tiersV = M.tiers(unitRows.map(x => ok(x) ? x.r.dpsk : 0));
+  const rank = key => { const v = unitRows.filter(x => ok(x) && x.r[key] > 0).map(x => x.r[key]).sort((a, b) => b - a); return x => ok(x) && x.r[key] > 0 ? v.indexOf(x.r[key]) + 1 : null; };
+  const rd = rank('dps'), rv = rank('dpsk');
+  unitRows.forEach((x, i) => { x.tier = ok(x) ? tiers[i] : '—'; x.tierv = ok(x) ? tiersV[i] : '—'; x.rankd = rd(x); x.rankv = rv(x); });
+  renderHome(); renderUpg();
 }
 function fillFilters() {
   const keep = id => $(id).value;
@@ -393,7 +453,8 @@ function renderUnits() {
     && (!fro || x.u.role === fro) && (!fm || x.mine) && (!fd || x.r.dps > 0));
   const k = state.sort.key, dir = state.sort.dir, ro = D.rarityOrder;
   const val = x => k === 'name' ? x.u.n.toLowerCase() : k === 'rarity' ? -ro.indexOf(x.u.r) : k === 'dt' ? x.u.dt : k === 'role' ? x.u.role
-    : k === 'mine' ? (x.mine ? 1 : 0) : k === 'tier' ? 'DCBAS'.indexOf(x.tier) : k === 'upg' ? x.r.maxUpg : x.r[k];
+    : k === 'mine' ? (x.mine ? 1 : 0) : k === 'tier' || k === 'tierv' ? 'DCBAS'.indexOf(x[k]) : k === 'upg' ? x.r.maxUpg
+    : k === 'best' || k === 'bestUp' ? x[k] ?? -1 : k === 'rankv' ? -(x.rankv || 1e9) : x.r[k];
   rows.sort((a, b) => { const va = val(a), vb = val(b); return (va > vb ? 1 : va < vb ? -1 : 0) * dir || a.u.n.localeCompare(b.u.n); });
   $('#shown').textContent = t('shown')(rows.length, unitRows.length);
   $('#unitTable tbody').innerHTML = rows.map(x => {
@@ -403,7 +464,8 @@ function renderUnits() {
       <td>${esc(tr(u.dt))}</td><td>${esc(tr(u.role))}</td><td class="num">${r.maxUpg}</td><td class="num">${fmt(r.cost, 0)}</td>
       <td class="num">${short(r.dmg)}</td><td class="num">${fmt(r.spa, 2)}</td><td class="num">${fmt(r.rng, 1)}</td>
       <td class="num dps">${short(r.dps)}</td><td class="num">${fmt(r.dpsk, 1)}</td>
-      <td>${x.tier === '—' ? '—' : `<span class="tier t-${x.tier}">${x.tier}</span>`}</td></tr>`;
+      <td>${(v => v === '—' ? '—' : `<span class="tier t-${v}">${v}</span>`)(x.tier)}</td><td class="num">${x.best ? fmt(x.best, 1) : '—'}</td>
+      <td class="num">${x.bestUp ?? '—'}</td><td>${(v => v === '—' ? '—' : `<span class="tier t-${v}">${v}</span>`)(x.tierv)}</td><td class="num">${x.rankv ?? '—'}</td></tr>`;
   }).join('');
 }
 $('#unitTable thead').addEventListener('click', e => {
@@ -419,10 +481,25 @@ $('#unitTable tbody').addEventListener('click', e => {
 });
 ['#q', '#fRarity', '#fType', '#fRole', '#fMine', '#fDmg'].forEach(id => $(id).addEventListener('input', renderUnits));
 
+
+// ── ГЛАВНАЯ: топ-15 по DPS, по выгоде и из моих (как лист «Главная» в Excel) ──
+function renderHome() {
+  const box = $('#homeGrid'); if (!box) return;
+  const ok = x => !D.special.includes(x.u.n);
+  const top = (list, key) => list.filter(x => ok(x) && x.r[key] > 0).sort((a, b) => b.r[key] - a.r[key]).slice(0, 15);
+  const table = (title, rows, empty) => `<div class="card"><div class="card-header"><h2>${esc(title)}</h2></div><div class="card-body" style="padding:0">
+    ${rows.length ? `<table><thead><tr><th class="num">#</th><th>${t('unit')}</th><th>${t('rarity')}</th><th class="num">${t('dps')}</th><th class="num">${t('dpsk')}</th><th class="num">${t('cost')}</th></tr></thead><tbody>
+    ${rows.map((x, i) => `<tr data-n="${esc(x.u.n)}" style="cursor:pointer"><td class="num">${i + 1}</td><td class="uname">${x.mine ? '★ ' : ''}${esc(x.u.n)}</td><td>${rarBadge(x.u.r)}</td>
+      <td class="num dps">${short(x.r.dps)}</td><td class="num">${fmt(x.r.dpsk, 1)}</td><td class="num">${fmt(x.r.cost, 0)}</td></tr>`).join('')}</tbody></table>`
+      : `<div class="empty">${esc(empty)}</div>`}</div></div>`;
+  box.innerHTML = table(t('topDps'), top(unitRows, 'dps')) + table(t('topVal'), top(unitRows, 'dpsk'))
+    + table(t('topMine'), top(unitRows.filter(x => x.mine), 'dps'), t('noMine'));
+}
+$('#homeGrid').addEventListener('click', e => { const tr_ = e.target.closest('tr[data-n]'); if (tr_) openUnit(tr_.dataset.n); });
 // ── карточка юнита ──
 let modalUnit = null;
-function traitOpts(sel, first) { return `<option value="">${esc(first)}</option>` + ED.traits.map(x => `<option ${x.n === sel ? 'selected' : ''}>${esc(x.n)}</option>`).join(''); }
-function relicOpts(sel, first) { return `<option value="">${esc(first)}</option>` + ED.relics.map(x => `<option ${x.n === sel ? 'selected' : ''}>${esc(x.n)}</option>`).join(''); }
+function traitOpts(sel, first) { return `<option value="">${esc(first)}</option>` + ED.traits.map(x => `<option value="${esc(x.n)}" ${x.n === sel ? 'selected' : ''}>${esc(bn(x.n))}</option>`).join(''); }
+function relicOpts(sel, first) { return `<option value="">${esc(first)}</option>` + ED.relics.map(x => `<option value="${esc(x.n)}" ${x.n === sel ? 'selected' : ''}>${esc(bn(x.n))}</option>`).join(''); }
 function openUnit(n) {
   modalUnit = byName[n]; if (!modalUnit) return;
   renderModal(); $('#modal').classList.add('on');
@@ -440,7 +517,12 @@ function renderModal() {
       <div class="kv"><span>${t('cap')}</span><span>${u.cap || '—'}</span></div><div class="kv"><span>${t('crit')}</span><span>${fmt(u.crit * 100, 0)}% × ${fmt(u.cdm || s.critDef, 2)}</span></div></div>
     <div><div class="kv"><span>${t('dps')}</span><span class="dps">${fmt(r.dps)}</span></div><div class="kv"><span>${t('dpsk')}</span><span>${fmt(r.dpsk, 1)}</span></div>
       <div class="kv"><span>${t('cost')}</span><span>${fmt(r.cost, 0)}</span></div><div class="kv"><span>${t('maxhit')}</span><span>${fmt(r.maxhit)}</span></div>
-      <div class="kv"><span>${t('dotdps')}</span><span>${fmt(r.dotdps)}</span></div><div class="kv"><span>${t('sumdps')}</span><span>${fmt(r.sumdps)}</span></div></div>
+      <div class="kv"><span>${t('dotdps')}</span><span>${fmt(r.dotdps)}</span></div><div class="kv"><span>${t('sumdps')}</span><span>${fmt(r.sumdps)}</span></div>
+      ${u.cap ? `<div class="kv"><span>${L ? 'DPS всех копий (× ' + u.cap + ')' : 'DPS of all copies (× ' + u.cap + ')'}</span><span class="dps">${fmt(r.dps * u.cap)}</span></div>
+        <div class="kv"><span>${L ? 'Цена всех копий' : 'Cost of all copies'}</span><span>${fmt(r.cost * u.cap, 0)}</span></div>` : ''}
+      ${u.farm ? `<div class="kv"><span>${L ? 'Ферма (за волну)' : 'Farm (per wave)'}</span><span>${fmt(u.farm, 0)}</span></div>` : ''}
+      <div class="kv"><span>${L ? 'Лимитка' : 'Limited'}</span><span>${u.lim ? t('yes') : t('no')}</span></div>
+      ${u.evo ? `<div class="kv"><span>${L ? 'Эволюция из' : 'Evolves from'}</span><span><a href="#" data-open="${esc(u.evo)}">${esc(u.evo)}</a></span></div>` : ''}</div>
     <div class="key-block"><b>${t('profile')}</b>
       <div class="field"><span>${t('mine')}</span><input type="checkbox" data-pk="mine" ${p.mine ? 'checked' : ''}></div>
       <div class="field"><span>${t('trait')}</span><select data-pk="trait">${traitOpts(p.trait, t('none'))}</select></div>
@@ -449,9 +531,12 @@ function renderModal() {
       ${num('cd', L ? 'Свой % урона (ранг)' : 'Own dmg % (rank)', 0)}
       ${num('cs', L ? 'Свой % снижения SPA' : 'Own SPA reduction %', 0)}
       ${num('cc', L ? 'Свой крит-шанс, %' : 'Own crit chance %', fmt(u.crit * 100, 0))}
-      ${num('curD', L ? 'Проклятия: урон, %' : 'Curses: damage %', 0)}
-      ${num('curS', L ? 'Проклятия: SPA, % (+ = медленнее)' : 'Curses: SPA % (+ = slower)', 0)}
-      ${num('curR', L ? 'Проклятия: радиус, %' : 'Curses: range %', 0)}
+      ${[1, 2, 3, 4].map(i => `<div class="field" style="grid-template-columns:1fr 100px 80px"><span>${L ? 'Проклятие' : 'Curse'} ${i}</span>
+        <select data-pk="k${i}s"><option value="">—</option>${Object.keys(CURSE_STATS).map(x => `<option value="${x}" ${p['k' + i + 's'] === x ? 'selected' : ''}>${esc(tr(x))}</option>`).join('')}</select>
+        <input type="number" step="any" data-pk="k${i}v" value="${p['k' + i + 'v'] ?? ''}" placeholder="%"></div>`).join('')}
+      <div class="hint">${L ? 'Проклятие SPA «+5%» — атака медленнее; «−5%» — быстрее. Минус у урона — урон меньше.' : 'SPA curse “+5%” = slower attack; “−5%” = faster. Negative damage = less damage.'}</div>
+      ${p.curD || p.curS || p.curR ? `<div class="hint">${L ? 'Старые суммы проклятий' : 'Old curse totals'}: ${[p.curD && 'урон ' + p.curD, p.curS && 'SPA ' + p.curS, p.curR && 'радиус ' + p.curR].filter(Boolean).join(', ')}% <button class="btn small" data-clearcur="1">✕</button></div>` : ''}
+      <div class="field" style="grid-template-columns:1fr"><span>${L ? 'Заметка' : 'Note'}</span><textarea data-pk="note" rows="2" style="width:100%;background:var(--input);border:1px solid var(--border2);border-radius:8px;padding:6px 8px;color:var(--text)">${esc(p.note || '')}</textarea></div>
     </div></div>`;
   if (u.pas || u.summ || u.feats) {
     h += `<h3 style="margin:6px 0">${t('passive')}</h3>`;
@@ -476,10 +561,15 @@ $('#mBody').addEventListener('input', e => {
   const el = e.target, k = el.dataset.pk; if (!k) return;
   const v = el.type === 'checkbox' ? (el.checked ? 1 : '') : el.type === 'number' ? (el.value === '' ? '' : Number(el.value)) : el.value;
   setProf(modalUnit.n, k, v);
+  if (k === 'note') return;          // заметка на расчёт не влияет
   computeUnits(); renderUnits(); updateCompare(); updateTeam(); if (k === 'mine') buildDatalist();
   if (el.tagName === 'SELECT' || el.type === 'checkbox') renderModal();
 });
 $('#mBody').addEventListener('change', e => { if (e.target.type === 'number') renderModal(); });
+$('#mBody').addEventListener('click', e => {
+  const a = e.target.closest('[data-open]'); if (a) { e.preventDefault(); openUnit(a.dataset.open); return; }
+  if (e.target.closest('[data-clearcur]')) { ['curD', 'curS', 'curR'].forEach(k => setProf(modalUnit.n, k, '')); computeUnits(); renderUnits(); updateCompare(); updateTeam(); renderModal(); }
+});
 $('#mClose').onclick = () => $('#modal').classList.remove('on');
 $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') $('#modal').classList.remove('on'); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') $('#modal').classList.remove('on'); });
@@ -487,10 +577,13 @@ $('#mToCmp').onclick = () => { addCmp(modalUnit.n); toast(t('toCmp')); };
 
 // ── СРАВНЕНИЕ ──
 const COUT = ['cost', 'dmg', 'maxhit', 'spa', 'rng', 'hitdps', 'dotdps', 'sumdps', 'dps', 'dpsk', 'gain', 'tot'];
+// подробные столбцы (как в Excel): DoT за тик / атаку, разгон DoT, удар призыва, урон за бой по частям, средний DPS, лимит
+const CMORE = ['dottick', 'dotatk', 'dotpct', 'dotpct2', 'sumhit', 'totHit', 'totDot', 'totSum', 'avgdps', 'cap'];
+const cmpCols = () => state.cmpMore ? [...COUT, ...CMORE] : COUT;
 const LOWER_BETTER = { cost: 1, spa: 1 };
 function newRow(n) { return { name: n || '', upg: '', lvl: '', buffs: [], trait: '', relic: '', passive: true }; }
 function addCmp(n) { state.compare.push(newRow(n)); save(); renderCompare(); }
-function buffOptions() { return `<option value="">${esc(t('addBuff'))}</option>` + D.buffs.map(b => `<option value="${esc(b.n)}">${esc(b.n)} (${b.kind} ${b.v}%)</option>`).join(''); }
+function buffOptions() { return `<option value="">${esc(t('addBuff'))}</option>` + ED.buffs.map(b => `<option value="${esc(b.n)}" title="${esc(bnote(b))}">${esc(bn(b.n))} (${esc(tr(b.kind))} ${b.v}%)</option>`).join(''); }
 function upgOptions(row) {
   const u = byName[row.name]; const n = u ? u.rows.length - 1 : 0;
   let o = `<option value="">${esc(t('maxU'))}${u ? ' (' + n + ')' : ''}</option>`;
@@ -501,7 +594,8 @@ function renderCompare(full) {
   $('#cmpCount').textContent = state.compare.length;
   $('#cmpTime').value = String(state.settings.time ?? 30);
   $('#cmpGlobal').checked = !!state.cmpGlobal;
-  const heads = ['', 'unit', 'upg', 'lvl', 'buffs', 'trait', 'relic', 'pas', ...COUT];
+  $('#cmpMore').checked = !!state.cmpMore;
+  const heads = ['', 'unit', 'upg', 'lvl', 'buffs', 'trait', 'relic', 'pas', ...cmpCols()];
   $('#cmpTable thead tr').innerHTML = heads.map((k, i) => `<th class="${i > 7 ? 'num' : ''}">${k ? esc(t(k)) : ''}</th>`).join('');
   $('#cmpEmpty').style.display = state.compare.length ? 'none' : 'block';
   $('#cmpTable tbody').innerHTML = state.compare.map((row, i) => `<tr data-i="${i}">
@@ -510,26 +604,27 @@ function renderCompare(full) {
       <div class="hint">${byName[row.name] ? esc(tr(byName[row.name].dt)) + ' · ' + esc(rar(byName[row.name].r)) : ''}</div></td>
     <td><select data-f="upg">${upgOptions(row)}</select></td>
     <td><select data-f="lvl"><option value="">${esc(state.lang === 'ru' ? 'как в настр.' : 'settings')}</option>${['1', '100', '110'].map(v => `<option ${row.lvl === v ? 'selected' : ''}>${v}</option>`).join('')}</select></td>
-    <td><div class="chips">${row.buffs.map((b, j) => `<span class="chip">${esc(b)}<button data-act="unbuff" data-j="${j}">✕</button></span>`).join('')}
+    <td><div class="chips">${row.buffs.map((b, j) => `<span class="chip">${esc(bn(b))}<button data-act="unbuff" data-j="${j}">✕</button></span>`).join('')}
       <select data-f="addbuff">${buffOptions()}</select></div></td>
     <td><select data-f="trait">${traitOpts(row.trait, t('fromProfile'))}</select></td>
     <td><select data-f="relic">${relicOpts(row.relic, t('fromProfile'))}</select></td>
     <td><input type="checkbox" data-f="passive" ${row.passive ? 'checked' : ''}></td>
-    ${COUT.map(k => `<td class="num" data-o="${k}"></td>`).join('')}</tr>`).join('');
+    ${cmpCols().map(k => `<td class="num" data-o="${k}"></td>`).join('')}</tr>`).join('');
   updateCompare();
 }
 function cmpCalc() {
   const s = S(), gb = state.cmpGlobal ? gBuffs() : [];
   return state.compare.map(row => {
     const u = byName[row.name]; if (!u) return null;
-    return M.calc(ED, u, { upg: row.upg, lvl: row.lvl || null, buffs: [...row.buffs, ...gb], trait: row.trait, relic: row.relic,
-      passive: row.passive, inp: inpFor(u.n) }, s);
+    return Object.assign(M.calc(ED, u, { upg: row.upg, lvl: row.lvl || null, buffs: [...row.buffs, ...gb], trait: row.trait, relic: row.relic,
+      passive: row.passive, inp: inpFor(u.n) }, s), { cap: u.cap || 0 });
   });
 }
 function updateCompare() {
   const res = cmpCalc();
   const best = {};
-  for (const k of COUT) {
+  for (const k of cmpCols()) {
+    if (k === 'cap' || k.startsWith('dotpct')) continue;
     const vals = res.filter(Boolean).map(r => r[k]).filter(v => v > 0);
     if (vals.length > 1) best[k] = LOWER_BETTER[k] ? Math.min(...vals) : Math.max(...vals);
   }
@@ -539,9 +634,11 @@ function updateCompare() {
       const k = td.dataset.o;
       if (!r) { td.textContent = ''; td.className = 'num'; return; }
       const v = r[k];
-      td.textContent = k === 'gain' ? (v ? '+' + fmt(v * 100, 0) + '%' : '—') : k === 'spa' ? fmt(v, 2) : k === 'rng' ? fmt(v, 1)
-        : k === 'dpsk' ? fmt(v, 1) : ['dotdps', 'sumdps'].includes(k) && !v ? '—' : short(v);
-      td.title = k === 'gain' || k === 'spa' || k === 'rng' ? '' : fmt(v);
+      const pctK = k === 'gain' || k.startsWith('dotpct');
+      td.textContent = k === 'gain' ? (v ? '+' + fmt(v * 100, 0) + '%' : '—') : k.startsWith('dotpct') ? (v ? fmt(v * 100, 0) + '%' : '—')
+        : k === 'cap' ? (v || '—') : k === 'spa' ? fmt(v, 2) : k === 'rng' ? fmt(v, 1)
+        : k === 'dpsk' ? fmt(v, 1) : ['dotdps', 'sumdps', 'dottick', 'dotatk', 'sumhit', 'totDot', 'totSum'].includes(k) && !v ? '—' : short(v);
+      td.title = pctK || k === 'spa' || k === 'rng' || k === 'cap' ? '' : fmt(v);
       td.className = 'num' + (k === 'dps' ? ' dps' : '') + (k === 'gain' && v > 0 ? ' gain' : '') + (best[k] !== undefined && v === best[k] ? ' out-best' : '');
     });
   });
@@ -572,6 +669,7 @@ $('#cmpAdd').onclick = () => { addCmp(''); const ins = cmpBody.querySelectorAll(
 $('#cmpClear').onclick = () => { if (state.compare.length && confirm(t('clearQ'))) { state.compare = []; save(); renderCompare(); } };
 $('#cmpTime').oninput = e => { state.settings.time = +e.target.value; save(); updateCompare(); renderSettings(); };
 $('#cmpGlobal').oninput = e => { state.cmpGlobal = e.target.checked; save(); updateCompare(); };
+$('#cmpMore').oninput = e => { state.cmpMore = e.target.checked; save(); renderCompare(); };
 
 // ── графики (canvas, без библиотек) ──
 const CHARTS = [
@@ -619,6 +717,55 @@ function barChart(cv, items, c) {
 }
 let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => drawCharts(cmpCalc()), 150); });
 
+
+// ── АПГРЕЙДЫ: все апгрейды всех юнитов (лист «Апгрейды» в Excel) ──
+let upgCache = null, upgLimit = 200, upgSort = { key: 'marg', dir: -1 };
+const UPCOLS = [['name', 'unit'], ['rarity', 'rarity'], ['upg', '#', 1], ['step', 'step', 1], ['cost', 'total', 1], ['dmg', 'dmg', 1],
+  ['spa', 'spa', 1], ['rng', 'rng', 1], ['atype', 'atype'], ['eff', 'eff'], ['dps', 'dps', 1], ['dpsk', 'dpsk', 1], ['marg', 'marg', 1]];
+function upgData() {
+  if (upgCache) return upgCache;
+  const s = S(), gb = gBuffs(), out = [];
+  for (const u of D.units) {
+    let prev = null;
+    u.rows.forEach((row, i) => {
+      const r = M.calc(ED, u, { upg: i, buffs: gb, inp: inpFor(u.n) }, s);
+      // прирост DPS на 1000 денег за этот шаг; у постановки — DPS на 1000 (как в Excel)
+      const marg = prev ? (r.cost > prev.cost ? (r.dps - prev.dps) / (r.cost - prev.cost) * 1000 : 0) : r.dpsk;
+      out.push({ u, i, step: row[1], cost: r.cost, dmg: r.dmg, spa: r.spa, rng: r.rng, atype: row[6], eff: row[7], dps: r.dps, dpsk: r.dpsk, marg });
+      prev = r;
+    });
+  }
+  return (upgCache = out);
+}
+function renderUpg() {
+  if (!$('#upgTable') || state.tab !== 'upgrades') return;
+  const keep = id => $(id).value;
+  const fill = (id, first, vals, lab) => { const v = keep(id); $(id).innerHTML = `<option value="">${esc(first)}</option>` + vals.map(x => `<option value="${esc(x)}">${esc(lab(x))}</option>`).join(''); $(id).value = v; };
+  fill('#uRarity', t('allR'), D.rarityOrder, rar); fill('#uType', t('allT'), ['Физ', 'Маг', 'Чистый'], tr);
+  $('#upgTable thead tr').innerHTML = UPCOLS.map(([k, h, n]) => `<th class="sort ${n ? 'num' : ''} ${upgSort.key === k ? 'on' : ''}" data-k="${k}">${esc(h === '#' ? '#' : t(h))}${upgSort.key === k ? (upgSort.dir < 0 ? ' ▼' : ' ▲') : ''}</th>`).join('');
+  const q = $('#uq').value.trim().toLowerCase(), fr = $('#uRarity').value, ft = $('#uType').value, fm = $('#uMine').checked, fd = $('#uDmg').checked;
+  // формы Griffin с ненастоящей ценой (жертва бафферов) — только по поиску, иначе забивают топ выгоды
+  const rows = upgData().filter(x => (q ? x.u.n.toLowerCase().includes(q) : !D.special.includes(x.u.n)) && (!fr || x.u.r === fr) && (!ft || x.u.dt === ft)
+    && (!fm || prof(x.u.n).mine) && (!fd || x.dps > 0));
+  const k = upgSort.key, ro = D.rarityOrder;
+  const val = x => k === 'name' ? x.u.n.toLowerCase() : k === 'rarity' ? -ro.indexOf(x.u.r) : k === 'upg' ? x.i : x[k] ?? '';
+  rows.sort((a, b) => { const va = val(a), vb = val(b); return (va > vb ? 1 : va < vb ? -1 : 0) * upgSort.dir || a.u.n.localeCompare(b.u.n) || a.i - b.i; });
+  $('#uShown').textContent = t('shown')(Math.min(upgLimit, rows.length), rows.length);
+  $('#uMore').style.display = rows.length > upgLimit ? '' : 'none';
+  $('#upgTable tbody').innerHTML = rows.slice(0, upgLimit).map(x => `<tr data-n="${esc(x.u.n)}" style="cursor:pointer">
+    <td class="uname">${prof(x.u.n).mine ? '★ ' : ''}${esc(x.u.n)}</td><td>${rarBadge(x.u.r)}</td><td class="num">${x.i}</td>
+    <td class="num">${fmt(x.step, 0)}</td><td class="num">${fmt(x.cost, 0)}</td><td class="num">${short(x.dmg)}</td><td class="num">${fmt(x.spa, 2)}</td>
+    <td class="num">${fmt(x.rng, 1)}</td><td>${esc(x.atype)}</td><td>${esc(x.eff || '—')}</td><td class="num dps">${short(x.dps)}</td>
+    <td class="num">${fmt(x.dpsk, 1)}</td><td class="num ${x.marg > 0 ? 'gain' : ''}">${fmt(x.marg, 1)}</td></tr>`).join('');
+}
+$('#upgTable thead').addEventListener('click', e => {
+  const th = e.target.closest('th'); if (!th) return;
+  const k = th.dataset.k; upgSort = { key: k, dir: upgSort.key === k ? -upgSort.dir : (['name', 'spa', 'cost', 'step', 'atype', 'eff'].includes(k) ? 1 : -1) };
+  upgLimit = 200; renderUpg();
+});
+$('#upgTable tbody').addEventListener('click', e => { const tr_ = e.target.closest('tr[data-n]'); if (tr_) openUnit(tr_.dataset.n); });
+['#uq', '#uRarity', '#uType', '#uMine', '#uDmg'].forEach(id => $(id).addEventListener('input', () => { upgLimit = 200; renderUpg(); }));
+$('#uMore').onclick = () => { upgLimit += 200; renderUpg(); };
 // ── КОМАНДА ──
 const TOUT = ['cost', 'dps', 'costall', 'dpsall', 'dpsk', 'check', 'gives', 'dps0', 'gain', 'info'];
 const TL = {
@@ -668,12 +815,12 @@ const buffBy = n => ED.buffs.find(b => b.n === n) || { v: 0, kind: '', who: '' }
 function infoText(r, u) {
   const L = state.lang === 'ru', i = r.info, p = [];
   const pct = (v, d = 1) => (v > 0 ? '+' : '') + fmt(v, d) + '%';
-  p.push(`${L ? 'Трейт' : 'Trait'}: ${i.trait || tt('none')}${i.tD || i.tS || i.tR ? ` (${[i.tD && (L ? 'урон ' : 'dmg ') + pct(i.tD), i.tS && 'SPA −' + fmt(i.tS, 1) + '%', i.tR && (L ? 'радиус ' : 'range ') + pct(i.tR)].filter(Boolean).join(', ')})` : ''}`);
+  p.push(`${L ? 'Трейт' : 'Trait'}: ${bn(i.trait) || tt('none')}${i.tD || i.tS || i.tR ? ` (${[i.tD && (L ? 'урон ' : 'dmg ') + pct(i.tD), i.tS && 'SPA −' + fmt(i.tS, 1) + '%', i.tR && (L ? 'радиус ' : 'range ') + pct(i.tR)].filter(Boolean).join(', ')})` : ''}`);
   if (i.relic) {
     const e = [i.rD && (L ? 'урон ' : 'dmg ') + pct(i.rD), i.rC && (L ? 'крит ' : 'crit ') + pct(i.rC), i.rCD && (L ? 'крит-урон ' : 'crit dmg ') + pct(i.rCD),
       i.rPwr && 'PWR +' + fmt(i.rPwr, 1), i.rDotAny && `DoT +${fmt(i.rDotAny, 0)}% (${tr(i.rDotK)})`, i.rClk && (L ? 'часы +' : 'clock +') + fmt(i.rClk, 2) + '%/s',
       i.resm !== 1 && (L ? 'сопр. ×' : 'res ×') + fmt(i.resm, 2)].filter(Boolean);
-    p.push(`${L ? 'Реликвия' : 'Relic'}: ${i.relic} — ${e.length ? e.join(', ') : tt('nothing')}`);
+    p.push(`${L ? 'Реликвия' : 'Relic'}: ${bn(i.relic)} — ${e.length ? e.join(', ') : tt('nothing')}`);
   } else p.push(`${L ? 'Реликвия' : 'Relic'}: ${tt('none')}`);
   const ps = [i.pasv && (L ? 'урон ' : 'dmg ') + pct(i.pasv), i.pc && (L ? 'крит ' : 'crit ') + pct(i.pc), i.pcd && (L ? 'крит-урон ' : 'crit dmg ') + pct(i.pcd), i.pdot && 'DoT ' + pct(i.pdot)].filter(Boolean);
   if (ps.length) p.push(`${L ? 'Пассивка' : 'Passive'}: ${ps.join(', ')}`);
@@ -696,7 +843,7 @@ function updateTeam() {
         td.style.color = over ? 'var(--bad)' : 'var(--good)';
       } else if (k === 'gives') {
         td.style.whiteSpace = 'normal'; td.style.minWidth = '200px';
-        td.textContent = r.gives.length ? r.gives.map(g => { const b = buffBy(g.n); return `${g.n}: +${fmt(b.v * g.m, 0)}% ${b.kind.toLowerCase()} → ${b.who}`; }).join('; ') : '—';
+        td.textContent = r.gives.length ? r.gives.map(g => { const b = buffBy(g.n); return `${bn(g.n)}: +${fmt(b.v * g.m, 0)}% ${tr(b.kind).toLowerCase()} → ${tr(b.who)}`; }).join('; ') : '—';
       } else if (k === 'info') {
         td.style.whiteSpace = 'pre-line'; td.style.minWidth = '260px'; td.style.fontSize = '12px'; td.style.color = 'var(--muted)';
         td.textContent = infoText(r, u);
@@ -718,8 +865,8 @@ function updateTeam() {
   const kinds = [['Урон', 'Физ'], ['Урон', 'Маг'], ['Урон', 'Чистый'], ['SPA'], ['Радиус'], ['Крит'], ['Скидка'], ...D.dotKinds.map(k => ['DoT', k]), ['Призыв']];
   const lines = kinds.map(([kind, who]) => [kind, who, M.buffSum(ED, given, kind, who)]).filter(x => x[2]);
   $('#teamBuffs').innerHTML = given.length
-    ? given.map(g => { const b = buffBy(g.n); return `<div class="note">${esc(g.n)}${g.m > 1 ? ' ×' + g.m : ''} — <b>+${fmt(b.v * g.m, 0)}%</b> ${esc(b.kind.toLowerCase())} → ${esc(b.who)} <span class="muted">(${esc(tt('from'))} ${esc(g.from)})</span></div>`; }).join('')
-      + lines.map(([kind, who, v]) => kv(`${kind}${who ? ' → ' + who : ''}`, '+' + fmt(v, 0) + '%')).join('')
+    ? given.map(g => { const b = buffBy(g.n); return `<div class="note">${esc(bn(g.n))}${g.m > 1 ? ' ×' + g.m : ''} — <b>+${fmt(b.v * g.m, 0)}%</b> ${esc(tr(b.kind).toLowerCase())} → ${esc(tr(b.who))} <span class="muted">(${esc(tt('from'))} ${esc(g.from)})</span></div>`; }).join('')
+      + lines.map(([kind, who, v]) => kv(`${tr(kind)}${who ? ' → ' + tr(who) : ''}`, '+' + fmt(v, 0) + '%')).join('')
     : `<div class="hint">${esc(tt('noBuffs'))}</div>`;
 }
 const teamBody = $('#teamTable tbody');
@@ -774,7 +921,16 @@ function renderSettings() {
     </div></div>
     <div class="card"><div class="card-header"><h2>${L ? 'Постоянные бафы' : 'Always-on buffs'}</h2></div><div class="card-body">
       <div class="hint">${L ? 'Это бафы, которые у тебя «всегда стоят» на карте — как «Активен = Да» в Excel. Отмеченные бафы прибавляются к DPS во вкладке «Юниты» и в карточках. В «Сравнении» они действуют, только если там включена галочка «+ бафы из «Настроек»». На «Команду» не влияют — там бафают бафферы самой команды.' : 'Buffs you “always have” on the map — like “Active = Yes” in Excel. Checked buffs are added to DPS on the Units tab and unit cards. In Compare they apply only with “+ buffs from Settings”. They do not affect Team — there buffers of the team itself apply.'}</div>
-      ${ED.buffs.map(b => `<label class="field" style="grid-template-columns:24px 1fr"><input type="checkbox" data-gb="${esc(b.n)}" ${gb.includes(b.n) ? 'checked' : ''}><span>${esc(b.n)} <span class="tag">${esc(b.kind)} ${b.v}% · ${esc(b.who)}</span><small>${esc(b.note)}</small></span></label>`).join('')}
+      ${ED.buffs.map(b => `<div class="field" style="grid-template-columns:24px 1fr 76px ${isCustomBuff(b.n) ? '30px' : ''}"><input type="checkbox" data-gb="${esc(b.n)}" ${gb.includes(b.n) ? 'checked' : ''}>
+        <span>${esc(bn(b.n))} <span class="tag">${esc(tr(b.kind))} · ${esc(tr(b.who))}</span>${(state.edits.buffs || {})[b.n] ? ' <span class="tag">✎</span>' : ''}<small>${esc(bnote(b))}</small></span>
+        <input type="number" step="any" data-bv="${esc(b.n)}" value="${b.v}" title="%">${isCustomBuff(b.n) ? `<button class="btn small ghost" data-delbuff="${esc(b.n)}">✕</button>` : ''}</div>`).join('')}
+      <div class="key-block" style="margin-top:12px"><b>${L ? '+ Свой баф' : '+ Custom buff'}</b>
+        <div class="field"><span>${L ? 'Название' : 'Name'}</span><input id="nbName" placeholder="${L ? 'например: Мой баффер' : 'e.g. My buffer'}"></div>
+        <div class="field"><span>${L ? 'Что даёт' : 'Gives'}</span><select id="nbKind">${['Урон', 'SPA', 'Радиус', 'Крит', 'Скидка', 'DoT', 'Призыв'].map(k => `<option value="${k}">${esc(tr(k))}</option>`).join('')}</select></div>
+        <div class="field"><span>${L ? 'Значение, %' : 'Value, %'}</span><input id="nbVal" type="number" step="any" value="10"></div>
+        <div class="field"><span>${L ? 'На кого' : 'Applies to'}</span><select id="nbWho">${['Все', 'Физ', 'Маг', ...D.dotKinds].map(k => `<option value="${k}">${esc(tr(k))}</option>`).join('')}</select></div>
+        <button class="btn" id="nbAdd">${L ? 'Добавить баф' : 'Add buff'}</button>
+        <div class="hint">${L ? 'Для DoT в «На кого» выбери вид DoT. Свой баф появится и в «Сравнении».' : 'For DoT choose the DoT kind in “Applies to”. The buff also appears in Compare.'}</div></div>
       <button class="btn" id="resetSettings" style="margin-top:10px">${L ? 'Сбросить настройки' : 'Reset settings'}</button>
     </div></div>
     ${relicEditor(L)}
@@ -789,6 +945,7 @@ const RFIELDS = [['d1', 'Урон, %', 'Damage, %', 't1'], ['d2', 'Урон 2 (�
   ['dot', 'Усиление DoT, %', 'DoT boost, %', 'dotk'], ['sit', 'Ситуативный, %', 'Situational, %'], ['clkn', 'Часы: раз в N с', 'Clock: every N s'],
   ['clkp', 'Часы: +% урона', 'Clock: +% dmg']];
 const isCustom = n => (state.edits.customRelics || []).some(r => r.n === n);
+const isCustomBuff = n => (state.edits.customBuffs || []).some(r => r.n === n);
 function relicEditor(L) {
   if (!relSel || !ED.relics.some(r => r.n === relSel)) relSel = ED.relics[1].n;
   const r = ED.relics.find(x => x.n === relSel);
@@ -797,8 +954,8 @@ function relicEditor(L) {
   const sel = (k, list) => `<select data-re="${k}" style="width:100%">${list.map(v => `<option value="${esc(v)}" ${String(r[k] || '') === v ? 'selected' : ''}>${esc(v ? tr(v) : (L ? '— для —' : '— for —'))}</option>`).join('')}</select>`;
   return `<div class="card"><div class="card-header"><h2>${L ? 'Мои реликвии' : 'My relics'}</h2></div><div class="card-body">
     <div class="hint">${L ? 'Поставь цифры своего ролла — они сразу пойдут во все вкладки. Нужна та же реликвия с другим роллом на другом юните — «Создать копию».' : 'Enter your roll — it applies to all tabs at once. Same relic with another roll on another unit — “Make a copy”.'}</div>
-    <div class="field"><span>${L ? 'Реликвия' : 'Relic'}</span><select id="relSel">${ED.relics.slice(1).map(x => `<option ${x.n === relSel ? 'selected' : ''}>${esc(x.n)}</option>`).join('')}</select></div>
-    <div class="note">${esc(r.note || '')}</div>
+    <div class="field"><span>${L ? 'Реликвия' : 'Relic'}</span><select id="relSel">${ED.relics.slice(1).map(x => `<option value="${esc(x.n)}" ${x.n === relSel ? 'selected' : ''}>${esc(bn(x.n))}</option>`).join('')}</select></div>
+    <div class="note">${esc(bnote(r))}</div>
     <div class="key-block">${RFIELDS.map(([k, ru, en, tk]) => `<div class="field" style="grid-template-columns:1fr 80px ${tk ? '110px' : ''}"><span>${L ? ru : en}</span>
       <input type="number" step="any" data-re="${k}" value="${r[k] ?? 0}">${tk ? sel(tk, k === 'dot' ? dots : types) : ''}</div>`).join('')}</div>
     <div class="toolbar" style="margin-top:10px">
@@ -813,7 +970,7 @@ function traitEditor(L) {
   return `<div class="card"><div class="card-header"><h2>${L ? 'Трейты' : 'Traits'}</h2></div><div class="card-body">
     <div class="hint">${L ? 'Урон %, снижение SPA %, радиус %. Можно поправить, если в игре поменяли цифры.' : 'Damage %, SPA reduction %, range %. Edit if the game changed numbers.'}</div>
     <table><thead><tr><th>${L ? 'Трейт' : 'Trait'}</th><th class="num">${L ? 'Урон' : 'Dmg'}</th><th class="num">SPA</th><th class="num">${L ? 'Радиус' : 'Range'}</th></tr></thead><tbody>
-    ${ED.traits.slice(1).map(x => `<tr title="${esc(x.note)}"><td>${esc(x.n)}${te[x.n] ? ' <span class="tag">✎</span>' : ''}</td>${['d', 's', 'r'].map(k => `<td class="num"><input type="number" step="any" data-te="${esc(x.n)}" data-k="${k}" value="${x[k]}" style="width:70px"></td>`).join('')}</tr>`).join('')}
+    ${ED.traits.slice(1).map(x => `<tr title="${esc(bnote(x))}"><td>${esc(bn(x.n))}${te[x.n] ? ' <span class="tag">✎</span>' : ''}</td>${['d', 's', 'r'].map(k => `<td class="num"><input type="number" step="any" data-te="${esc(x.n)}" data-k="${k}" value="${x[k]}" style="width:70px"></td>`).join('')}</tr>`).join('')}
     </tbody></table>
     <button class="btn" id="traitReset" style="margin-top:10px">${L ? '↺ Трейты как на вики' : '↺ Wiki traits'}</button></div></div>`;
 }
@@ -834,6 +991,14 @@ $('#settingsGrid').addEventListener('input', e => {
     if (k === 'lvl') renderSettings();
   } else if (el.dataset.tg) {
     state.settings.targets = Object.assign({}, state.settings.targets, { [el.dataset.tg]: el.value === '' ? 1 : Number(el.value) });
+  } else if (el.dataset.bv) {
+    const n = el.dataset.bv, v = el.value === '' ? 0 : Number(el.value);
+    const cb = (state.edits.customBuffs || []).find(x => x.n === n);
+    if (cb) cb.v = v;
+    else { const base = D.buffs.find(x => x.n === n), eb = state.edits.buffs || (state.edits.buffs = {});
+      if (base.v === v) delete eb[n]; else eb[n] = { v }; }
+    save(); refreshAll(); return;
+  } else if (el.id && el.id.startsWith('nb')) { return;
   } else if (el.id === 'relSel') {
     relSel = el.value; renderSettings(); return;
   } else if (el.dataset.re) {
@@ -855,7 +1020,18 @@ $('#settingsGrid').addEventListener('input', e => {
 });
 $('#settingsGrid').addEventListener('click', e => {
   const id = e.target.id, L = state.lang === 'ru';
-  if (id === 'resetSettings') { state.settings = {}; }
+  if (id === 'resetSettings') { state.settings = {}; state.edits.buffs = {}; }
+  else if (id === 'nbAdd') {
+    const name = $('#nbName').value.trim();
+    if (!name || ED.buffs.some(x => x.n === name)) { toast(L ? 'Нужно новое название' : 'Need a new name'); return; }
+    (state.edits.customBuffs || (state.edits.customBuffs = [])).push({ n: name, kind: $('#nbKind').value, v: Number($('#nbVal').value) || 0,
+      who: $('#nbWho').value, note: L ? 'свой баф' : 'custom buff' });
+  } else if (e.target.dataset.delbuff) {
+    const n = e.target.dataset.delbuff;
+    state.edits.customBuffs = (state.edits.customBuffs || []).filter(x => x.n !== n);
+    state.settings.buffs = gBuffs().filter(x => x !== n);
+    for (const r of state.compare) r.buffs = r.buffs.filter(x => x !== n);
+  }
   else if (id === 'relReset') { delete (state.edits.relics || {})[relSel]; }
   else if (id === 'traitReset') { state.edits.traits = {}; }
   else if (id === 'relDel') {
@@ -902,6 +1078,7 @@ function setTab(id) {
   document.querySelectorAll('.tab').forEach(s => s.classList.toggle('on', s.id === 'tab-' + id));
   if (id === 'compare') drawCharts(cmpCalc());
   if (id === 'team') updateTeam();
+  if (id === 'upgrades') renderUpg();
 }
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => setTab(b.dataset.tab));
 document.querySelectorAll('.lang button').forEach(b => b.onclick = () => { state.lang = b.dataset.lang; save(); applyLang(); });
@@ -917,7 +1094,7 @@ $('#ver').textContent = 'data ' + D.version;
 $('#footVer').textContent = (state.lang === 'ru' ? 'данные от ' : 'data ') + D.version + ' · ' + D.units.length + ' units';
 computeUnits();
 applyLang();
-setTab(state.tab || 'units');
+setTab(state.tab || 'home');
 </script>
 </body>
 </html>
