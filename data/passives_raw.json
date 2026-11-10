@@ -1,0 +1,326 @@
+{
+ "Blade Beast (Past)": [
+  "· *Denjy's bleed damage is 50% of his damage"
+ ],
+ "Chance (Frenzy)": [
+  "· The Frenzy Blessing decreases SPA by 25%."
+ ],
+ "Chance (Lethal)": [
+  "· The Lethal Blessing gives Kite a 25% damage buff."
+ ],
+ "Chance (Precision)": [
+  "· The Precision Blessing gives Kit a 40% Critical Chance."
+ ],
+ "Dracula (Unholy King)": [
+  "[Active Ability: Soul Restraint: Level 0] thumb|leftWhen the moon turns red and the area is encased in a bloody fog, @ lets go of all restraints and summons a total of 20 units from the base, composed of 15 Ghouls and 5 Ghoul Riders, with the Ghoul Riders having 2 bars, letting them collide with enemies twice. Note that the Ghoul Riders would clip through enemies when they hit them with the first bar. * Global Cooldown: 120s"
+ ],
+ "Enlightened (Nirvana)": [
+  "· @ will inflict bleed equal to 30% of his damage over 3 ticks.",
+  "· However with bleed amplification (x5 bleed dmg), he has 66.66% more average DPS."
+ ],
+ "Fiery Commander (Hellfire)": [
+  "[Active Ability: Zanka No Tachi] Yamamoto gains one soul for each kill (including kills prior to upgrade 8). When you activate his ability, he starts a hybrid attack that hits several times and multiplies his base damage depending on the amount of souls received. The attack deals Yamamoto's base damage, plus 2% damage for every soul consumed in the attack. If he consumes 50 souls, he would be doing 200% damage (100% damage + (50 x 2%) = 200%). At 500 souls, he does 1100% damage or 1,063,069.48 damage with his manual ability.",
+  "· *Zanka no Tachi caps out at 500 souls (+1000% damage), and any kills past the 500 mark will not be counted for his next ability usage."
+ ],
+ "Illusionist (Transcended)": [
+  "[Passive Ability: Transcending Heavenly Pressure] Enemies that are hit by Illusionist (Transcended) that are 25% health or lower (not including bosses) are set into a fragile state, which leaves them one hit to anything. * Note: Enemies with purple health bars will say \"Fragile\" on it and have a text in full black saying \"SHATTERED\" when this is activates.",
+  "[Active Ability: Beyond the Heavens] left|thumb|80x80px On placement, Illusionist (Transcended) is given this ability that makes all enemies on the map (Including bosses) are stunned for 5 seconds whilst any enemy 35% health or lower to a fragile state. * Note: Boss enemies that give themselves hyper armor (Like martial boss that gives itself a speed boost and regen) Or a buff might be unaffected by the ability. * Ability Cooldown is 6 minutes."
+ ],
+ "Infinity Mage (Endless)": [
+  "[Passive Ability: Hexed] Similar to Sukuno's Dismember, she has either 20% (Upgrades 4-6), or 25% (Upgrade 7+) chance to Hex enemies - enemies affected this way take 30% more Magic damage permanently."
+ ],
+ "InHuman (Nullifier)": [
+  "[Active Ability: No Longer Human] His ability temporarily nullifies enemy passives (such as Fire, Ice, Armored, Shields or Flying) for the given amount of time. This does not temporarily nullify shields that had any damage modifiers. *Duration: 20s *Global Cooldown: 90s"
+ ],
+ "JIO (Over Heaven)": [
+  "[Active Ability: This is... The Universe Over Heaven!] left|thumb|100x100px JIO (Over Heaven) can stop time for 20 seconds at the whole map including the wave timer. Take that ability as an advantage to destroy insanely high HP enemies. The cooldown is 6 minutes."
+ ],
+ "Lulu (Emperor)": [
+  "[Active Ability: Mind Control] thumb|left On his max upgrade, @ can make enemies within his range walk back for a couple of seconds. This includes bosses, which makes him a good support unit. Stun/Freeze/Walkback/knockback and similar effects can't stack, and there is a 1s delay before an enemy can be affected again * Duration: 5s * Cooldown: 40s * delay before another walkback can be used on the same enemy is 50 seconds * this effect scales of enemy speed so make sure not to use it when enemy is stunned or slowed"
+ ],
+ "Ratio (Overtime)": [
+  "[Passive Ability: Overtime] When deployed, @ will gain a compound 1% Damage buff each time a wave passes."
+ ],
+ "Saka (Ribbon)": [
+  "· * Saka's bleed damage is 40% of her damage"
+ ],
+ "Snow Reaper (Final)": [
+  "[Active Ability: Gale of the Moon] On placement Snow Reaper (Final) obtains a bar which fills up by 1.25 every half second, maxing out at 100. At Upgrade 1, @ unlocks the ability Gale of the Moon. While this ability is active, the bar will be drained by 2.5 every half second, enemies within her range are slowed, take 1/6th of her damage every half second and are inflicted with Chilled. Chilled enemies have an icon of a snowflake that freezes the enemy and deals an additional hit equal to her damage stat once it reaches 6. Pressing the ability again will deactivate it manually, or it will automatically deactivate if the bar reach to 0."
+ ],
+ "Supreme Being (Sovereign)": [
+  "[Passive Ability: Shade Birth] Summons a Shade Birth after taking down 10 enemies (max 3), the Shade Birth will have 5x of his displayed damage. * Zombie (Risen) increases the amount of HP the Shade Birth spawns in by 25% of each placement (up to 200%). Buffs to @ by Elfy (Slyph), Wind Dragon or Idol, do not affect the amount of HP the Shade Birth spawns with. * Griffin (Reincarnation) and Commander increase the amount of damage Shade Birth does when colliding with an enemy. * You can increase the damage the Shade Birth does by increasing @'s base damage stats: having high stat potential, Traits that increase damage and Relics. * Shade Birth does not do Dark damage like @, instead only doing physical.",
+  "[Active Ability: Nihilism] left|thumb|103x103px Once Activated, a 12-second interval will appear above @, once the time ticks down to zero, any enemy in the range of Supreme Being will take 5x of his damage, enemies who are caught by this also have a purple effect around them."
+ ],
+ "Switchblade (Deception)": [
+  "· * Each time Switchblade (Deception) attacks, there is a chance to apply Dismember, making enemies take 25% more Physical damage.",
+  "· * Switchblade and Switchblade (Deception) are the third and fourth units in the game who do 100% more damage when they attack with their critical hit, the first and second being Lex and Lex Akoman.",
+  "· However, if you have the Endless Blades relic equipped and if that relic provides an additional 50% crit chance, then his DPS will increase to 97,897.79, raising his total group DPS to 293,693.36.",
+  "· (excluding the 25% physical damage buff from his dismember)."
+ ],
+ "Trickster (Release)": [
+  "· Kisuke will buff his allies’ range by 20% and SPA by 10%."
+ ],
+ "Vengeful Swordsman (Sky Reaver)": [
+  "[Passive Ability: Spellforged Blades] Attacks from @ also deal his damage as additional Magic damage. Buffs to Physical damage apply to his Magic damage as well. This means he does x2 his displayed damage",
+  "[Passive Ability: White Flash Draw Technique] The first hit against an enemy will have + 100% Critical Chance and penetrate 60% of enemy Physical and Magic Resistances (If they have ones)"
+ ],
+ "Berserker (Rage)": [
+  "· * @ bleed damage is 25% of his damage (when paired with Bloodcry (Fallen) or Blood (Unleashed) his bleed does 125% of his total damage)"
+ ],
+ "Black Blade (Captain)": [
+  "[Passive Ability:True Damage] @ has the ability to deal 10% True Damage on every attack and attack through shields on enemies. @ deals full damage through shields and also damages shields after Upgrade 7."
+ ],
+ "Blade Beast (Hybrid)": [
+  "· * Blade Beast's bleed damage is 50% of his damage"
+ ],
+ "Blood (Unleashed)": [
+  "[Passive Ability: Bleed Amplification] Blood (Unleashed) places a debuff on enemies she hits, making them take 5x more bleed damage. Her best pair is with Berserker (Rage) or other good bleed units."
+ ],
+ "Bloodcry (Fallen)": [
+  "[Passive Ability: True Vampire] Attacks from @ place a debuff on enemies hit, making them take 5x bleed damage."
+ ],
+ "Calm Killer (Meets the End)": [
+  "[Active Ability: Meets the End] left|thumb A global effect that causes enemies to gain an effect making enemies walk backwards for a duration of time. *Enemy Effect : Rewind * Duration: 6 Seconds *Global Cooldown: 60 Seconds"
+ ],
+ "Chuuni (Delusion)": [
+  "[Passive Ability: Pact Of Frailty] Targeted enemies by @ takes 50% increased Magic damage. This effect can be stack up to 3 times. Pact Of Frailty can only affect one enemy per each @ at a time.",
+  "[Passive Ability: Pact Of Revelation] Targeted enemies by @ takes damage equal to 7% of @ damage each 0.5 seconds.",
+  "· * Unique Trait in @ makes the enemy affected by Pact Of Frailty take 150% increased Magic damage instead of the 50% they would normally take with just 1 placement of @.",
+  "· * Pact Of Frailty can only stack up to 300% increased Magic damage"
+ ],
+ "Crimson Thief (Hunt)": [
+  "· * @ bleed damage is 33% of his damage"
+ ],
+ "Curse": [
+  "· Curse gains 50% more damage from his Curse Devil Form but he gains 50% more SPA."
+ ],
+ "Curse (Contract)": [
+  "· Curse (Contract) gains 50% more damage from his Curse Devil Form but he gains 50% more SPA.",
+  "· If he lands 4 Curse Stacks, he would deal an extra 200% more damage to enemies (true damage) .",
+  "· The Relic can heavily boost his critical chance easily increasing his curse stack and activating his 200% true damage boost (true damage) but his AoE is smaller compared to his Contract: Kon, Form."
+ ],
+ "Death Ninja (Immortal Butcher)": [
+  "· *Death Ninja has 30% Bleed Damage, his manual ability does 3x of his damage to all bleeding enemies in his range."
+ ],
+ "Delinquent (The Universe)": [
+  "[Passive Ability: The Universe] Every attack he starts to timestop/freeze enemies (even flying) in his AoE for a few seconds and attacking them after (multi-hit) making him very useful for Fire Enemies when they are sprinting past."
+ ],
+ "Devil Boss": [
+  "[Active Ability: Time Erase] thumb|left When Devil Boss uses his ability \"Time Erase\", he gives every unit on the map a 50% damage boost while heavily slowing units down (duration is 8-9 seconds)."
+ ],
+ "Divine General": [
+  "· Adapted Slash grants a +100% Crit Rate while using his Slash attack.",
+  "· *@ is able to be buffed by limit breaks, applying a 30% damage boost to all his attacks."
+ ],
+ "Dolphin (Determination)": [
+  "[Passive Ability:Web Prison] Jolyna (Determination) after her 8th upgrade. She can stun enemies during her attack in AOE for 1 second"
+ ],
+ "Donut": [
+  "[Passive Ability: Burn] All attacks of Donut apply Burn DoT DMG (Damage over Time) to all enemies."
+ ],
+ "Donut (ABLAZE)": [
+  "[Passive Ability: Burn] All attacks of @ apply Burn DoT DMG (Damage over Time) to all enemies."
+ ],
+ "Elfy (Sylph)": [
+  "[Active Ability: Verdant Enchantment] thumb When activated, increases the Magic damage stats of units in her range by 50%. If Leafy buffs other Leafy´s in her range, their ability is going to buff by 100%. The buff lasts for 30 seconds and the ability has a cooldown of 60 seconds."
+ ],
+ "Elize (True Heart)": [
+  "· * Elize (True Heart) bleed damage is 25% of her damage"
+ ],
+ "Elyssia (Abyssal)": [
+  "[Passive Ability: Elyssia's Seaborn] @ has the ability to summon Abyssal Jellies and Abyssal Eels. |-|Echoes From Below= Abyssal Jellies will be summoned on @'s SPA maxing out at 3. Abyssal Jellies have only 1 HP, but explode dealing a full AoE burst of Magic damage equal to @'s damage on death. The range of this explosion is believed to be equivalent to @'s range. Once an Abyssal Jelly dies, she will be put on cooldown for 1.5x her SPA and begin summoning another one afterwards. |-|Wretched Communion= Abyssal Eels will be summoned once @ takes down 5 enemies. Abyssal Eels will be spawned near @ maxing out at 3, despawning after a minute passes. Abyssal Eels will attack with a small circle AoE with 1/4x @'s damage, 2x her SPA, "
+ ],
+ "Fiend Girl (Buttterfly)": [
+  "· Her overall damage is increased by 100% during Halloween 2023 event, as well as other units of the same event."
+ ],
+ "Flame Hero (Hellfire)": [
+  "· * @ burn damage 50% (half) of his damage."
+ ],
+ "Gambler (Jackpot)": [
+  "· Luck gained per hit has a chance to be tripled, scaling off his Crit Rate (50% chance to triple with 50% Crit Rate, 100% chance to triple with 100% Crit Rate).",
+  "· Frenzy will increase Crit Rate for Units in range by +50% (this does not work on True damage type units such as Umbra (Nuclear)) for 30 seconds with about a 32 seconds cooldown (No Global Cooldown)."
+ ],
+ "Ghosty (Sacrifice)": [
+  "[Active Ability: Final Sacrifice] This ability is obtained on Himeno's 8th upgrade which upon being used, removes Himeno from the map and summons the Ghost Devil. It has aproximately 335k-350k HP at Level 100, and will attack any nearby enemy, hitting twice, with each dealing half of Himeno's damage when sacrificed. 330x330px 330x330px"
+ ],
+ "Griffin (Ascension)": [
+  "· ** The darkness variant's damage can be increased above the 100% threshold, the increase in dmg per !% extra is unknown currently due to the fact that it increases then at some specific percentage begins to decrease."
+ ],
+ "Griffin (Darkness)": [
+  "· # Get Griffin (Ascension)'s sacrifice meter to 95%+; you can, boost the meter up to 99% or even 100% (rounded of 99.5%-99.9%) but remember to calculate carefully since the unit will transform once it hits 100% and you will lose the opportunity to boost Griffin's damage further.",
+  "· By doing this, not only will you still get the maximum damage possible (without the 20% money discount), you will also get the 15% damage bonus from Idol (Star)'s passive ability!"
+ ],
+ "Griffin (Reincarnation)": [
+  "· He buffs all units' damage by 100%, including other users' units."
+ ],
+ "Gunslinger (Cross)": [
+  "· it is clearly listed he gets a +35% crit damage buff in his evolution details making him deal over 2x with nail and dish out DESTRUCTIVE damage when equipped with the lostvaine relic."
+ ],
+ "Honey (Hive)": [
+  "[Passive Ability: Hivemind + Nectar Nova] On Upgrade 3, @ will occasionally launch a bee field, dealing 3x of her current DMG over 3 ticks. At Upgrade 6, @ will also gain an additional nectar cannon attack, occasionally dealing 5x of her current DMG over 1 tick."
+ ],
+ "Hubris (The One)": [
+  "[Passive] Hubris (The One) has slightly similar passive to Kent (Overtime) that boosts his Damage and Range overtime for 15 waves, capping at around 125.1% Damage increase and 67.5% Range increase. *It is recommended to place him at wave 4 during wave 20 Portals/Raids to get his full buff. {| class=\"article-table\" style=\"border: 1px solid #302D40; border-radius:2em; overflow:hidden; box-shadow: 5px 5px 15px #e69c2e;\" ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" | Wave ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" | Buff ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Total Buff ! style=\"text-align: center; fon",
+  "· * Since update 19.0, he has got a 30% damage buff."
+ ],
+ "Illusionist (Final)": [
+  "[Active Ability: Illusion] On activation, Illusionist will summon an illusion that pushes back any enemies on contact, this state lasts for 10 seconds and takes 6 minutes / 360 seconds to recharge."
+ ],
+ "Iron Knight (Arsenal)": [
+  "[Passive Ability: Arsenal Drones] @ can spawn Arsenal Drones every time he takes down 20 enemies (despite showing it is 50). Note that its drones' attacks are not AoE and has 3 hits. * His drones will inherit 25% of his DMG, same range, and will have 5.5 SPA. Each individual drone last 30 seconds upon deployment. * After Upgrade 6, His drones will inherit 50% of his DMG, 120% of his Range, will last longer and have 4.0 SPA as well. Each individual drone last 1 minute upon deployment."
+ ],
+ "Izo (Samurai)": [
+  "[Passive Ability: Black Flames] Enemies can take more Burn DoT and he can deal 100% burn damage making his burn DPS very efficient. it's also really good for Fire Affinity Stages (weakness), or any stages with Ice enemies involved, such as Magic Town or Clover Kingdom. However, it's worth noting that since half of his damage comes from burn, he isn't as effective against Regen enemies. This is because burn damage is dealt over time; as a result, it gives Regen enemies time to heal. Consider a Regen enemy with 2000 HP, an Itochi (Susanoo) that does 1000 damage plus 1000 burn, and a different character that does 2000 damage. Since Itochi (Susanoo)'s burn occurs over time, the enemy would be able to regen and survive his atta",
+  "· With the Infernal Gaze, his Burn Damage will be doubled and given his duration of 10 ticks (100% before the relic is applied), he would technically deal triple damage if including his normal damage."
+ ],
+ "Jackal (Alpha)": [
+  "[Passive Ability: Los Lobos] @ summons a Spirit Wolf with 1 HP that deals 1/3 (33.34%) of @'s current damage upon death, which it hits anyone within the explosion radius. The explosion even hits flying enemies."
+ ],
+ "Juozu": [
+  "[Passive Ability: Bleed] Every time Juozu attacks, he causes Bleed to all enemies in the AoE, which do a tick DMG and reduces greatly HP regen for the duration of the bleed."
+ ],
+ "Juozu (Joker)": [
+  "[Passive Ability: Bleed] Juozu's attacks apply bleed damage to all enemies hit, dealing damage over time and greatly reducing HP regen for the duration of the bleed."
+ ],
+ "Kansai (Daydream)": [
+  "[Passive Ability: Daydream] After 10 seconds of @ inactivity, enter a Daydream. During the daydream, @ gain a 10% damage buff every second up to 200%. This bonus resets upon finishing an attack."
+ ],
+ "Karma (Thunder Fiend)": [
+  "· *applies battle lust to itself: Each attack that hits an enemy gives 5% more damage buff for the unit with a max stack of 25%."
+ ],
+ "Killer (Godspeed)": [
+  "[Passive Ability: Stun] @'s lightning attacks are able to stun enemies for a few seconds. Unlike other stunners like Packy (Maniac) or Jolyna (Determination), his stun is available, even at Upgrade 0, making him useful for emergency stuns for other units to have another chance of finishing them off."
+ ],
+ "Legendary Assassin (Prime)": [
+  "[Passive] Slim Down - Every time Legendary Assassin (Prime) attacks, he increases his damage by 0.8% maxing at 200%. Every other upgrade changes the value of increase, up to a max of 2% per attack. Once he reaches 100%, another 100% will be added to his damage and his model will change into a slimmer version of himself, representing Legendary Assassin (Prime) in his prime. {| class=\"article-table\" style=\"border: 1px solid #302D40; border-radius:2em; overflow:hidden; box-shadow: 5px 5px 15px #e69c2e;\" ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Upgrade ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Increase |- ! style=\"text-align: center;",
+  "· *The most efficient way to max out the damage gained by the Slim Down passive is by stopping at Upgrade 6; No Refunds, as it buffs his damage by 1.8% every 5 seconds, as compared to Upgrade 8; Slim Down 's increase of 2% every 7.8 seconds, making Upgrade 6 44% faster than Upgrade 8, assuming enemies are perpetually within this unit's range."
+ ],
+ "Lex Akoman": [
+  "· This buff combined with Levi’s 50% CRIT chance to deal 2x Damage makes him a pretty solid unit, although he can't do extra bleed damage to flying enemies due to Blood (Unleashed) not being able to hit flying enemies."
+ ],
+ "Martial Demon (Destruction)": [
+  "[Passive Ability: Compass Needle] After 12 seconds (two attacks), Martial Demon boosts his damage by 50% for around 5 seconds."
+ ],
+ "Menace (Terror)": [
+  "[Active Ability: Terror] thumb|left *x3 Menace's current DMG to every BLEEDING enemy inside his range (including Air) *Ability can crit for x4.5 Menace's current DMG *Stuns Enemies for 2 seconds *10 Seconds Stun Cooldown on enemies which have been affected by it. *20 Seconds Ability Cooldown (No Global Cooldown)",
+  "· *Menace's bleed damage is 30% of his damage"
+ ],
+ "Mochi (Rage)": [
+  "[Passive Ability: Sticky Mochi] @ slows down each enemy he attacks using a sticky mochi, making him a useful support unit."
+ ],
+ "Operator (ROOM)": [
+  "[Active Ability: Scramble] left|thumb|103x103px @ has an ability called \"Scramble\" that teleports enemies back 50% of Lao's Range. This scales with his range, so the more range @ has, the further back the enemies are teleported. For example, if he has 10 Range, Scramble will teleport enemies 5 'range' backwards on the Path. Scramble works on all enemies in his range, including Bosses. * Global Cooldown: 75s * This ability wont work on enemies that have already been affected by Scramble 3 times."
+ ],
+ "Paradox (Divine Sight)": [
+  "[Active Ability: Unlimited Void] left|thumb|103x103px @ Stops every enemy in their tracks and buffs his damage by 100% for the duration of his domain. If an enemy has already been affected by Timestop less than 10 seconds before use, the enemy will not be stopped in the domain. *Global Cooldown: 60 *Duration: 8",
+  "· *Every Limitless upgrade increases Paradox's DMG by 10% of his DMG at Upgrade 9 and costs 1,400¥ more than the previous upgrade."
+ ],
+ "Paragon (Devil)": [
+  "[Passive Ability: ???] Angel Requires base hp to attack. If the base does not have enough HP then Angel will stop attacking. The base HP will not go to 0 when Angel attacks."
+ ],
+ "Priest (Heaven)": [
+  "[Active Ability: Time Acceleration] thumb|left @ decreases the SPA of all units in the map for the duration when used. * SPA Decrease: 50% * Duration: 30 Seconds * Global Cooldown: 300 Seconds Note that this does not stack with Trickster's ability (only the SPA part). However, this boost doesn't work on units whose SPA is lower than their actual attack animation.",
+  "· *From update 19.0, he has received a 100% damage buff, increasing his overall damage."
+ ],
+ "Prime Force (Peace)": [
+  "[Passive Ability: Overwhelming Strength] @'s attacks are able to push back enemies due to his overwhelming strength."
+ ],
+ "Red Scar (Conqueror)": [
+  "[Active Ability: Conqueror's Haki] Shanks uses the Haoshoku Haki to make enemies in his range sleep/unconscious for 3 seconds with a cooldown of 15 seconds. This works against flying enemies as well. This ability stacks with any other effects (stun, freeze, mind control) making it very useful for stalling enemies. (must be used 1 second after previous effect wears off)"
+ ],
+ "Sepsis (Moon)": [
+  "· *Sepsis has a 100% crit chance against bleeding enemies making his DPS increase by 50% consistently when paired with great bleed units such as Menace (Terror) or Berserker (Rage), both that can output high amounts of bleed ticks for maximum critical hits for Sepsis."
+ ],
+ "Shadow Sorcerer (Ritual)": [
+  "[Active Ability: Ritual] Upon being maxed @ will gain the ability to delete itself in return for summoning Divine General."
+ ],
+ "Silver Slayer (Hunter)": [
+  "· Unit has a 50% critical hit chance that is obtained upon evolution."
+ ],
+ "Somber (Buzzsaw)": [
+  "· * This unit deals bleed equal to 35% of their damage."
+ ],
+ "Spearer (Child of Light)": [
+  "· * If you consider his 50% crit, Lancer's dps on average is 1.25x more than shown in the stat charts"
+ ],
+ "Spirit Archer": [
+  "· * When Update 7.0.0 released on November 12th, 2022, @ and Spirit Archer (Reversal)'s damage was buffed by 30%.",
+  "· * When Update 10.5.0 released on February 3rd, 2023, @ and Spirit Archer (Reversal)'s damage was buffed by an additional 35%."
+ ],
+ "Spirit Archer (Reversal)": [
+  "[Passive Ablity: Holy Arrow] Every five attacks, @ change his attack type from Rain of Light to Holy Arrow. Holy Arrow can do double damage of Rain of Light.",
+  "· *When Update 7.0.0 released on November 12th, 2022, Spirit Archer and @ damage was buffed by 30%.",
+  "· *When Update 10.5.0 released on February 3rd, 2023, Spirit Archer and @ damage was buffed by an additional 35%."
+ ],
+ "Spirit Reaper (Final Dusk)": [
+  "· When used, @'s Damage will increase by 900% (10x)."
+ ],
+ "Tamiki (Tornado)": [
+  "[Passive Ability: Psychic Knockback] After upgrading to upgrade 6 Tamiki can push back all enemies but bosses every time she attacks.",
+  "· *She got a buff of 50% more damage, probably in re release"
+ ],
+ "Tango (Flash God)": [
+  "· * Tango (Flash God) has also been given 50% crit chance which can be useful."
+ ],
+ "Time Wizard (Chronos)": [
+  "[Active Ability: Chrono Reversal] @ forces every enemy (including flyings) in his range to walk back towards their spawn during its duration (including not only the currently affected targets, but also those who enter his range while the ability is active) . It does not affect bosses. * Global Cooldown: 90s * Duration: 5s"
+ ],
+ "Usurper (Founder)": [
+  "[Active Ability: The Extinction] left|103x103px @ can spawn 10 Wall Titans and 1 Usurper (Founder) upon using the ability. All titans spawned are capable of damaging Flying and Boss enemies. * Duration: N/A (it varies on the HP of the enemies and the timing) * Cooldown: 480s"
+ ],
+ "Violentine (Brutal Angel)": [
+  "[Passive Ability: Twisted Love] Summon the last dead enemy damaged by @ with 25% of their original health every 5 attacks. (Global Limit of 10 summons at once). This passive is also called Resurrection Dance, which unlocks at Upgrade 1."
+ ],
+ "Void Spear (Revival)": [
+  "· * As of update 7.60 he got 30% damage buff and he can hit air enemies upon deployment."
+ ],
+ "Waterfist": [
+  "[Passive Ability: Piercing Fangs] After upgrade 4, @ gains a significant boost in DPS. This enhancement results from his three hits, each now dealing 50% of his base damage, contributing to an overall 50% DPS increase."
+ ],
+ "Waterfist (White Tooth)": [
+  "[Passive Ability: Piercing Fangs] After upgrade 4, @ gains an additional Jake which does nothing due to his 3 attacks each dealing 50% of his base damage. This is removed upon reaching Upgrade 8.",
+  "· *As of Update 11, his Upgrade 8 not dealing 50% bonus damage is yet to be confirmed if it is a bug or not."
+ ],
+ "Weather Girl (Thief)": [
+  "[Passive: Treasure Thief] Upon placement, @ will mark an enemy (one per placement, so up to 3 per round) with a Beli symbol. Upon killing the enemy in question mark, the player will receive additional gold. Bonus gold amount increases with levels. *Deployment: *Upgrade 1: *Upgrade 2: *Upgrade 3: *Upgrade 4: *Upgrade 5: *Upgrade 6: *Upgrade 7: *Upgrade 8:"
+ ],
+ "Wratho (Assault)": [
+  "· If you don't have it, his other choices are the Nail Relic because it boosts crit damage by 15-30% and other stats, or The 5-Leaf Clover because it not only boosts his Physical and Dark damage, but also if there's any mobs with Magic resistance on, he can take full advantage of the situation."
+ ],
+ "Zombie (Risen)": [
+  "[Passive:Undead Blessing] Zombie (Risen) provides a buff to all summons spawned on the map. This buff increases the damage dealt by summons and the range of summons by +25% dmg and +10% range for each Zombie (Risen) placed on the map. The damage bonus is capped at 8 placements (+200% dmg (3x), +80% rng (1.8x). The buff stacks multiplicatively with other buffers such as Commander, Wind Dragon, and Griffin (Reincarnation)."
+ ],
+ "Agony": [
+  "[Passive Ability: ALMIGHTY PUSH!] Every time Agony attacks, he uses the Almighty Push's overwhelming force to push back enemies by a few studs. Agony is a good support legendary though it is not recommended to get him as your first legendary as there are more useful ones."
+ ],
+ "Commander": [
+  "[Active Ability: Dedicate your hearts!] left|thumb|80x80px When activated, Commander increases the Physical damage stats of units in his range by 25%. If he buffs other Commanders in his range, their ability is going to buff by 56% to 95 to 100%. The buff lasts for 30 seconds and the ability has a cooldown of 60 seconds.",
+  "· His buff stacks with Blossom which makes the Physical damage buff reach up to 35-110%.",
+  "· *Chaining his buffs allows him to buff all Physical units by 100%, although to consistently do this you may need to apply curses to his SPA to get this to a full uptime, this also applies to Wenda."
+ ],
+ "Ghoul (Centipede)": [
+  "[Passive Ability: Bleed] @ deals bleed damage to all enemies he attacks, dealing damage over time and greatly reducing HP regeneration for the duration of the bleed. This makes him effective against Regen enemies. He's also recommended as a budget bleeder along with Hammergirl. His case is his SPA with no upgrades on is extremely cost-efficient on Shielded enemies."
+ ],
+ "JIO": [
+  "[Passive Ability: The World] JIO stops time and freezes every enemy he attacks. Although, the enemies then gain immunity to stuns from JIO or any other Freeze units, but can still be stunned by Killer (Godspeed) or Red Scar's active ability."
+ ],
+ "Scorch": [
+  "[Passive Ability: Burn] Dabo applies burn damage to all enemies he attacks, dealing damage over time. __NOTOC____NOEDITSECTION__ Category:Legendary Units Category:Burn Units"
+ ],
+ "Snow Reaper": [
+  "[Passive Ability:] She can freeze enemies with her attacks (Single-target --> Cone --> Full AOE). She is the best stunner for beginners."
+ ],
+ "Wind Dragon": [
+  "[Active Ability: Sky Enchantment] thumb|left Sky Enchantment is available upon placement. When activated, Wenda increases the magical damage stats of units in her range by 30%. The buff lasts for 30 seconds and the ability has a cooldown of 60 seconds. When correctly placed down and timed correctly, she can buff units by 100%.",
+  "· *Chaining her buffs allows her to buff all magic units by 100%, although to consistently do this you may need to apply curses to her SPA to get this to a full uptime, this also applies to Commander"
+ ],
+ "Delinquent": [
+  "[Active Ability: Time Stop] @ uses his stand ability to stop time, stunning enemies in place for 4 seconds. This ability makes Delinquent a nice unit to have in early game. Though his attacks do not inflict Freeze (unlike JIO, Cold Mage and his evo, Snake Princess, etc.,), he is still recommended for everyone due to his strong range for his ability, extremely low CD of an active ability, especially you can activate it at the desired time. He benefits from SPA Curses extremely well due to even lowering the cooldown, but unlike Paradox (Divine Sight), his ability is hindered by Short Range challenges and the like. In addition to that, his overall cost is even cheaper than Time Wizard (Chrono)'s placement cost, costing le"
+ ],
+ "Sand Ninja": [
+  "[Passive Ability: Sand Coffin] Gaara covers the enemy in sand stunning them for a few seconds."
+ ],
+ "Blossom": [
+  "· * Before Update ???, her damage buff was 5% instead of 10%."
+ ]
+}

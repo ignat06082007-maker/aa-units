@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AA Units</title>
+<meta name="description" content="Anime Adventures: все юниты, DPS, DPS на 1000 денег, сравнение с бафами, трейтами и реликвиями">
+<style>
+:root {
+  --bg: #000508; --card: #000d14; --input: #001520; --border: #002a3d; --border2: #003a55;
+  --accent: #0ea5e9; --accent2: #38bdf8; --accent3: #6366f1; --text: #f0f9ff; --muted: #7fa8c4; --dim: #4d7590;
+  --good: #34d399; --warn: #fbbf24; --bad: #f87171;
+  --header: linear-gradient(135deg, #001428, #002244, #001428);
+  --title: linear-gradient(90deg, #38bdf8, #0ea5e9, #6366f1);
+  --r: 14px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 'Segoe UI', system-ui, sans-serif; }
+body { min-height: 100vh; }
+a { color: var(--accent2); }
+button, input, select { font: inherit; color: inherit; }
+input, select {
+  background: var(--input); border: 1px solid var(--border2); border-radius: 8px; padding: 6px 8px; outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(14,165,233,.25); }
+input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); padding: 0; }
+.btn {
+  background: var(--input); border: 1px solid var(--border2); border-radius: 10px; padding: 7px 12px; cursor: pointer;
+  transition: transform .2s, border-color .2s, background .2s; white-space: nowrap;
+}
+.btn:hover { transform: translateY(-2px); border-color: var(--accent); }
+.btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(14,165,233,.35); }
+.btn.primary { background: linear-gradient(135deg, #0369a1, #0ea5e9); border-color: #0ea5e9; font-weight: 600; }
+.btn.small { padding: 3px 8px; font-size: 12px; border-radius: 8px; }
+.btn.ghost { background: transparent; }
+
+header { background: var(--header); border-bottom: 1px solid var(--border2); }
+.head-in { max-width: 1500px; margin: 0 auto; padding: 18px 16px 0; }
+.head-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+h1 { margin: 0; font-size: 26px; background: var(--title); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.sub { color: var(--muted); font-size: 13px; }
+.head-top .sp { flex: 1; }
+.lang { display: flex; border: 1px solid var(--border2); border-radius: 10px; overflow: hidden; }
+.lang button { background: transparent; border: 0; padding: 6px 10px; cursor: pointer; color: var(--muted); }
+.lang button.on { background: var(--accent); color: #001018; font-weight: 700; }
+nav { display: flex; gap: 4px; margin-top: 14px; overflow-x: auto; }
+nav button {
+  background: transparent; border: 0; border-bottom: 3px solid transparent; padding: 10px 14px; cursor: pointer;
+  color: var(--muted); font-weight: 600; white-space: nowrap;
+}
+nav button.on { color: var(--text); border-bottom-color: var(--accent); }
+nav .count { background: var(--accent); color: #001018; border-radius: 999px; padding: 0 7px; font-size: 11px; margin-left: 4px; }
+
+main { max-width: 1500px; margin: 0 auto; padding: 16px; }
+.tab { display: none; }
+.tab.on { display: block; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); }
+.card-header { padding: 12px 14px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.card-header h2 { margin: 0; font-size: 16px; }
+.card-body { padding: 14px; }
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.toolbar .grow { flex: 1 1 220px; min-width: 0; }
+.toolbar label { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+.hint { color: var(--muted); font-size: 12px; }
+.muted { color: var(--muted); }
+
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--r); background: var(--card); }
+table { border-collapse: collapse; width: 100%; }
+th, td { padding: 7px 9px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+th { position: sticky; top: 0; background: #001a29; color: var(--muted); font-size: 12px; font-weight: 600; z-index: 1; }
+th.sort { cursor: pointer; user-select: none; }
+th.sort:hover { color: var(--text); }
+th.sort.on { color: var(--accent2); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tbody tr:hover { background: rgba(14,165,233,.06); }
+#unitTable tbody tr { cursor: pointer; }
+.star { cursor: pointer; font-size: 16px; color: var(--dim); background: none; border: 0; padding: 0 2px; }
+.star.on { color: var(--warn); }
+.uname { font-weight: 600; }
+.rar { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; color: #001018; }
+.r-Exclusive { background: #f0abfc; } .r-Secret { background: #fca5a5; } .r-Mythic { background: #fdba74; }
+.r-Legendary { background: #fde68a; } .r-Epic { background: #c4b5fd; } .r-Rare { background: #93c5fd; }
+.tier { display: inline-block; width: 22px; text-align: center; border-radius: 6px; font-weight: 800; color: #001018; }
+.t-S { background: #f87171; } .t-A { background: #fb923c; } .t-B { background: #fbbf24; } .t-C { background: #34d399; } .t-D { background: #60a5fa; }
+.dps { font-weight: 700; color: var(--accent2); }
+.tag { display: inline-block; padding: 0 6px; border: 1px solid var(--border2); border-radius: 6px; font-size: 11px; color: var(--muted); }
+
+/* сравнение */
+#cmpTable td { vertical-align: top; }
+#cmpTable input.uin { width: 210px; }
+#cmpTable select { max-width: 170px; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; max-width: 260px; }
+.chip { display: inline-flex; align-items: center; gap: 4px; background: #002338; border: 1px solid var(--border2); border-radius: 999px; padding: 1px 4px 1px 8px; font-size: 11px; }
+.chip button { background: none; border: 0; color: var(--muted); cursor: pointer; padding: 0 2px; }
+.chip button:hover { color: var(--bad); }
+.chips select { font-size: 12px; padding: 2px 4px; max-width: 120px; }
+.gain { color: var(--good); }
+.out-best { box-shadow: inset 3px 0 0 var(--good); }
+.empty { padding: 30px; text-align: center; color: var(--muted); }
+
+.charts { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 14px; margin-top: 16px; }
+.chart .card-body { padding: 8px 10px 12px; }
+.chart canvas { width: 100%; display: block; }
+.legend { display: flex; gap: 12px; font-size: 12px; color: var(--muted); padding: 0 4px 6px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+
+/* настройки */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 14px; }
+.field { display: grid; grid-template-columns: 1fr 120px; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px dashed var(--border); }
+.field:last-child { border-bottom: 0; }
+.field small { display: block; color: var(--muted); font-size: 11px; }
+.field input, .field select { width: 100%; }
+.key-block { border: 1px solid var(--accent); border-radius: 12px; padding: 10px 12px; background: rgba(14,165,233,.05); }
+
+/* модальное окно */
+.modal { position: fixed; inset: 0; background: rgba(0,5,8,.8); display: none; align-items: flex-start; justify-content: center; padding: 30px 12px; overflow-y: auto; z-index: 20; }
+.modal.on { display: flex; }
+.modal .card { width: 100%; max-width: 1100px; }
+.modal .close { margin-left: auto; }
+.detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-bottom: 14px; }
+.kv { display: flex; justify-content: space-between; gap: 10px; padding: 3px 0; border-bottom: 1px dashed var(--border); }
+.kv span:first-child { color: var(--muted); }
+.note { background: var(--input); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; color: var(--muted); font-size: 13px; margin-bottom: 8px; white-space: normal; }
+
+footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(--dim); font-size: 12px; }
+.toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: #003049; border: 1px solid var(--accent); padding: 8px 14px; border-radius: 10px; display: none; z-index: 30; }
+
+@media (max-width: 700px) {
+  h1 { font-size: 21px; }
+  .charts, .grid { grid-template-columns: 1fr; }
+  .field { grid-template-columns: 1fr 100px; }
+  th, td { padding: 6px 7px; }
+  /* на телефоне в списке: ★, имя, редкость, цена, SPA, DPS, DPS/1000, тир */
+  #unitTable th:nth-child(4), #unitTable td:nth-child(4), #unitTable th:nth-child(5), #unitTable td:nth-child(5),
+  #unitTable th:nth-child(6), #unitTable td:nth-child(6), #unitTable th:nth-child(8), #unitTable td:nth-child(8),
+  #unitTable th:nth-child(10), #unitTable td:nth-child(10) { display: none; }
+  .uname { white-space: normal; min-width: 120px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="head-in">
+    <div class="head-top">
+      <div>
+        <h1>AA Units</h1>
+        <div class="sub" data-ru="Anime Adventures — все юниты, DPS, выгода и сравнение" data-en="Anime Adventures — all units, DPS, value and comparison"></div>
+      </div>
+      <div class="sp"></div>
+      <span class="tag" id="ver"></span>
+      <button class="btn small" id="btnExport" data-ru="⬇ Экспорт" data-en="⬇ Export" title=""></button>
+      <button class="btn small" id="btnImport" data-ru="⬆ Импорт" data-en="⬆ Import"></button>
+      <input type="file" id="importFile" accept=".json,application/json" hidden>
+      <div class="lang"><button data-lang="ru">RU</button><button data-lang="en">EN</button></div>
+    </div>
+    <nav>
+      <button data-tab="units" data-ru="Юниты" data-en="Units"></button>
+      <button data-tab="compare"><span data-ru="Сравнение" data-en="Compare"></span><span class="count" id="cmpCount">0</span></button>
+      <button data-tab="settings" data-ru="Настройки" data-en="Settings"></button>
+      <button data-tab="about" data-ru="Как считается" data-en="How it works"></button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ЮНИТЫ -->
+  <section class="tab" id="tab-units">
+    <div class="toolbar">
+      <input class="grow" id="q" type="search" data-ph-ru="🔍 Поиск юнита…" data-ph-en="🔍 Search unit…">
+      <select id="fRarity"></select>
+      <select id="fType"></select>
+      <select id="fRole"></select>
+      <label><input type="checkbox" id="fMine"> <span data-ru="только мои" data-en="mine only"></span></label>
+      <label><input type="checkbox" id="fDmg" checked> <span data-ru="только с уроном" data-en="damage only"></span></label>
+      <span class="hint" id="shown"></span>
+    </div>
+    <div class="hint" style="margin-bottom:8px" data-ru="Всё на максимальном апгрейде, с уровнем и бафами из «Настроек» и твоими трейтами/реликвиями. Нажми на юнита — откроется карточка. ★ — юнит у тебя есть." data-en="All at max upgrade, with level and buffs from Settings and your traits/relics. Click a unit to open its card. ★ — you own it."></div>
+    <div class="tbl-wrap" style="max-height:72vh">
+      <table id="unitTable">
+        <thead><tr></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- СРАВНЕНИЕ -->
+  <section class="tab" id="tab-compare">
+    <div class="toolbar">
+      <button class="btn primary" id="cmpAdd" data-ru="+ Добавить юнита" data-en="+ Add unit"></button>
+      <label><span data-ru="Время боя, с" data-en="Battle time, s"></span>
+        <select id="cmpTime"><option>5</option><option>15</option><option>30</option><option>45</option><option>60</option><option>120</option></select></label>
+      <label><input type="checkbox" id="cmpGlobal"> <span data-ru="+ бафы из «Настроек»" data-en="+ buffs from Settings"></span></label>
+      <span class="grow"></span>
+      <button class="btn ghost" id="cmpClear" data-ru="Очистить всё" data-en="Clear all"></button>
+    </div>
+    <div class="tbl-wrap">
+      <table id="cmpTable">
+        <thead><tr></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="empty" id="cmpEmpty" data-ru="Пока пусто. Нажми «+ Добавить юнита» или открой юнита во вкладке «Юниты» → «В сравнение»." data-en="Empty. Press “+ Add unit” or open a unit in Units → “To compare”."></div>
+    </div>
+    <div class="hint" style="margin-top:6px" data-ru="Один юнит можно добавить несколько раз с разными бафами/трейтами. Зелёная полоса — лучший в столбце. Пустое поле апгрейда = максимальный." data-en="Same unit can be added several times with different buffs/traits. Green bar = best in column. Empty upgrade = max."></div>
+    <div class="charts" id="charts"></div>
+  </section>
+
+  <!-- НАСТРОЙКИ -->
+  <section class="tab" id="tab-settings">
+    <div class="grid" id="settingsGrid"></div>
+  </section>
+
+  <!-- КАК СЧИТАЕТСЯ -->
+  <section class="tab" id="tab-about">
+    <div class="grid">
+      <div class="card"><div class="card-header"><h2 data-ru="Формула урона" data-en="Damage formula"></h2></div>
+        <div class="card-body" data-ru-html="<p>Урон удара = урон из вики × уровень (100 ур. = ×9,204, 110 ур. = ещё ×1,19) × (1 + общий бонус) × (1 + 5% × Limit Break отряда) × (1 + свой % ранга) × (1 + проклятие) × (1 + пассивка + реликвия) × (1 + трейт) × PWR × <b>(1 + бафы саппортов)</b>.</p><p>Каждая скобка — отдельный множитель, как в игре (сверено: Shinobi (Eternal) 256K). Бафы саппортов складываются между собой: Commander + Blossom = ×2,1.</p><p>DPS = урон / SPA × (1 + шанс крита × (множитель крита − 1)) × целей + DoT + призывы.</p>" data-en-html="<p>Hit = wiki damage × level (lv100 = ×9.204, lv110 = another ×1.19) × (1 + global) × (1 + 5% × team Limit Breaks) × (1 + own rank %) × (1 + curse) × (1 + passive + relic) × (1 + trait) × PWR × <b>(1 + support buffs)</b>.</p><p>Every bracket is a separate multiplier, as in game (checked: Shinobi (Eternal) 256K). Support buffs add up with each other: Commander + Blossom = ×2.1.</p><p>DPS = damage / SPA × (1 + crit chance × (crit mult − 1)) × targets + DoT + summons.</p>"></div></div>
+      <div class="card"><div class="card-header"><h2 data-ru="DoT и призывы" data-en="DoT and summons"></h2></div>
+        <div class="card-body" data-ru-html="<p><b>Кровотечение</b> считается от урона с бафами, <b>горение, яд, иссушение</b> — от урона без бафов саппортов (вики). Усилители DoT (Bleed Amp, Infernal Gaze) умножают урон DoT.</p><p><b>Призывы</b>: урон за цикл / цикл + урон за убийства × «врагов в секунду». Elyssia сама не атакует — только медузы и угри. Бафы вида «Призыв» (Zombie (Risen)) усиливают только призывы.</p><p><b>Урон за бой</b>: атаки в 0, SPA, 2·SPA…; DoT, не дотикавший к концу боя, не считается; призывы начинают бить после пути до врага.</p>" data-en-html="<p><b>Bleed</b> uses buffed damage, <b>burn, poison, wither</b> use damage without support buffs (wiki). DoT amplifiers (Bleed Amp, Infernal Gaze) multiply DoT damage.</p><p><b>Summons</b>: damage per cycle / cycle + damage per kill × kills per second. Elyssia does not attack herself — only jellies and eels. “Summon” buffs (Zombie (Risen)) boost summons only.</p><p><b>Battle damage</b>: attacks at 0, SPA, 2·SPA…; DoT not finished by the end is not counted; summons start after walking to the enemy.</p>"></div></div>
+      <div class="card"><div class="card-header"><h2 data-ru="Твои данные" data-en="Your data"></h2></div>
+        <div class="card-body" data-ru-html="<p>Всё, что ты вводишь (★ мои юниты, трейты, реликвии, проклятия, сравнение, настройки), хранится <b>только в этом браузере</b>. Обновление сайта их не стирает.</p><p><b>⬇ Экспорт</b> сохраняет файл — с ним можно перенести данные на другой компьютер или телефон (<b>⬆ Импорт</b>) или скинуть другу свою сборку.</p>" data-en-html="<p>Everything you enter (★ owned units, traits, relics, curses, comparison, settings) is stored <b>only in this browser</b>. Site updates don’t erase it.</p><p><b>⬇ Export</b> saves a file — use it to move data to another computer or phone (<b>⬆ Import</b>) or share your build with a friend.</p>"></div></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span data-ru="Данные: " data-en="Data: "></span><a href="https://animeadventures.fandom.com/wiki/Unit_List" target="_blank" rel="noopener">Anime Adventures Wiki</a> (CC BY-SA) ·
+  <span id="footVer"></span> · © Петров Игнат
+</footer>
+
+<!-- карточка юнита -->
+<div class="modal" id="modal">
+  <div class="card">
+    <div class="card-header">
+      <h2 id="mTitle"></h2><span id="mRar"></span>
+      <button class="btn small primary" id="mToCmp" data-ru="+ В сравнение" data-en="+ To compare"></button>
+      <button class="btn small close" id="mClose">✕</button>
+    </div>
+    <div class="card-body" id="mBody"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="units.js"></script>
+<script src="model.js"></script>
+<script>
+'use strict';
+const D = window.AA_DATA, M = window.AAModel;
+const STORE = 'aaunits.v1';
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const byName = Object.fromEntries(D.units.map(u => [u.n, u]));
+
+// ── состояние (localStorage — только удобство; без него страница тоже работает) ──
+let state = { lang: '', tab: 'units', settings: {}, profiles: {}, compare: [], sort: { key: 'dps', dir: -1 } };
+try { const s = JSON.parse(localStorage.getItem(STORE) || 'null'); if (s) state = Object.assign(state, s); } catch (e) {}
+if (!state.lang) state.lang = (navigator.language || 'ru').toLowerCase().startsWith('ru') ? 'ru' : 'en';
+let saveT = 0;
+function save() { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }, 150); }
+const S = () => Object.assign({}, M.DEFAULT_SETTINGS, state.settings);
+
+// ── язык ──
+const T = {
+  ru: { all: 'Все', allR: 'Все редкости', allT: 'Все типы', allRole: 'Все роли', shown: (a, b) => `показано ${a} из ${b}`,
+    unit: 'Юнит', rarity: 'Редкость', type: 'Тип', role: 'Роль', upg: 'Апгр.', cost: 'Цена', dmg: 'Урон', spa: 'SPA', rng: 'Радиус',
+    dps: 'DPS', dpsk: 'DPS/1000', tier: 'Тир', lvl: 'Ур.', buffs: 'Бафы', trait: 'Трейт', relic: 'Реликвия', pas: 'Пасс.',
+    hitdps: 'DPS ударов', dotdps: 'DPS DoT', sumdps: 'DPS призывов', maxhit: 'Макс. удар', tot: 'Урон за бой', gain: 'От бафов',
+    dottick: 'DoT за тик', sumhit: 'Удар призыва', addBuff: '+ баф', fromProfile: 'как у юнита', none: '—', maxU: 'макс.',
+    del: 'Убрать', dup: 'Копия', pickUnit: 'начни вводить имя…', placed: 'постановка', copied: 'Скопировано',
+    chDpsk: 'DPS на 1000 денег — кто выгоднее', chDps: 'DPS — кто сильнее', chMix: 'Из чего состоит DPS', chTot: 'Урон за бой',
+    chDmg: 'Урон за один удар (с бафами)', chCost: 'Стоимость', chSpa: 'SPA — меньше = быстрее', hits: 'Удары', dot: 'DoT', summ: 'Призывы',
+    exported: 'Файл сохранён', imported: 'Данные загружены', importBad: 'Не тот файл', clearQ: 'Очистить всё сравнение?',
+    toCmp: 'Добавлено в сравнение', profile: 'Мой юнит (для всех вкладок)', upgTable: 'Апгрейды', passive: 'Пассивки и особенности',
+    mine: 'Есть у меня', step: 'Шаг', total: 'Всего', atype: 'Атака', eff: 'DoT', marg: 'Прирост DPS', crit: 'Крит', dtype: 'Тип урона',
+    elem: 'Стихии', place: 'Место', cap: 'Лимит', summNote: 'Призывы', yes: 'да', no: 'нет' },
+  en: { all: 'All', allR: 'All rarities', allT: 'All types', allRole: 'All roles', shown: (a, b) => `${a} of ${b} shown`,
+    unit: 'Unit', rarity: 'Rarity', type: 'Type', role: 'Role', upg: 'Upg', cost: 'Cost', dmg: 'Damage', spa: 'SPA', rng: 'Range',
+    dps: 'DPS', dpsk: 'DPS/1000', tier: 'Tier', lvl: 'Lv', buffs: 'Buffs', trait: 'Trait', relic: 'Relic', pas: 'Pass.',
+    hitdps: 'Hit DPS', dotdps: 'DoT DPS', sumdps: 'Summon DPS', maxhit: 'Max hit', tot: 'Battle dmg', gain: 'From buffs',
+    dottick: 'DoT per tick', sumhit: 'Summon hit', addBuff: '+ buff', fromProfile: 'unit default', none: '—', maxU: 'max',
+    del: 'Remove', dup: 'Copy', pickUnit: 'start typing a name…', placed: 'placement', copied: 'Copied',
+    chDpsk: 'DPS per 1000 money — best value', chDps: 'DPS — strongest', chMix: 'DPS breakdown', chTot: 'Battle damage',
+    chDmg: 'Damage per hit (buffed)', chCost: 'Cost', chSpa: 'SPA — lower = faster', hits: 'Hits', dot: 'DoT', summ: 'Summons',
+    exported: 'File saved', imported: 'Data loaded', importBad: 'Wrong file', clearQ: 'Clear the whole comparison?',
+    toCmp: 'Added to comparison', profile: 'My unit (all tabs)', upgTable: 'Upgrades', passive: 'Passives and notes',
+    mine: 'I own it', step: 'Step', total: 'Total', atype: 'Attack', eff: 'DoT', marg: 'DPS gain', crit: 'Crit', dtype: 'Damage type',
+    elem: 'Elements', place: 'Placement', cap: 'Limit', summNote: 'Summons', yes: 'yes', no: 'no' },
+};
+const t = k => T[state.lang][k] ?? k;
+const RU_EN = { 'Физ': 'Phys', 'Маг': 'Magic', 'Чистый': 'True', 'Баффер': 'Buffer', 'Ферма': 'Farm', 'Призыв': 'Summoner', 'Саппорт': 'Support',
+  'Урон': 'Damage', 'Холм': 'Hill', 'Земля': 'Ground', 'Гибрид': 'Hybrid', 'Кровотечение': 'Bleed', 'Горение': 'Burn', 'Яд': 'Poison', 'Иссушение': 'Wither' };
+const tr = s => state.lang === 'en' ? (RU_EN[s] || s) : s;
+const rar = r => state.lang === 'ru' ? (D.rarityRu[r] || r) : r;
+const rarBadge = r => `<span class="rar r-${esc(r)}">${esc(rar(r))}</span>`;
+
+function applyLang() {
+  document.documentElement.lang = state.lang;
+  document.querySelectorAll('[data-ru]').forEach(el => { el.textContent = el.dataset[state.lang]; });
+  document.querySelectorAll('[data-ru-html]').forEach(el => { el.innerHTML = el.dataset[state.lang + 'Html']; });
+  document.querySelectorAll('[data-ph-ru]').forEach(el => { el.placeholder = el.dataset['ph' + (state.lang === 'ru' ? 'Ru' : 'En')]; });
+  document.querySelectorAll('.lang button').forEach(b => b.classList.toggle('on', b.dataset.lang === state.lang));
+  fillFilters(); renderUnits(); renderCompare(true); renderSettings();
+}
+
+// ── форматирование ──
+const loc = () => state.lang === 'ru' ? 'ru-RU' : 'en-US';
+function fmt(v, d) {
+  if (v === null || v === undefined || v === '' || !isFinite(v)) return '—';
+  if (d === undefined) d = Math.abs(v) >= 100 ? 0 : 1;
+  return Number(v).toLocaleString(loc(), { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function short(v) {
+  const a = Math.abs(v);
+  if (a >= 1e9) return fmt(v / 1e9, 2) + 'B';
+  if (a >= 1e6) return fmt(v / 1e6, 2) + 'M';
+  if (a >= 1e4) return fmt(v / 1e3, 1) + 'K';
+  return fmt(v, a >= 100 ? 0 : 2);
+}
+let toastT;
+function toast(msg) { const el = $('#toast'); el.textContent = msg; el.style.display = 'block'; clearTimeout(toastT); toastT = setTimeout(() => el.style.display = 'none', 1800); }
+
+// ── профиль юнита (★, трейт, реликвия, свои %) ──
+const PROFILE_KEYS = ['pas', 'pasc', 'pascd', 'pasdot', 'cd', 'cs', 'cc', 'curD', 'curS', 'curR', 'trait', 'relic'];
+const prof = n => state.profiles[n] || {};
+function inpFor(n) {
+  const p = prof(n), o = {};
+  for (const k of PROFILE_KEYS) if (p[k] !== undefined && p[k] !== '') o[k] = ['trait', 'relic'].includes(k) ? p[k] : Number(p[k]);
+  return o;
+}
+function setProf(n, k, v) {
+  const p = state.profiles[n] || (state.profiles[n] = {});
+  if (v === '' || v === undefined || v === null) delete p[k]; else p[k] = v;
+  if (!Object.keys(p).length) delete state.profiles[n];
+  save();
+}
+
+// глобальные бафы из «Настроек» (как «Активен = Да» в Excel)
+const gBuffs = () => state.settings.buffs || [];
+
+// ── ЮНИТЫ ──
+const UCOLS = [
+  { k: 'mine', h: '★', w: 1 }, { k: 'name', h: 'unit' }, { k: 'rarity', h: 'rarity' }, { k: 'dt', h: 'type' }, { k: 'role', h: 'role' },
+  { k: 'upg', h: 'upg', num: 1 }, { k: 'cost', h: 'cost', num: 1 }, { k: 'dmg', h: 'dmg', num: 1 }, { k: 'spa', h: 'spa', num: 1 },
+  { k: 'rng', h: 'rng', num: 1 }, { k: 'dps', h: 'dps', num: 1 }, { k: 'dpsk', h: 'dpsk', num: 1 }, { k: 'tier', h: 'tier' },
+];
+let unitRows = [];
+function computeUnits() {
+  const s = S(), gb = gBuffs();
+  unitRows = D.units.map(u => {
+    const r = M.calc(D, u, { buffs: gb, inp: inpFor(u.n) }, s);
+    return { u, r, mine: !!prof(u.n).mine };
+  });
+  const tiers = M.tiers(unitRows.map(x => x.r.dps));
+  unitRows.forEach((x, i) => { x.tier = tiers[i]; });
+}
+function fillFilters() {
+  const keep = id => $(id).value;
+  const opts = (id, first, vals, lab = tr) => { const v = keep(id); $(id).innerHTML = `<option value="">${esc(first)}</option>` + vals.map(x => `<option value="${esc(x)}">${esc(lab(x))}</option>`).join(''); $(id).value = v; };
+  opts('#fRarity', t('allR'), D.rarityOrder, rar);
+  opts('#fType', t('allT'), ['Физ', 'Маг', 'Чистый']);
+  opts('#fRole', t('allRole'), ['Урон', 'Баффер', 'Призыв', 'Саппорт', 'Ферма']);
+}
+function renderUnits() {
+  const head = $('#unitTable thead tr');
+  head.innerHTML = UCOLS.map(c => `<th class="sort ${c.num ? 'num' : ''} ${state.sort.key === c.k ? 'on' : ''}" data-k="${c.k}">${esc(c.w ? c.h : t(c.h))}${state.sort.key === c.k ? (state.sort.dir < 0 ? ' ▼' : ' ▲') : ''}</th>`).join('');
+  const q = $('#q').value.trim().toLowerCase(), fr = $('#fRarity').value, ft = $('#fType').value, fro = $('#fRole').value;
+  const fm = $('#fMine').checked, fd = $('#fDmg').checked;
+  let rows = unitRows.filter(x => (!q || x.u.n.toLowerCase().includes(q)) && (!fr || x.u.r === fr) && (!ft || x.u.dt === ft)
+    && (!fro || x.u.role === fro) && (!fm || x.mine) && (!fd || x.r.dps > 0));
+  const k = state.sort.key, dir = state.sort.dir, ro = D.rarityOrder;
+  const val = x => k === 'name' ? x.u.n.toLowerCase() : k === 'rarity' ? -ro.indexOf(x.u.r) : k === 'dt' ? x.u.dt : k === 'role' ? x.u.role
+    : k === 'mine' ? (x.mine ? 1 : 0) : k === 'tier' ? 'DCBAS'.indexOf(x.tier) : k === 'upg' ? x.r.maxUpg : x.r[k];
+  rows.sort((a, b) => { const va = val(a), vb = val(b); return (va > vb ? 1 : va < vb ? -1 : 0) * dir || a.u.n.localeCompare(b.u.n); });
+  $('#shown').textContent = t('shown')(rows.length, unitRows.length);
+  $('#unitTable tbody').innerHTML = rows.map(x => {
+    const u = x.u, r = x.r;
+    return `<tr data-n="${esc(u.n)}"><td><button class="star ${x.mine ? 'on' : ''}" data-star="${esc(u.n)}" title="${esc(t('mine'))}">★</button></td>
+      <td class="uname">${esc(u.n)}</td><td>${rarBadge(u.r)}</td>
+      <td>${esc(tr(u.dt))}</td><td>${esc(tr(u.role))}</td><td class="num">${r.maxUpg}</td><td class="num">${fmt(r.cost, 0)}</td>
+      <td class="num">${short(r.dmg)}</td><td class="num">${fmt(r.spa, 2)}</td><td class="num">${fmt(r.rng, 1)}</td>
+      <td class="num dps">${short(r.dps)}</td><td class="num">${fmt(r.dpsk, 1)}</td>
+      <td>${x.tier === '—' ? '—' : `<span class="tier t-${x.tier}">${x.tier}</span>`}</td></tr>`;
+  }).join('');
+}
+$('#unitTable thead').addEventListener('click', e => {
+  const th = e.target.closest('th'); if (!th) return;
+  const k = th.dataset.k;
+  state.sort = { key: k, dir: state.sort.key === k ? -state.sort.dir : (['name', 'dt', 'role', 'spa'].includes(k) ? 1 : -1) };
+  save(); renderUnits();
+});
+$('#unitTable tbody').addEventListener('click', e => {
+  const st = e.target.closest('[data-star]');
+  if (st) { const n = st.dataset.star; setProf(n, 'mine', prof(n).mine ? '' : 1); computeUnits(); renderUnits(); return; }
+  const tr_ = e.target.closest('tr'); if (tr_) openUnit(tr_.dataset.n);
+});
+['#q', '#fRarity', '#fType', '#fRole', '#fMine', '#fDmg'].forEach(id => $(id).addEventListener('input', renderUnits));
+
+// ── карточка юнита ──
+let modalUnit = null;
+function traitOpts(sel, first) { return `<option value="">${esc(first)}</option>` + D.traits.map(x => `<option ${x.n === sel ? 'selected' : ''}>${esc(x.n)}</option>`).join(''); }
+function relicOpts(sel, first) { return `<option value="">${esc(first)}</option>` + D.relics.map(x => `<option ${x.n === sel ? 'selected' : ''}>${esc(x.n)}</option>`).join(''); }
+function openUnit(n) {
+  modalUnit = byName[n]; if (!modalUnit) return;
+  renderModal(); $('#modal').classList.add('on');
+}
+function renderModal() {
+  const u = modalUnit, p = prof(u.n), s = S(), gb = gBuffs();
+  $('#mTitle').textContent = u.n;
+  $('#mRar').innerHTML = rarBadge(u.r);
+  const r = M.calc(D, u, { buffs: gb, inp: inpFor(u.n) }, s);
+  const num = (k, label, ph) => `<div class="field"><span>${esc(label)}</span><input type="number" step="any" data-pk="${k}" value="${p[k] ?? ''}" placeholder="${esc(ph)}"></div>`;
+  const L = state.lang === 'ru';
+  let h = `<div class="detail-grid">
+    <div><div class="kv"><span>${t('dtype')}</span><span>${esc(tr(u.dt))}</span></div><div class="kv"><span>${t('role')}</span><span>${esc(tr(u.role))}</span></div>
+      <div class="kv"><span>${t('elem')}</span><span>${esc(u.el || '—')}</span></div><div class="kv"><span>${t('place')}</span><span>${esc(tr(u.place))}</span></div>
+      <div class="kv"><span>${t('cap')}</span><span>${u.cap || '—'}</span></div><div class="kv"><span>${t('crit')}</span><span>${fmt(u.crit * 100, 0)}% × ${fmt(u.cdm || s.critDef, 2)}</span></div></div>
+    <div><div class="kv"><span>${t('dps')}</span><span class="dps">${fmt(r.dps)}</span></div><div class="kv"><span>${t('dpsk')}</span><span>${fmt(r.dpsk, 1)}</span></div>
+      <div class="kv"><span>${t('cost')}</span><span>${fmt(r.cost, 0)}</span></div><div class="kv"><span>${t('maxhit')}</span><span>${fmt(r.maxhit)}</span></div>
+      <div class="kv"><span>${t('dotdps')}</span><span>${fmt(r.dotdps)}</span></div><div class="kv"><span>${t('sumdps')}</span><span>${fmt(r.sumdps)}</span></div></div>
+    <div class="key-block"><b>${t('profile')}</b>
+      <div class="field"><span>${t('mine')}</span><input type="checkbox" data-pk="mine" ${p.mine ? 'checked' : ''}></div>
+      <div class="field"><span>${t('trait')}</span><select data-pk="trait">${traitOpts(p.trait, t('none'))}</select></div>
+      <div class="field"><span>${t('relic')}</span><select data-pk="relic">${relicOpts(p.relic, t('none'))}</select></div>
+      ${num('pas', L ? 'Пассивка, +% урона' : 'Passive, +% dmg', u.pp)}
+      ${num('cd', L ? 'Свой % урона (ранг)' : 'Own dmg % (rank)', 0)}
+      ${num('cs', L ? 'Свой % снижения SPA' : 'Own SPA reduction %', 0)}
+      ${num('cc', L ? 'Свой крит-шанс, %' : 'Own crit chance %', fmt(u.crit * 100, 0))}
+      ${num('curD', L ? 'Проклятия: урон, %' : 'Curses: damage %', 0)}
+      ${num('curS', L ? 'Проклятия: SPA, % (+ = медленнее)' : 'Curses: SPA % (+ = slower)', 0)}
+      ${num('curR', L ? 'Проклятия: радиус, %' : 'Curses: range %', 0)}
+    </div></div>`;
+  if (u.pas || u.summ || u.feats) {
+    h += `<h3 style="margin:6px 0">${t('passive')}</h3>`;
+    for (const x of [u.pas, u.summ && `${t('summNote')}: ${u.summ}`, u.feats]) if (x) h += `<div class="note">${esc(x)}</div>`;
+  }
+  h += `<h3 style="margin:10px 0 6px">${t('upgTable')}</h3><div class="tbl-wrap"><table><thead><tr>
+    <th class="num">#</th><th class="num">${t('step')}</th><th class="num">${t('total')}</th><th class="num">${t('dmg')}</th><th class="num">${t('spa')}</th>
+    <th class="num">${t('rng')}</th><th>${t('atype')}</th><th>${t('eff')}</th><th class="num">${t('dps')}</th><th class="num">${t('dpsk')}</th><th class="num">${t('marg')}</th></tr></thead><tbody>`;
+  let prev = null;
+  u.rows.forEach((row, i) => {
+    const x = M.calc(D, u, { upg: i, buffs: gb, inp: inpFor(u.n) }, s);
+    const marg = prev && x.cost > prev.cost ? (x.dps - prev.dps) / (x.cost - prev.cost) * 1000 : null;
+    h += `<tr><td class="num">${i === 0 ? '0 · ' + t('placed') : i}</td><td class="num">${fmt(row[1], 0)}</td><td class="num">${fmt(x.cost, 0)}</td>
+      <td class="num">${fmt(x.dmg)}</td><td class="num">${fmt(x.spa, 2)}</td><td class="num">${fmt(x.rng, 1)}</td><td>${esc(row[6])}</td><td>${esc(row[7] || '—')}</td>
+      <td class="num dps">${fmt(x.dps)}</td><td class="num">${fmt(x.dpsk, 1)}</td><td class="num">${marg === null ? '—' : fmt(marg, 1)}</td></tr>`;
+    prev = x;
+  });
+  h += '</tbody></table></div>';
+  $('#mBody').innerHTML = h;
+}
+$('#mBody').addEventListener('input', e => {
+  const el = e.target, k = el.dataset.pk; if (!k) return;
+  const v = el.type === 'checkbox' ? (el.checked ? 1 : '') : el.type === 'number' ? (el.value === '' ? '' : Number(el.value)) : el.value;
+  setProf(modalUnit.n, k, v);
+  computeUnits(); renderUnits(); updateCompare();
+  if (el.tagName === 'SELECT' || el.type === 'checkbox') renderModal();
+});
+$('#mBody').addEventListener('change', e => { if (e.target.type === 'number') renderModal(); });
+$('#mClose').onclick = () => $('#modal').classList.remove('on');
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') $('#modal').classList.remove('on'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') $('#modal').classList.remove('on'); });
+$('#mToCmp').onclick = () => { addCmp(modalUnit.n); toast(t('toCmp')); };
+
+// ── СРАВНЕНИЕ ──
+const COUT = ['cost', 'dmg', 'maxhit', 'spa', 'rng', 'hitdps', 'dotdps', 'sumdps', 'dps', 'dpsk', 'gain', 'tot'];
+const LOWER_BETTER = { cost: 1, spa: 1 };
+function newRow(n) { return { name: n || '', upg: '', lvl: '', buffs: [], trait: '', relic: '', passive: true }; }
+function addCmp(n) { state.compare.push(newRow(n)); save(); renderCompare(); }
+function buffOptions() { return `<option value="">${esc(t('addBuff'))}</option>` + D.buffs.map(b => `<option value="${esc(b.n)}">${esc(b.n)} (${b.kind} ${b.v}%)</option>`).join(''); }
+function upgOptions(row) {
+  const u = byName[row.name]; const n = u ? u.rows.length - 1 : 0;
+  let o = `<option value="">${esc(t('maxU'))}${u ? ' (' + n + ')' : ''}</option>`;
+  for (let i = 0; i <= n; i++) o += `<option value="${i}" ${String(row.upg) === String(i) ? 'selected' : ''}>${i}</option>`;
+  return o;
+}
+function renderCompare(full) {
+  $('#cmpCount').textContent = state.compare.length;
+  $('#cmpTime').value = String(state.settings.time ?? 30);
+  $('#cmpGlobal').checked = !!state.cmpGlobal;
+  const heads = ['', 'unit', 'upg', 'lvl', 'buffs', 'trait', 'relic', 'pas', ...COUT];
+  $('#cmpTable thead tr').innerHTML = heads.map((k, i) => `<th class="${i > 7 ? 'num' : ''}">${k ? esc(t(k)) : ''}</th>`).join('');
+  $('#cmpEmpty').style.display = state.compare.length ? 'none' : 'block';
+  $('#cmpTable tbody').innerHTML = state.compare.map((row, i) => `<tr data-i="${i}">
+    <td><button class="btn small ghost" data-act="del" title="${esc(t('del'))}">✕</button><br><button class="btn small ghost" data-act="dup" title="${esc(t('dup'))}">⧉</button></td>
+    <td><input class="uin" list="unitList" data-f="name" value="${esc(row.name)}" placeholder="${esc(t('pickUnit'))}">
+      <div class="hint">${byName[row.name] ? esc(tr(byName[row.name].dt)) + ' · ' + esc(rar(byName[row.name].r)) : ''}</div></td>
+    <td><select data-f="upg">${upgOptions(row)}</select></td>
+    <td><select data-f="lvl"><option value="">${esc(state.lang === 'ru' ? 'как в настр.' : 'settings')}</option>${['1', '100', '110'].map(v => `<option ${row.lvl === v ? 'selected' : ''}>${v}</option>`).join('')}</select></td>
+    <td><div class="chips">${row.buffs.map((b, j) => `<span class="chip">${esc(b)}<button data-act="unbuff" data-j="${j}">✕</button></span>`).join('')}
+      <select data-f="addbuff">${buffOptions()}</select></div></td>
+    <td><select data-f="trait">${traitOpts(row.trait, t('fromProfile'))}</select></td>
+    <td><select data-f="relic">${relicOpts(row.relic, t('fromProfile'))}</select></td>
+    <td><input type="checkbox" data-f="passive" ${row.passive ? 'checked' : ''}></td>
+    ${COUT.map(k => `<td class="num" data-o="${k}"></td>`).join('')}</tr>`).join('');
+  updateCompare();
+}
+function cmpCalc() {
+  const s = S(), gb = state.cmpGlobal ? gBuffs() : [];
+  return state.compare.map(row => {
+    const u = byName[row.name]; if (!u) return null;
+    return M.calc(D, u, { upg: row.upg, lvl: row.lvl || null, buffs: [...row.buffs, ...gb], trait: row.trait, relic: row.relic,
+      passive: row.passive, inp: inpFor(u.n) }, s);
+  });
+}
+function updateCompare() {
+  const res = cmpCalc();
+  const best = {};
+  for (const k of COUT) {
+    const vals = res.filter(Boolean).map(r => r[k]).filter(v => v > 0);
+    if (vals.length > 1) best[k] = LOWER_BETTER[k] ? Math.min(...vals) : Math.max(...vals);
+  }
+  document.querySelectorAll('#cmpTable tbody tr').forEach(tr_ => {
+    const r = res[+tr_.dataset.i];
+    tr_.querySelectorAll('[data-o]').forEach(td => {
+      const k = td.dataset.o;
+      if (!r) { td.textContent = ''; td.className = 'num'; return; }
+      const v = r[k];
+      td.textContent = k === 'gain' ? (v ? '+' + fmt(v * 100, 0) + '%' : '—') : k === 'spa' ? fmt(v, 2) : k === 'rng' ? fmt(v, 1)
+        : k === 'dpsk' ? fmt(v, 1) : ['dotdps', 'sumdps'].includes(k) && !v ? '—' : short(v);
+      td.title = k === 'gain' || k === 'spa' || k === 'rng' ? '' : fmt(v);
+      td.className = 'num' + (k === 'dps' ? ' dps' : '') + (k === 'gain' && v > 0 ? ' gain' : '') + (best[k] !== undefined && v === best[k] ? ' out-best' : '');
+    });
+  });
+  drawCharts(res);
+}
+const cmpBody = $('#cmpTable tbody');
+cmpBody.addEventListener('input', e => {
+  const el = e.target, f = el.dataset.f; if (!f) return;
+  const i = +el.closest('tr').dataset.i, row = state.compare[i];
+  if (f === 'name') {
+    row.name = el.value;
+    if (byName[row.name] || row.name === '') { row.upg = ''; save(); renderCompare(); const n = cmpBody.querySelector(`tr[data-i="${i}"] input.uin`); if (n && !byName[row.name]) n.focus(); }
+    return;
+  }
+  if (f === 'addbuff') { if (el.value && !row.buffs.includes(el.value)) row.buffs.push(el.value); save(); renderCompare(); return; }
+  if (f === 'passive') row.passive = el.checked; else row[f] = el.value;
+  save(); updateCompare();
+});
+cmpBody.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const i = +b.closest('tr').dataset.i;
+  if (b.dataset.act === 'del') state.compare.splice(i, 1);
+  if (b.dataset.act === 'dup') state.compare.splice(i + 1, 0, JSON.parse(JSON.stringify(state.compare[i])));
+  if (b.dataset.act === 'unbuff') state.compare[i].buffs.splice(+b.dataset.j, 1);
+  save(); renderCompare();
+});
+$('#cmpAdd').onclick = () => { addCmp(''); const ins = cmpBody.querySelectorAll('input.uin'); ins[ins.length - 1]?.focus(); };
+$('#cmpClear').onclick = () => { if (state.compare.length && confirm(t('clearQ'))) { state.compare = []; save(); renderCompare(); } };
+$('#cmpTime').oninput = e => { state.settings.time = +e.target.value; save(); updateCompare(); renderSettings(); };
+$('#cmpGlobal').oninput = e => { state.cmpGlobal = e.target.checked; save(); updateCompare(); };
+
+// ── графики (canvas, без библиотек) ──
+const CHARTS = [
+  { id: 'dpsk', title: 'chDpsk', keys: ['dpsk'] }, { id: 'dps', title: 'chDps', keys: ['dps'] },
+  { id: 'mix', title: 'chMix', keys: ['hitdps', 'dotdps', 'sumdps'], stack: 1 }, { id: 'tot', title: 'chTot', keys: ['tot'] },
+  { id: 'dmg', title: 'chDmg', keys: ['dmg'] }, { id: 'cost', title: 'chCost', keys: ['cost'] }, { id: 'spa', title: 'chSpa', keys: ['spa'] },
+];
+const COLORS = ['#0ea5e9', '#f59e0b', '#a78bfa'];
+function drawCharts(res) {
+  const box = $('#charts');
+  const items = state.compare.map((row, i) => ({ label: row.name + (state.compare.filter(x => x.name === row.name).length > 1 ? ` #${i + 1}` : ''), r: res[i] })).filter(x => x.r);
+  if (!items.length) { box.innerHTML = ''; return; }
+  if (box.children.length !== CHARTS.length || box.dataset.lang !== state.lang) {
+    box.dataset.lang = state.lang;
+    box.innerHTML = CHARTS.map(c => `<div class="card chart"><div class="card-header"><h2>${esc(t(c.title))}${c.id === 'tot' ? ` (${S().time} ${state.lang === 'ru' ? 'с' : 's'})` : ''}</h2></div>
+      <div class="card-body">${c.stack ? `<div class="legend">${['hits', 'dot', 'summ'].map((k, j) => `<span><i style="background:${COLORS[j]}"></i>${esc(t(k))}</span>`).join('')}</div>` : ''}<canvas data-c="${c.id}"></canvas></div></div>`).join('');
+  }
+  box.querySelector('.chart:nth-child(4) h2').textContent = `${t('chTot')} (${S().time} ${state.lang === 'ru' ? 'с' : 's'})`;
+  CHARTS.forEach(c => barChart(box.querySelector(`canvas[data-c="${c.id}"]`), items, c));
+}
+function barChart(cv, items, c) {
+  const dpr = window.devicePixelRatio || 1, W = cv.clientWidth || 360, rowH = 24, padT = 6, padB = 6;
+  const H = padT + padB + items.length * rowH;
+  cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+  g.font = '12px Segoe UI, sans-serif';
+  const labW = Math.min(W * 0.42, Math.max(...items.map(x => g.measureText(x.label).width)) + 10);
+  const tot = items.map(x => c.keys.reduce((s, k) => s + (x.r[k] > 0 ? x.r[k] : 0), 0));
+  const mx = Math.max(...tot, 1e-9), plotW = W - labW - 70;
+  items.forEach((x, i) => {
+    const y = padT + i * rowH;
+    g.fillStyle = '#7fa8c4'; g.textAlign = 'right'; g.textBaseline = 'middle';
+    let lab = x.label; while (g.measureText(lab).width > labW - 8 && lab.length > 4) lab = lab.slice(0, -2) + '…';
+    g.fillText(lab, labW - 6, y + rowH / 2);
+    let xo = labW;
+    c.keys.forEach((k, j) => {
+      const v = x.r[k] > 0 ? x.r[k] : 0, w = v / mx * plotW;
+      g.fillStyle = c.stack ? COLORS[j] : (tot[i] === mx && c.id !== 'cost' && c.id !== 'spa' ? '#38bdf8' : '#0e7fb8');
+      if (w > 0) { g.beginPath(); g.roundRect ? g.roundRect(xo, y + 4, w, rowH - 8, 4) : g.rect(xo, y + 4, w, rowH - 8); g.fill(); }
+      xo += w;
+    });
+    g.fillStyle = '#f0f9ff'; g.textAlign = 'left';
+    g.fillText(c.id === 'spa' ? fmt(tot[i], 2) : c.id === 'dpsk' ? fmt(tot[i], 1) : short(tot[i]), xo + 6, y + rowH / 2);
+  });
+}
+let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => drawCharts(cmpCalc()), 150); });
+
+// ── НАСТРОЙКИ ──
+function renderSettings() {
+  const s = S(), L = state.lang === 'ru';
+  const f = (k, label, hint, type, opts) => `<div class="field"><span>${esc(label)}<small>${esc(hint || '')}</small></span>${
+    type === 'select' ? `<select data-s="${k}">${opts.map(([v, l]) => `<option value="${v}" ${String(s[k]) === String(v) ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>`
+    : type === 'check' ? `<input type="checkbox" data-s="${k}" ${s[k] ? 'checked' : ''}>`
+    : `<input type="number" step="any" data-s="${k}" value="${s[k]}">`}</div>`;
+  const gb = gBuffs();
+  $('#settingsGrid').innerHTML = `
+    <div class="card"><div class="card-header"><h2>${L ? 'Общие' : 'General'}</h2></div><div class="card-body key-block" style="margin:12px">
+      ${f('lvl', L ? 'Уровень юнитов' : 'Unit level', L ? '100 ур. = ×9,204; 110 = ещё +19%' : 'lv100 = ×9.204; lv110 = +19% more', 'select', [['1', '1'], ['100', '100'], ['110', '110'], ['custom', L ? 'Свой множитель' : 'Custom multiplier']])}
+      ${s.lvl === 'custom' ? f('lvlCustom', L ? 'Свой множитель уровня' : 'Custom level multiplier', '') : ''}
+      ${f('lb', L ? 'Юнитов с Limit Break в отряде' : 'Limit Break units in team', L ? '+5% урона всем за каждого, до 6' : '+5% dmg to all per unit, up to 6')}
+      ${f('gDmg', L ? 'Общий бонус урона, %' : 'Global damage, %', '')}
+      ${f('gSpa', L ? 'Общее снижение SPA, %' : 'Global SPA reduction, %', '')}
+      ${f('gCrit', L ? 'Общий бонус крит-шанса, %' : 'Global crit chance, %', '')}
+      ${f('gRng', L ? 'Общий бонус радиуса, %' : 'Global range, %', '')}
+      ${f('critDef', L ? 'Множитель крита по умолчанию' : 'Default crit multiplier', L ? 'вики: ×1,5' : 'wiki: ×1.5')}
+      ${f('dot', L ? 'Учитывать DoT' : 'Count DoT', L ? 'кровотечение, горение, яд' : 'bleed, burn, poison', 'check')}
+      ${f('sit', L ? 'Ситуативные бонусы реликвий' : 'Situational relic bonuses', L ? 'рейды, локации' : 'raids, locations', 'check')}
+    </div></div>
+    <div class="card"><div class="card-header"><h2>${L ? 'Бой' : 'Battle'}</h2></div><div class="card-body key-block" style="margin:12px">
+      ${f('time', L ? 'Время боя, с' : 'Battle time, s', L ? 'для «Урона за бой»' : 'for “Battle damage”')}
+      ${f('tick', L ? 'Интервал тика DoT, с' : 'DoT tick interval, s', L ? 'вики не указывает — 1' : 'not on wiki — 1')}
+      ${f('kps', L ? 'Врагов убивается в секунду' : 'Kills per second', L ? 'призывы «за убийства»' : 'summons “per kill”')}
+      ${f('walk', L ? 'Путь призыва до врага, с' : 'Summon walk time, s', '')}
+      ${f('pwrp', L ? '1 PWR реликвии = +% урона' : '1 relic PWR = +% dmg', '')}
+      ${f('resP', L ? 'Сопротивление врага: физ.' : 'Enemy resistance: phys', L ? 'урон × 100/(100+сопр.−PEN)' : 'dmg × 100/(100+res−PEN)')}
+      ${f('resM', L ? 'Сопротивление врага: маг.' : 'Enemy resistance: magic', '')}
+      <div class="hint" style="margin-top:8px">${L ? 'Целей под ударом (AoE):' : 'Targets per attack (AoE):'}</div>
+      ${D.atypes.map(a => `<div class="field"><span>${esc(a)}</span><input type="number" step="any" min="0" data-tg="${esc(a)}" value="${(s.targets || {})[a] ?? 1}"></div>`).join('')}
+    </div></div>
+    <div class="card"><div class="card-header"><h2>${L ? 'Бафы на вкладке «Юниты»' : 'Buffs on Units tab'}</h2></div><div class="card-body">
+      <div class="hint">${L ? 'Отмеченные бафы действуют на списке юнитов и карточках (и в сравнении, если включено «+ бафы из «Настроек»»).' : 'Checked buffs apply to the unit list and cards (and to comparison if “+ buffs from Settings” is on).'}</div>
+      ${D.buffs.map(b => `<label class="field" style="grid-template-columns:24px 1fr"><input type="checkbox" data-gb="${esc(b.n)}" ${gb.includes(b.n) ? 'checked' : ''}><span>${esc(b.n)} <span class="tag">${esc(b.kind)} ${b.v}% · ${esc(b.who)}</span><small>${esc(b.note)}</small></span></label>`).join('')}
+      <button class="btn" id="resetSettings" style="margin-top:10px">${L ? 'Сбросить настройки' : 'Reset settings'}</button>
+    </div></div>`;
+}
+$('#settingsGrid').addEventListener('input', e => {
+  const el = e.target;
+  if (el.dataset.s) {
+    const k = el.dataset.s;
+    state.settings[k] = el.type === 'checkbox' ? el.checked : el.tagName === 'SELECT' ? el.value : (el.value === '' ? M.DEFAULT_SETTINGS[k] : Number(el.value));
+    if (k === 'lvl') renderSettings();
+  } else if (el.dataset.tg) {
+    state.settings.targets = Object.assign({}, state.settings.targets, { [el.dataset.tg]: el.value === '' ? 1 : Number(el.value) });
+  } else if (el.dataset.gb) {
+    const set = new Set(gBuffs()); el.checked ? set.add(el.dataset.gb) : set.delete(el.dataset.gb);
+    state.settings.buffs = [...set];
+  } else return;
+  save(); computeUnits(); renderUnits(); renderCompare();
+});
+$('#settingsGrid').addEventListener('click', e => {
+  if (e.target.id !== 'resetSettings') return;
+  state.settings = {}; save(); computeUnits(); renderUnits(); renderCompare(); renderSettings();
+});
+
+// ── экспорт / импорт ──
+$('#btnExport').onclick = () => {
+  const data = { app: 'aa-units', v: 1, date: new Date().toISOString(), settings: state.settings, profiles: state.profiles, compare: state.compare, cmpGlobal: !!state.cmpGlobal };
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }));
+  a.download = `aa-units-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000); toast(t('exported'));
+};
+$('#btnImport').onclick = () => $('#importFile').click();
+$('#importFile').onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  f.text().then(txt => {
+    const d = JSON.parse(txt);
+    if (d.app !== 'aa-units') throw new Error();
+    state.settings = d.settings || {}; state.profiles = d.profiles || {};
+    state.compare = (d.compare || []).map(r => Object.assign(newRow(), r, { buffs: Array.isArray(r.buffs) ? r.buffs : [] }));
+    state.cmpGlobal = !!d.cmpGlobal;
+    save(); computeUnits(); applyLang(); toast(t('imported'));
+  }).catch(() => toast(t('importBad'))).finally(() => { e.target.value = ''; });
+};
+
+// ── вкладки ──
+function setTab(id) {
+  state.tab = id; save();
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === id));
+  document.querySelectorAll('.tab').forEach(s => s.classList.toggle('on', s.id === 'tab-' + id));
+  if (id === 'compare') drawCharts(cmpCalc());
+}
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => setTab(b.dataset.tab));
+document.querySelectorAll('.lang button').forEach(b => b.onclick = () => { state.lang = b.dataset.lang; save(); applyLang(); });
+
+// ── старт ──
+const dl = document.createElement('datalist'); dl.id = 'unitList';
+dl.innerHTML = D.units.map(u => `<option value="${esc(u.n)}">`).join(''); document.body.appendChild(dl);
+$('#ver').textContent = 'data ' + D.version;
+$('#footVer').textContent = (state.lang === 'ru' ? 'данные от ' : 'data ') + D.version + ' · ' + D.units.length + ' units';
+computeUnits();
+applyLang();
+setTab(state.tab || 'units');
+</script>
+</body>
+</html>

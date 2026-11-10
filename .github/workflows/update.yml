@@ -1,0 +1,78 @@
+# Автообновление данных с вики и деплой сайта web/ на GitHub Pages.
+#
+# Что делает:
+#   1) раз в день скачивает свежие данные с вики (update_wiki.py — Lua читается парсером, не исполняется);
+#   2) пересобирает web/units.js (export_web.py);
+#   3) если данные вики изменились — коммитит data/ и web/units.js;
+#   4) выкладывает папку web/ на GitHub Pages.
+name: Обновление данных и деплой сайта
+
+on:
+  schedule:
+    - cron: '0 3 * * *'        # каждый день в 03:00 UTC (06:00 МСК)
+  workflow_dispatch:            # кнопка «Run workflow» для ручного запуска
+  push:
+    branches: [main]
+    paths: ['web/**']           # ручные правки сайта — сразу деплой
+
+permissions:
+  contents: write               # чтобы закоммитить обновлённые данные
+  pages: write
+  id-token: write
+
+concurrency:
+  group: update-and-deploy
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Зависимости
+        run: pip install openpyxl   # build_units.py импортирует openpyxl на верхнем уровне
+
+      - name: Скачать данные вики
+        if: github.event_name != 'push'
+        run: python -I tools/update_wiki.py
+
+      - name: Собрать web/units.js
+        if: github.event_name != 'push'
+        run: python -I tools/export_web.py
+
+      - name: Закоммитить, если данные вики изменились
+        if: github.event_name != 'push'
+        run: |
+          # units.js содержит дату сборки, поэтому меняется каждый день —
+          # смотрим именно на data/: нет изменений на вики → коммит не нужен
+          if git diff --quiet -- data/; then
+            echo "Данные вики не изменились"
+            git checkout -- web/units.js
+          else
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/ web/units.js
+            git commit -m "Автообновление данных вики $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+  deploy:
+    needs: update
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
