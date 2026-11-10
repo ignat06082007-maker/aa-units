@@ -157,6 +157,7 @@ footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(
     <nav>
       <button data-tab="units" data-ru="Юниты" data-en="Units"></button>
       <button data-tab="compare"><span data-ru="Сравнение" data-en="Compare"></span><span class="count" id="cmpCount">0</span></button>
+      <button data-tab="team"><span data-ru="Команда" data-en="Team"></span><span class="count" id="teamCount">0</span></button>
       <button data-tab="settings" data-ru="Настройки" data-en="Settings"></button>
       <button data-tab="about" data-ru="Как считается" data-en="How it works"></button>
     </nav>
@@ -203,6 +204,24 @@ footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(
     </div>
     <div class="hint" style="margin-top:6px" data-ru="Один юнит можно добавить несколько раз с разными бафами/трейтами. Зелёная полоса — лучший в столбце. Пустое поле апгрейда = максимальный." data-en="Same unit can be added several times with different buffs/traits. Green bar = best in column. Empty upgrade = max."></div>
     <div class="charts" id="charts"></div>
+  </section>
+
+  <!-- КОМАНДА -->
+  <section class="tab" id="tab-team">
+    <div class="toolbar">
+      <button class="btn primary" id="teamAdd" data-ru="+ Добавить юнита" data-en="+ Add unit"></button>
+      <span class="hint" data-ru="Бафферы в команде (Commander, Wind Dragon, Griffin, Blossom, Idol, Trickster, Zombie (Risen), Bloodcry…) сами бафают остальных. Трейт, реликвия, пассивка и проклятия — из карточки юнита («Мой юнит»)." data-en="Buffers in the team (Commander, Wind Dragon, Griffin, Blossom, Idol, Trickster, Zombie (Risen), Bloodcry…) buff the others automatically. Trait, relic, passive and curses come from the unit card (“My unit”)."></span>
+      <span class="grow"></span>
+      <button class="btn ghost" id="teamClear" data-ru="Очистить" data-en="Clear"></button>
+    </div>
+    <div class="tbl-wrap">
+      <table id="teamTable"><thead><tr></tr></thead><tbody></tbody></table>
+      <div class="empty" id="teamEmpty" data-ru="Команда пуста. Нажми «+ Добавить юнита». Твои юниты (★) в списке идут первыми." data-en="Team is empty. Press “+ Add unit”. Your units (★) are listed first."></div>
+    </div>
+    <div class="grid" style="margin-top:14px">
+      <div class="card"><div class="card-header"><h2 data-ru="Итого команда" data-en="Team total"></h2></div><div class="card-body" id="teamTotals"></div></div>
+      <div class="card"><div class="card-header"><h2 data-ru="Бафы от команды" data-en="Team buffs"></h2></div><div class="card-body" id="teamBuffs"></div></div>
+    </div>
   </section>
 
   <!-- НАСТРОЙКИ -->
@@ -252,12 +271,17 @@ const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&a
 const byName = Object.fromEntries(D.units.map(u => [u.n, u]));
 
 // ── состояние (localStorage — только удобство; без него страница тоже работает) ──
-let state = { lang: '', tab: 'units', settings: {}, profiles: {}, compare: [], sort: { key: 'dps', dir: -1 } };
+let state = { lang: '', tab: 'units', settings: {}, profiles: {}, compare: [], team: [], edits: {}, sort: { key: 'dps', dir: -1 } };
 try { const s = JSON.parse(localStorage.getItem(STORE) || 'null'); if (s) state = Object.assign(state, s); } catch (e) {}
 if (!state.lang) state.lang = (navigator.language || 'ru').toLowerCase().startsWith('ru') ? 'ru' : 'en';
 let saveT = 0;
 function save() { clearTimeout(saveT); saveT = setTimeout(() => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }, 150); }
 const S = () => Object.assign({}, M.DEFAULT_SETTINGS, state.settings);
+if (!state.edits) state.edits = {};
+if (!state.team) state.team = [];
+// данные с правками пользователя (свои значения реликвий/трейтов и копии реликвий)
+let ED = M.withEdits(D, state.edits);
+function refreshAll() { ED = M.withEdits(D, state.edits); computeUnits(); renderUnits(); renderCompare(); renderTeam(); buildDatalist(); }
 
 // ── язык ──
 const T = {
@@ -299,7 +323,7 @@ function applyLang() {
   document.querySelectorAll('[data-ru-html]').forEach(el => { el.innerHTML = el.dataset[state.lang + 'Html']; });
   document.querySelectorAll('[data-ph-ru]').forEach(el => { el.placeholder = el.dataset['ph' + (state.lang === 'ru' ? 'Ru' : 'En')]; });
   document.querySelectorAll('.lang button').forEach(b => b.classList.toggle('on', b.dataset.lang === state.lang));
-  fillFilters(); renderUnits(); renderCompare(true); renderSettings();
+  fillFilters(); renderUnits(); renderCompare(true); renderTeam(); renderSettings();
 }
 
 // ── форматирование ──
@@ -347,7 +371,7 @@ let unitRows = [];
 function computeUnits() {
   const s = S(), gb = gBuffs();
   unitRows = D.units.map(u => {
-    const r = M.calc(D, u, { buffs: gb, inp: inpFor(u.n) }, s);
+    const r = M.calc(ED, u, { buffs: gb, inp: inpFor(u.n) }, s);
     return { u, r, mine: !!prof(u.n).mine };
   });
   const tiers = M.tiers(unitRows.map(x => x.r.dps));
@@ -390,15 +414,15 @@ $('#unitTable thead').addEventListener('click', e => {
 });
 $('#unitTable tbody').addEventListener('click', e => {
   const st = e.target.closest('[data-star]');
-  if (st) { const n = st.dataset.star; setProf(n, 'mine', prof(n).mine ? '' : 1); computeUnits(); renderUnits(); return; }
+  if (st) { const n = st.dataset.star; setProf(n, 'mine', prof(n).mine ? '' : 1); computeUnits(); renderUnits(); buildDatalist(); updateTeam(); return; }
   const tr_ = e.target.closest('tr'); if (tr_) openUnit(tr_.dataset.n);
 });
 ['#q', '#fRarity', '#fType', '#fRole', '#fMine', '#fDmg'].forEach(id => $(id).addEventListener('input', renderUnits));
 
 // ── карточка юнита ──
 let modalUnit = null;
-function traitOpts(sel, first) { return `<option value="">${esc(first)}</option>` + D.traits.map(x => `<option ${x.n === sel ? 'selected' : ''}>${esc(x.n)}</option>`).join(''); }
-function relicOpts(sel, first) { return `<option value="">${esc(first)}</option>` + D.relics.map(x => `<option ${x.n === sel ? 'selected' : ''}>${esc(x.n)}</option>`).join(''); }
+function traitOpts(sel, first) { return `<option value="">${esc(first)}</option>` + ED.traits.map(x => `<option ${x.n === sel ? 'selected' : ''}>${esc(x.n)}</option>`).join(''); }
+function relicOpts(sel, first) { return `<option value="">${esc(first)}</option>` + ED.relics.map(x => `<option ${x.n === sel ? 'selected' : ''}>${esc(x.n)}</option>`).join(''); }
 function openUnit(n) {
   modalUnit = byName[n]; if (!modalUnit) return;
   renderModal(); $('#modal').classList.add('on');
@@ -407,7 +431,7 @@ function renderModal() {
   const u = modalUnit, p = prof(u.n), s = S(), gb = gBuffs();
   $('#mTitle').textContent = u.n;
   $('#mRar').innerHTML = rarBadge(u.r);
-  const r = M.calc(D, u, { buffs: gb, inp: inpFor(u.n) }, s);
+  const r = M.calc(ED, u, { buffs: gb, inp: inpFor(u.n) }, s);
   const num = (k, label, ph) => `<div class="field"><span>${esc(label)}</span><input type="number" step="any" data-pk="${k}" value="${p[k] ?? ''}" placeholder="${esc(ph)}"></div>`;
   const L = state.lang === 'ru';
   let h = `<div class="detail-grid">
@@ -438,7 +462,7 @@ function renderModal() {
     <th class="num">${t('rng')}</th><th>${t('atype')}</th><th>${t('eff')}</th><th class="num">${t('dps')}</th><th class="num">${t('dpsk')}</th><th class="num">${t('marg')}</th></tr></thead><tbody>`;
   let prev = null;
   u.rows.forEach((row, i) => {
-    const x = M.calc(D, u, { upg: i, buffs: gb, inp: inpFor(u.n) }, s);
+    const x = M.calc(ED, u, { upg: i, buffs: gb, inp: inpFor(u.n) }, s);
     const marg = prev && x.cost > prev.cost ? (x.dps - prev.dps) / (x.cost - prev.cost) * 1000 : null;
     h += `<tr><td class="num">${i === 0 ? '0 · ' + t('placed') : i}</td><td class="num">${fmt(row[1], 0)}</td><td class="num">${fmt(x.cost, 0)}</td>
       <td class="num">${fmt(x.dmg)}</td><td class="num">${fmt(x.spa, 2)}</td><td class="num">${fmt(x.rng, 1)}</td><td>${esc(row[6])}</td><td>${esc(row[7] || '—')}</td>
@@ -452,7 +476,7 @@ $('#mBody').addEventListener('input', e => {
   const el = e.target, k = el.dataset.pk; if (!k) return;
   const v = el.type === 'checkbox' ? (el.checked ? 1 : '') : el.type === 'number' ? (el.value === '' ? '' : Number(el.value)) : el.value;
   setProf(modalUnit.n, k, v);
-  computeUnits(); renderUnits(); updateCompare();
+  computeUnits(); renderUnits(); updateCompare(); updateTeam(); if (k === 'mine') buildDatalist();
   if (el.tagName === 'SELECT' || el.type === 'checkbox') renderModal();
 });
 $('#mBody').addEventListener('change', e => { if (e.target.type === 'number') renderModal(); });
@@ -498,7 +522,7 @@ function cmpCalc() {
   const s = S(), gb = state.cmpGlobal ? gBuffs() : [];
   return state.compare.map(row => {
     const u = byName[row.name]; if (!u) return null;
-    return M.calc(D, u, { upg: row.upg, lvl: row.lvl || null, buffs: [...row.buffs, ...gb], trait: row.trait, relic: row.relic,
+    return M.calc(ED, u, { upg: row.upg, lvl: row.lvl || null, buffs: [...row.buffs, ...gb], trait: row.trait, relic: row.relic,
       passive: row.passive, inp: inpFor(u.n) }, s);
   });
 }
@@ -595,6 +619,127 @@ function barChart(cv, items, c) {
 }
 let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => drawCharts(cmpCalc()), 150); });
 
+// ── КОМАНДА ──
+const TOUT = ['cost', 'dps', 'costall', 'dpsall', 'dpsk', 'check', 'gives', 'dps0', 'gain', 'info'];
+const TL = {
+  ru: { cnt: 'Штук', cost: 'Цена 1 шт.', dps: 'DPS 1 шт.', costall: 'Цена всего', dpsall: 'DPS всего', dpsk: 'DPS/1000', check: 'Лимит',
+    gives: 'Даёт команде', dps0: 'DPS без бафов', gain: 'Бафы дали', info: 'Трейт · реликвия · пассивка · проклятия',
+    over: 'больше лимита!', ok: 'ОК', noUnit: 'нет такого юнита', field: 'Юнитов на поле', totCost: 'Цена всего',
+    totDps: 'DPS всего (с бафами команды)', totDps0: 'DPS без бафов команды', totGain: 'Бафы команды дали', totDpsk: 'DPS на 1000 денег',
+    noBuffs: 'В команде нет бафферов. Добавь, например, Commander, Wind Dragon, Griffin (Reincarnation), Blossom, Idol, Zombie (Risen).',
+    from: 'от', none: 'нет', nothing: 'ничего для этого юнита', clearQ: 'Очистить команду?' },
+  en: { cnt: 'Count', cost: 'Cost each', dps: 'DPS each', costall: 'Total cost', dpsall: 'Total DPS', dpsk: 'DPS/1000', check: 'Limit',
+    gives: 'Gives the team', dps0: 'DPS w/o buffs', gain: 'Buffs gave', info: 'Trait · relic · passive · curses',
+    over: 'over limit!', ok: 'OK', noUnit: 'unknown unit', field: 'Units on field', totCost: 'Total cost',
+    totDps: 'Total DPS (with team buffs)', totDps0: 'DPS without team buffs', totGain: 'Team buffs gave', totDpsk: 'DPS per 1000 money',
+    noBuffs: 'No buffers in the team. Add e.g. Commander, Wind Dragon, Griffin (Reincarnation), Blossom, Idol, Zombie (Risen).',
+    from: 'from', none: 'none', nothing: 'nothing for this unit', clearQ: 'Clear the team?' },
+};
+const tt = k => TL[state.lang][k] ?? k;
+function addTeam(n) { state.team.push({ name: n || '', upg: '', cnt: 1 }); save(); renderTeam(); }
+function renderTeam() {
+  $('#teamCount').textContent = state.team.length;
+  const heads = ['', t('unit'), t('upg'), tt('cnt'), ...TOUT.map(k => tt(k))];
+  $('#teamTable thead tr').innerHTML = heads.map((h, i) => `<th class="${i > 3 && i < 9 || i === 11 || i === 12 ? 'num' : ''}">${esc(h)}</th>`).join('');
+  $('#teamEmpty').style.display = state.team.length ? 'none' : 'block';
+  $('#teamTable tbody').innerHTML = state.team.map((row, i) => `<tr data-i="${i}">
+    <td><button class="btn small ghost" data-act="del" title="${esc(t('del'))}">✕</button></td>
+    <td><input class="uin" list="unitList" data-f="name" value="${esc(row.name)}" placeholder="${esc(t('pickUnit'))}" style="width:210px">
+      <div class="hint">${byName[row.name] ? esc(tr(byName[row.name].dt)) + ' · ' + esc(tr(byName[row.name].role)) : ''}</div></td>
+    <td><select data-f="upg">${upgOptions(row)}</select></td>
+    <td><input type="number" min="0" step="1" data-f="cnt" value="${esc(row.cnt)}" style="width:64px"></td>
+    ${TOUT.map(k => `<td data-o="${k}" class="${['gives', 'info', 'check'].includes(k) ? '' : 'num'}"></td>`).join('')}</tr>`).join('');
+  updateTeam();
+}
+function teamCalc() {
+  const members = state.team.filter(r => byName[r.name]).map(r => ({ name: r.name, cnt: r.cnt }));
+  const given = M.teamBuffs(ED, members);
+  const s = S();
+  const res = state.team.map(row => {
+    const u = byName[row.name]; if (!u) return null;
+    const cnt = Math.max(0, parseInt(row.cnt, 10) || 0);
+    const r = M.calc(ED, u, { upg: row.upg, buffs: given, inp: inpFor(u.n) }, s);
+    return Object.assign(r, { cnt, costall: r.cost * cnt, dpsall: r.dps * cnt, dps0all: r.dps0 * cnt,
+      gives: given.filter(g => g.from === u.n) });
+  });
+  return { res, given };
+}
+const buffBy = n => ED.buffs.find(b => b.n === n) || { v: 0, kind: '', who: '' };
+function infoText(r, u) {
+  const L = state.lang === 'ru', i = r.info, p = [];
+  const pct = (v, d = 1) => (v > 0 ? '+' : '') + fmt(v, d) + '%';
+  p.push(`${L ? 'Трейт' : 'Trait'}: ${i.trait || tt('none')}${i.tD || i.tS || i.tR ? ` (${[i.tD && (L ? 'урон ' : 'dmg ') + pct(i.tD), i.tS && 'SPA −' + fmt(i.tS, 1) + '%', i.tR && (L ? 'радиус ' : 'range ') + pct(i.tR)].filter(Boolean).join(', ')})` : ''}`);
+  if (i.relic) {
+    const e = [i.rD && (L ? 'урон ' : 'dmg ') + pct(i.rD), i.rC && (L ? 'крит ' : 'crit ') + pct(i.rC), i.rCD && (L ? 'крит-урон ' : 'crit dmg ') + pct(i.rCD),
+      i.rPwr && 'PWR +' + fmt(i.rPwr, 1), i.rDotAny && `DoT +${fmt(i.rDotAny, 0)}% (${tr(i.rDotK)})`, i.rClk && (L ? 'часы +' : 'clock +') + fmt(i.rClk, 2) + '%/s',
+      i.resm !== 1 && (L ? 'сопр. ×' : 'res ×') + fmt(i.resm, 2)].filter(Boolean);
+    p.push(`${L ? 'Реликвия' : 'Relic'}: ${i.relic} — ${e.length ? e.join(', ') : tt('nothing')}`);
+  } else p.push(`${L ? 'Реликвия' : 'Relic'}: ${tt('none')}`);
+  const ps = [i.pasv && (L ? 'урон ' : 'dmg ') + pct(i.pasv), i.pc && (L ? 'крит ' : 'crit ') + pct(i.pc), i.pcd && (L ? 'крит-урон ' : 'crit dmg ') + pct(i.pcd), i.pdot && 'DoT ' + pct(i.pdot)].filter(Boolean);
+  if (ps.length) p.push(`${L ? 'Пассивка' : 'Passive'}: ${ps.join(', ')}`);
+  const cs = [i.kD && (L ? 'урон ' : 'dmg ') + pct(i.kD), i.kS !== 1 && 'SPA ' + pct((i.kS - 1) * 100), i.kR !== 1 && (L ? 'радиус ' : 'range ') + pct((i.kR - 1) * 100)].filter(Boolean);
+  if (cs.length) p.push(`${L ? 'Проклятия' : 'Curses'}: ${cs.join(', ')}`);
+  return p.join('\n');
+}
+function updateTeam() {
+  if (!$('#teamTable tbody')) return;
+  const { res, given } = teamCalc();
+  document.querySelectorAll('#teamTable tbody tr').forEach(tr_ => {
+    const i = +tr_.dataset.i, r = res[i], row = state.team[i], u = byName[row.name];
+    tr_.querySelectorAll('[data-o]').forEach(td => {
+      const k = td.dataset.o;
+      td.style.whiteSpace = ''; td.style.color = '';
+      if (!r) { td.textContent = k === 'check' && row.name ? tt('noUnit') : ''; if (k === 'check') td.style.color = 'var(--bad)'; return; }
+      if (k === 'check') {
+        const over = u.cap && r.cnt > u.cap;
+        td.textContent = (over ? tt('over') : tt('ok')) + (u.cap ? ` (${r.cnt}/${u.cap})` : '');
+        td.style.color = over ? 'var(--bad)' : 'var(--good)';
+      } else if (k === 'gives') {
+        td.style.whiteSpace = 'normal'; td.style.minWidth = '200px';
+        td.textContent = r.gives.length ? r.gives.map(g => { const b = buffBy(g.n); return `${g.n}: +${fmt(b.v * g.m, 0)}% ${b.kind.toLowerCase()} → ${b.who}`; }).join('; ') : '—';
+      } else if (k === 'info') {
+        td.style.whiteSpace = 'pre-line'; td.style.minWidth = '260px'; td.style.fontSize = '12px'; td.style.color = 'var(--muted)';
+        td.textContent = infoText(r, u);
+      } else if (k === 'gain') {
+        td.textContent = r.gain ? '+' + fmt(r.gain * 100, 0) + '%' : '—'; td.className = 'num' + (r.gain > 0 ? ' gain' : '');
+      } else {
+        td.textContent = k === 'dpsk' ? fmt(r.dpsall && r.costall ? r.dpsall / r.costall * 1000 : r.dpsk, 1) : k.startsWith('cost') ? fmt(r[k], 0) : short(r[k]);
+        td.title = fmt(r[k]); td.className = 'num' + (k === 'dps' || k === 'dpsall' ? ' dps' : '');
+      }
+    });
+  });
+  const ok = res.filter(Boolean);
+  const sum = k => ok.reduce((a, r) => a + (r[k] || 0), 0);
+  const cost = sum('costall'), dps = sum('dpsall'), d0 = sum('dps0all');
+  const kv = (a, b, cls = '') => `<div class="kv"><span>${esc(a)}</span><span class="${cls}">${b}</span></div>`;
+  $('#teamTotals').innerHTML = kv(tt('field'), fmt(sum('cnt'), 0)) + kv(tt('totCost'), fmt(cost, 0)) + kv(tt('totDps'), fmt(dps), 'dps')
+    + kv(tt('totDps0'), fmt(d0)) + kv(tt('totGain'), d0 > 0 ? '+' + fmt((dps / d0 - 1) * 100, 0) + '%' : '—', 'gain') + kv(tt('totDpsk'), cost ? fmt(dps / cost * 1000, 1) : '—');
+  // итоги бафов по видам (как строка 13 листа «Команда»), с учётом «не складываются»
+  const kinds = [['Урон', 'Физ'], ['Урон', 'Маг'], ['Урон', 'Чистый'], ['SPA'], ['Радиус'], ['Крит'], ['Скидка'], ...D.dotKinds.map(k => ['DoT', k]), ['Призыв']];
+  const lines = kinds.map(([kind, who]) => [kind, who, M.buffSum(ED, given, kind, who)]).filter(x => x[2]);
+  $('#teamBuffs').innerHTML = given.length
+    ? given.map(g => { const b = buffBy(g.n); return `<div class="note">${esc(g.n)}${g.m > 1 ? ' ×' + g.m : ''} — <b>+${fmt(b.v * g.m, 0)}%</b> ${esc(b.kind.toLowerCase())} → ${esc(b.who)} <span class="muted">(${esc(tt('from'))} ${esc(g.from)})</span></div>`; }).join('')
+      + lines.map(([kind, who, v]) => kv(`${kind}${who ? ' → ' + who : ''}`, '+' + fmt(v, 0) + '%')).join('')
+    : `<div class="hint">${esc(tt('noBuffs'))}</div>`;
+}
+const teamBody = $('#teamTable tbody');
+teamBody.addEventListener('input', e => {
+  const el = e.target, f = el.dataset.f; if (!f) return;
+  const i = +el.closest('tr').dataset.i, row = state.team[i];
+  if (f === 'name') {
+    row.name = el.value;
+    if (byName[row.name] || row.name === '') { row.upg = ''; save(); renderTeam(); }
+    return;
+  }
+  row[f] = el.value; save(); updateTeam();
+});
+teamBody.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  state.team.splice(+b.closest('tr').dataset.i, 1); save(); renderTeam();
+});
+$('#teamAdd').onclick = () => { addTeam(''); const ins = teamBody.querySelectorAll('input.uin'); ins[ins.length - 1]?.focus(); };
+$('#teamClear').onclick = () => { if (state.team.length && confirm(tt('clearQ'))) { state.team = []; save(); renderTeam(); } };
+
 // ── НАСТРОЙКИ ──
 function renderSettings() {
   const s = S(), L = state.lang === 'ru';
@@ -627,11 +772,59 @@ function renderSettings() {
       <div class="hint" style="margin-top:8px">${L ? 'Целей под ударом (AoE):' : 'Targets per attack (AoE):'}</div>
       ${D.atypes.map(a => `<div class="field"><span>${esc(a)}</span><input type="number" step="any" min="0" data-tg="${esc(a)}" value="${(s.targets || {})[a] ?? 1}"></div>`).join('')}
     </div></div>
-    <div class="card"><div class="card-header"><h2>${L ? 'Бафы на вкладке «Юниты»' : 'Buffs on Units tab'}</h2></div><div class="card-body">
-      <div class="hint">${L ? 'Отмеченные бафы действуют на списке юнитов и карточках (и в сравнении, если включено «+ бафы из «Настроек»»).' : 'Checked buffs apply to the unit list and cards (and to comparison if “+ buffs from Settings” is on).'}</div>
-      ${D.buffs.map(b => `<label class="field" style="grid-template-columns:24px 1fr"><input type="checkbox" data-gb="${esc(b.n)}" ${gb.includes(b.n) ? 'checked' : ''}><span>${esc(b.n)} <span class="tag">${esc(b.kind)} ${b.v}% · ${esc(b.who)}</span><small>${esc(b.note)}</small></span></label>`).join('')}
+    <div class="card"><div class="card-header"><h2>${L ? 'Постоянные бафы' : 'Always-on buffs'}</h2></div><div class="card-body">
+      <div class="hint">${L ? 'Это бафы, которые у тебя «всегда стоят» на карте — как «Активен = Да» в Excel. Отмеченные бафы прибавляются к DPS во вкладке «Юниты» и в карточках. В «Сравнении» они действуют, только если там включена галочка «+ бафы из «Настроек»». На «Команду» не влияют — там бафают бафферы самой команды.' : 'Buffs you “always have” on the map — like “Active = Yes” in Excel. Checked buffs are added to DPS on the Units tab and unit cards. In Compare they apply only with “+ buffs from Settings”. They do not affect Team — there buffers of the team itself apply.'}</div>
+      ${ED.buffs.map(b => `<label class="field" style="grid-template-columns:24px 1fr"><input type="checkbox" data-gb="${esc(b.n)}" ${gb.includes(b.n) ? 'checked' : ''}><span>${esc(b.n)} <span class="tag">${esc(b.kind)} ${b.v}% · ${esc(b.who)}</span><small>${esc(b.note)}</small></span></label>`).join('')}
       <button class="btn" id="resetSettings" style="margin-top:10px">${L ? 'Сбросить настройки' : 'Reset settings'}</button>
+    </div></div>
+    ${relicEditor(L)}
+    ${traitEditor(L)}
     </div></div>`;
+}
+
+// ── редактор реликвий и трейтов (как листы «Реликвии» и «Трейты» в Excel) ──
+let relSel = '';
+const RFIELDS = [['d1', 'Урон, %', 'Damage, %', 't1'], ['d2', 'Урон 2 (ролл), %', 'Damage 2 (roll), %', 't2'], ['c', 'Крит-шанс, %', 'Crit chance, %', 'ct'],
+  ['cd', 'Крит-урон, %', 'Crit damage, %'], ['pwr', 'PWR (ролл)', 'PWR (roll)', 'pwrk'], ['pen', 'PEN', 'PEN', 'penk'],
+  ['dot', 'Усиление DoT, %', 'DoT boost, %', 'dotk'], ['sit', 'Ситуативный, %', 'Situational, %'], ['clkn', 'Часы: раз в N с', 'Clock: every N s'],
+  ['clkp', 'Часы: +% урона', 'Clock: +% dmg']];
+const isCustom = n => (state.edits.customRelics || []).some(r => r.n === n);
+function relicEditor(L) {
+  if (!relSel || !ED.relics.some(r => r.n === relSel)) relSel = ED.relics[1].n;
+  const r = ED.relics.find(x => x.n === relSel);
+  const changed = !!(state.edits.relics || {})[relSel];
+  const types = ['', 'Все', 'Физ', 'Маг', ...D.elems], dots = ['', 'Все', ...D.dotKinds];
+  const sel = (k, list) => `<select data-re="${k}" style="width:100%">${list.map(v => `<option value="${esc(v)}" ${String(r[k] || '') === v ? 'selected' : ''}>${esc(v ? tr(v) : (L ? '— для —' : '— for —'))}</option>`).join('')}</select>`;
+  return `<div class="card"><div class="card-header"><h2>${L ? 'Мои реликвии' : 'My relics'}</h2></div><div class="card-body">
+    <div class="hint">${L ? 'Поставь цифры своего ролла — они сразу пойдут во все вкладки. Нужна та же реликвия с другим роллом на другом юните — «Создать копию».' : 'Enter your roll — it applies to all tabs at once. Same relic with another roll on another unit — “Make a copy”.'}</div>
+    <div class="field"><span>${L ? 'Реликвия' : 'Relic'}</span><select id="relSel">${ED.relics.slice(1).map(x => `<option ${x.n === relSel ? 'selected' : ''}>${esc(x.n)}</option>`).join('')}</select></div>
+    <div class="note">${esc(r.note || '')}</div>
+    <div class="key-block">${RFIELDS.map(([k, ru, en, tk]) => `<div class="field" style="grid-template-columns:1fr 80px ${tk ? '110px' : ''}"><span>${L ? ru : en}</span>
+      <input type="number" step="any" data-re="${k}" value="${r[k] ?? 0}">${tk ? sel(tk, k === 'dot' ? dots : types) : ''}</div>`).join('')}</div>
+    <div class="toolbar" style="margin-top:10px">
+      <button class="btn" id="relCopy">${L ? '⧉ Создать копию' : '⧉ Make a copy'}</button>
+      ${isCustom(relSel) ? `<button class="btn" id="relDel">${L ? '✕ Удалить копию' : '✕ Delete copy'}</button>`
+        : `<button class="btn" id="relReset" ${changed ? '' : 'disabled'}>${L ? '↺ Как на вики' : '↺ Wiki values'}</button>`}
+      ${changed ? `<span class="tag">${L ? 'изменена' : 'edited'}</span>` : ''}
+    </div></div></div>`;
+}
+function traitEditor(L) {
+  const te = state.edits.traits || {};
+  return `<div class="card"><div class="card-header"><h2>${L ? 'Трейты' : 'Traits'}</h2></div><div class="card-body">
+    <div class="hint">${L ? 'Урон %, снижение SPA %, радиус %. Можно поправить, если в игре поменяли цифры.' : 'Damage %, SPA reduction %, range %. Edit if the game changed numbers.'}</div>
+    <table><thead><tr><th>${L ? 'Трейт' : 'Trait'}</th><th class="num">${L ? 'Урон' : 'Dmg'}</th><th class="num">SPA</th><th class="num">${L ? 'Радиус' : 'Range'}</th></tr></thead><tbody>
+    ${ED.traits.slice(1).map(x => `<tr title="${esc(x.note)}"><td>${esc(x.n)}${te[x.n] ? ' <span class="tag">✎</span>' : ''}</td>${['d', 's', 'r'].map(k => `<td class="num"><input type="number" step="any" data-te="${esc(x.n)}" data-k="${k}" value="${x[k]}" style="width:70px"></td>`).join('')}</tr>`).join('')}
+    </tbody></table>
+    <button class="btn" id="traitReset" style="margin-top:10px">${L ? '↺ Трейты как на вики' : '↺ Wiki traits'}</button></div></div>`;
+}
+function setRelicField(k, v) {
+  const custom = (state.edits.customRelics || []).find(r => r.n === relSel);
+  if (custom) { custom[k] = v; return; }
+  const base = D.relics.find(x => x.n === relSel);
+  const rel = state.edits.relics || (state.edits.relics = {});
+  const e = rel[relSel] || (rel[relSel] = {});
+  if (String(base[k] ?? '') === String(v)) delete e[k]; else e[k] = v;
+  if (!Object.keys(e).length) delete rel[relSel];
 }
 $('#settingsGrid').addEventListener('input', e => {
   const el = e.target;
@@ -641,20 +834,48 @@ $('#settingsGrid').addEventListener('input', e => {
     if (k === 'lvl') renderSettings();
   } else if (el.dataset.tg) {
     state.settings.targets = Object.assign({}, state.settings.targets, { [el.dataset.tg]: el.value === '' ? 1 : Number(el.value) });
+  } else if (el.id === 'relSel') {
+    relSel = el.value; renderSettings(); return;
+  } else if (el.dataset.re) {
+    setRelicField(el.dataset.re, el.tagName === 'SELECT' ? el.value : (el.value === '' ? 0 : Number(el.value)));
+    save(); refreshAll(); if (el.tagName === 'SELECT') renderSettings(); return;
+  } else if (el.dataset.te) {
+    const n = el.dataset.te, k = el.dataset.k, base = D.traits.find(x => x.n === n);
+    const te = state.edits.traits || (state.edits.traits = {});
+    const e = te[n] || (te[n] = {});
+    const v = el.value === '' ? 0 : Number(el.value);
+    if (base[k] === v) delete e[k]; else e[k] = v;
+    if (!Object.keys(e).length) delete te[n];
+    save(); refreshAll(); return;
   } else if (el.dataset.gb) {
     const set = new Set(gBuffs()); el.checked ? set.add(el.dataset.gb) : set.delete(el.dataset.gb);
     state.settings.buffs = [...set];
   } else return;
-  save(); computeUnits(); renderUnits(); renderCompare();
+  save(); computeUnits(); renderUnits(); renderCompare(); renderTeam();
 });
 $('#settingsGrid').addEventListener('click', e => {
-  if (e.target.id !== 'resetSettings') return;
-  state.settings = {}; save(); computeUnits(); renderUnits(); renderCompare(); renderSettings();
+  const id = e.target.id, L = state.lang === 'ru';
+  if (id === 'resetSettings') { state.settings = {}; }
+  else if (id === 'relReset') { delete (state.edits.relics || {})[relSel]; }
+  else if (id === 'traitReset') { state.edits.traits = {}; }
+  else if (id === 'relDel') {
+    const n = relSel; state.edits.customRelics = (state.edits.customRelics || []).filter(r => r.n !== n); relSel = '';
+    for (const p of Object.values(state.profiles)) if (p.relic === n) delete p.relic;
+    for (const r of state.compare) if (r.relic === n) r.relic = '';
+  } else if (id === 'relCopy') {
+    const src = ED.relics.find(x => x.n === relSel);
+    let name = prompt(L ? 'Название копии (например: «Codex PWR 2»)' : 'Copy name (e.g. “Codex PWR 2”)', src.n + ' #2');
+    if (!name) return; name = name.trim();
+    if (!name || ED.relics.some(x => x.n === name)) { toast(L ? 'Такое имя уже есть' : 'Name already exists'); return; }
+    (state.edits.customRelics || (state.edits.customRelics = [])).push(Object.assign({}, src, { n: name }));
+    relSel = name;
+  } else return;
+  save(); refreshAll(); renderSettings();
 });
 
 // ── экспорт / импорт ──
 $('#btnExport').onclick = () => {
-  const data = { app: 'aa-units', v: 1, date: new Date().toISOString(), settings: state.settings, profiles: state.profiles, compare: state.compare, cmpGlobal: !!state.cmpGlobal };
+  const data = { app: 'aa-units', v: 1, date: new Date().toISOString(), settings: state.settings, profiles: state.profiles, compare: state.compare, cmpGlobal: !!state.cmpGlobal, team: state.team, edits: state.edits };
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }));
   a.download = `aa-units-${new Date().toISOString().slice(0, 10)}.json`; a.click();
@@ -669,7 +890,8 @@ $('#importFile').onchange = e => {
     state.settings = d.settings || {}; state.profiles = d.profiles || {};
     state.compare = (d.compare || []).map(r => Object.assign(newRow(), r, { buffs: Array.isArray(r.buffs) ? r.buffs : [] }));
     state.cmpGlobal = !!d.cmpGlobal;
-    save(); computeUnits(); applyLang(); toast(t('imported'));
+    state.team = Array.isArray(d.team) ? d.team : []; state.edits = d.edits || {};
+    save(); refreshAll(); applyLang(); toast(t('imported'));
   }).catch(() => toast(t('importBad'))).finally(() => { e.target.value = ''; });
 };
 
@@ -679,13 +901,18 @@ function setTab(id) {
   document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === id));
   document.querySelectorAll('.tab').forEach(s => s.classList.toggle('on', s.id === 'tab-' + id));
   if (id === 'compare') drawCharts(cmpCalc());
+  if (id === 'team') updateTeam();
 }
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => setTab(b.dataset.tab));
 document.querySelectorAll('.lang button').forEach(b => b.onclick = () => { state.lang = b.dataset.lang; save(); applyLang(); });
 
 // ── старт ──
 const dl = document.createElement('datalist'); dl.id = 'unitList';
-dl.innerHTML = D.units.map(u => `<option value="${esc(u.n)}">`).join(''); document.body.appendChild(dl);
+document.body.appendChild(dl);
+// список для выбора юнита: сначала мои (★), потом остальные
+function buildDatalist() { const mine = D.units.filter(u => prof(u.n).mine), rest = D.units.filter(u => !prof(u.n).mine);
+  dl.innerHTML = [...mine, ...rest].map(u => `<option value="${esc(u.n)}">${prof(u.n).mine ? '★' : ''}</option>`).join(''); }
+buildDatalist();
 $('#ver').textContent = 'data ' + D.version;
 $('#footVer').textContent = (state.lang === 'ru' ? 'данные от ' : 'data ') + D.version + ' · ' + D.units.length + ' units';
 computeUnits();

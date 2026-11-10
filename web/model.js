@@ -39,16 +39,21 @@
   }
 
   // сумма бафов вида kind, подходящих юниту (who: «Все» или совпадает с match); дубли — один раз; NO_STACK — меньшая группа вычитается
+  // элементы names: строка (баф из «Сравнения», дубли — один раз) или {n, m} (баф от баффера команды × число копий — суммируются)
   function buffSum(D, names, kind, match) {
-    const uniq = [...new Set(names || [])];
+    const list = [], seen = new Set();
+    for (const x of names || []) {
+      if (typeof x === 'string') { if (!seen.has(x)) { seen.add(x); list.push({ n: x, m: 1 }); } }
+      else if (x && x.n) list.push(x);
+    }
     const by = D._buffBy || (D._buffBy = Object.fromEntries(D.buffs.map(b => [b.n, b])));
     let total = 0;
     const on = [];
-    for (const n of uniq) {
+    for (const { n, m } of list) {
       const b = by[n];
       if (!b || b.kind !== kind) continue;
       if (match !== undefined && b.who !== 'Все' && b.who !== match) continue;
-      total += Number(b.v) || 0;
+      total += (Number(b.v) || 0) * (Number(m) || 1);
       on.push(n);
     }
     for (const g of D.noStack) {
@@ -159,6 +164,10 @@
       dotkind: dk, eff: row.eff, dottick, dotatk, amp, hitdps, dotdps, sumhit, sumdps, dps,
       dpsk: cost ? dps / cost * 1000 : 0, dps0, gain: dps0 ? dps / dps0 - 1 : 0,
       tot, totHit, totDot, totSum, avgdps: T ? tot / T : 0, ownHit, disc,
+      // что дали трейт / реликвия / пассивка / проклятия этому юниту — для подсказок в интерфейсе
+      info: { trait: tr.n || '', tD: tr.d || 0, tS: tr.s || 0, tR: tr.r || 0, relic: rl.n || '', rD, rC, rCD, rPwr, rClk,
+        rDot: dk && (rl.dotk === 'Все' || rl.dotk === dk) ? +rl.dot || 0 : 0, rDotAny: +rl.dot || 0, rDotK: rl.dotk || '', resm,
+        pasv, pc, pcd, pdot, kD, kS, kR },
     };
   }
 
@@ -174,7 +183,34 @@
     });
   }
 
-  const api = { calc, buffSum, tiers, lvlMul, evalFrag, DEFAULT_SETTINGS };
+  /* Бафы, которые дают бафферы команды (как лист «Команда» в Excel).
+     members: [{ name, cnt }] → [{ n: имя бафа, m: множитель, from: юнит }]. Баф 1 — «a» (или «a4» при 4+ копиях),
+     множитель = min(копий, capa), если capa > 0, иначе 1; баф 2 — «b» с capb. */
+  function teamBuffs(D, members) {
+    const out = [];
+    for (const mem of members || []) {
+      const tb = D.teamBuffs[mem.name];
+      const cnt = Math.max(0, parseInt(mem.cnt, 10) || 0);
+      if (!tb || cnt <= 0) continue;
+      const a = tb.a4 && cnt >= 4 ? tb.a4 : tb.a;
+      if (a) out.push({ n: a, m: tb.capa > 0 ? Math.min(cnt, tb.capa) : 1, from: mem.name });
+      if (tb.b) out.push({ n: tb.b, m: tb.capb > 0 ? Math.min(cnt, tb.capb) : 1, from: mem.name });
+    }
+    return out;
+  }
+
+  // данные с правками пользователя: свои значения реликвий/трейтов и свои копии реликвий
+  function withEdits(D, edits) {
+    edits = edits || {};
+    const rel = edits.relics || {}, trt = edits.traits || {};
+    return Object.assign({}, D, {
+      relics: D.relics.map(r => Object.assign({}, r, rel[r.n] || {})).concat((edits.customRelics || []).map(r => Object.assign({}, r))),
+      traits: D.traits.map(t => Object.assign({}, t, trt[t.n] || {})),
+      _buffBy: null,
+    });
+  }
+
+  const api = { calc, buffSum, teamBuffs, withEdits, tiers, lvlMul, evalFrag, DEFAULT_SETTINGS };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.AAModel = api;
 })(typeof window !== 'undefined' ? window : globalThis);

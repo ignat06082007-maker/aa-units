@@ -48,6 +48,7 @@ def main():
                      pwr=0, pwrk='') for t in B.RELICS],
         teamBuffs={k: dict(a=v[0], a4=v[1], capa=v[2], b=v[3], capb=v[4]) for k, v in B.TEAM_BUFFS.items()},
         dotKinds=list(B.DOT_KINDS),
+        elems=list(B.ELEM_RU.values()),
         atypes=['Single', 'AoE (Circle)', 'AoE (Cone)', 'AoE (Line)', 'AoE (Full)', '(нет данных)'],
         units=out_units,
     )
