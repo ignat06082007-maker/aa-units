@@ -113,15 +113,16 @@ SPECIAL = {
 # Плейсхолдеры: {E} — урон юнита по вики, {S} — SPA юнита итог, {hp} — HP призыва по вики (число).
 JELLY = 'jelly'
 SUMMON_RULES = {
-    'Commander': (lambda i, hp: dict(t='{hp}', c='spa', hit='{hp}'),
+    'Commander': (lambda i, hp: dict(t='{hp}', c='spa', hit='{hp}', ram=1),
                   'Survey Corps Member: таран по пути, урон ≈ HP призыва; 1 призыв за SPA (до 3 живых на Commander)'),
-    'Usurper': (lambda i, hp: dict(t='{hp}', c='spa', hit='{hp}'), 'маленький титан: таран, урон ≈ HP; 1 призыв за SPA (до 3)'),
-    'Usurper (Founder)': (lambda i, hp: dict(t='11*{hp}', c=480, hit='{hp}'),
+    'Usurper': (lambda i, hp: dict(t='{hp}', c='spa', hit='{hp}', ram=1), 'маленький титан: таран, урон ≈ HP; 1 призыв за SPA (до 3)'),
+    'Usurper (Founder)': (lambda i, hp: dict(t='11*{hp}', c=480, hit='{hp}', ram=1),
                           'The Extinction (ульта, КД 480 с): 10 Wall Titan + 1 Founding Titan, таран, урон ≈ HP каждого (= HP юнита по данным)'),
-    'Dracula (Unholy King)': (lambda i, hp: dict(t='25*{hp}', c=120, hit='{hp}') if i >= 10 else {},
+    'Dracula (Unholy King)': (lambda i, hp: dict(t='25*{hp}', c=120, hit='{hp}', ram=1) if i >= 10 else {},
                               'Soul Restraint (ульта с апгрейда 10, КД 120 с): 15 Ghoul + 5 Ghoul Rider (2 полоски) = 25 × HP (= урону)'),
-    'Supreme Being (Sovereign)': (lambda i, hp: dict(k='{hp}/10', hit='{hp}') if hp else {},
-                                  'Shade Birth каждые 10 убийств (до 3): таран, HP = 5× урона; считается от «убийств в секунду» в «Настройках»'),
+    'Supreme Being (Sovereign)': (lambda i, hp: dict(k='{hp}/10', hit='{hp}', ram=1, own=1) if hp else {},
+                                  'Shade Birth за каждые 10 СВОИХ убийств (до 3): таран, HP = 5× урона. Убийств в секунду — не больше '
+                                  '«целей / SPA» самого юнита. Бафы: только физ. урона (Commander, Griffin), Elfy / Wind Dragon / Idol не действуют'),
     'Jackal (Alpha)': (lambda i, hp: dict(t='{E}/3', c='spa', hit='{E}/3') if i >= 8 else {},
                        'Spirit Wolf (с апгрейда 8): взрыв при смерти на ⅓ урона Jackal, ~1 за атаку (предположение)'),
     # дрон: ОДИН удар (3 «хита» делят урон) 25% урона, SPA 5,5, живёт 30 с; с апгрейда 6 — 50%, SPA 4, 60 с; за 20 убийств
@@ -138,6 +139,9 @@ SUMMON_RULES = {
                           'урон ¼, SPA ×2, радиус ×2,5, живёт 60 с, до 3. Сама не атакует'),
 }
 NO_OWN_HITS = {'Elyssia', 'Elyssia (Abyssal)'}   # урон только призывами
+# Призывы-тараны (ram=1) наносят ФИЗИЧЕСКИЙ урон: их усиливают только бафы физ. урона + «Все», кроме Idol
+# (вики, Supreme Being (Sovereign): «Elfy, Wind Dragon, Idol не влияют; Griffin и Commander — да»). own=1 — убийства только свои.
+RAM_EXCLUDE = ('Idol (макс. апгрейд)', 'Idol (Star) — урон')
 # статов нет в базе вики — со страницы (шаблон Stats Box): (цена шага, урон, SPA, радиус)
 STATS_OVERRIDE = {
     'Elyssia': [(2000, 2000, 4, 9), (5000, 5000, 4, 12), (10000, 10000, 4, 12)],
@@ -471,6 +475,7 @@ KPS = f'MAX(0,N({S}$I$9))'        # врагов убивается в секу�
 WALK = f'MAX(0,N({S}$I$10))'      # время пути призыва до врага, с
 PWRP = f'N({S}$I$11)'             # +% урона за 1 PWR реликвии
 SUMB = S + '$I$38'         # бафы призывов (вид «Призыв», Zombie (Risen)) из «Настроек»
+BRAM = S + '$I$39'         # урон призывов-таранов: физ. + «Все» бафы, кроме Idol
 AOE = S + '$A$16:$B$21'
 BF, BM, BT, BS, BR, BC, DISC = (S + f'$I${r}' for r in range(25, 32))
 BUFF_FIRST, BUFF_LAST = 25, 54
@@ -715,6 +720,8 @@ def sheet_settings(wb):
     for kind, label in (('Урон', 'Не складываются: Blossom ↔ Idol'), ('SPA', 'Не складываются: Trickster ↔ Priest')):
         totals.append((label, '=' + nostack_expr(kind, active, lambda n: f'$C${BUFF_ROW[n]}')))
     totals.append(('Урон призывам (Zombie (Risen)), %', f'={sumifs("Призыв")}'))       # I38
+    totals.append(('Урон призывов-таранов (физ., без Idol), %', f'={sumifs("Урон","Физ")}+{sumifs("Урон","Все")}'
+                   + ''.join(f'-IF($E${BUFF_ROW[n]}="Да",$C${BUFF_ROW[n]},0)' for n in RAM_EXCLUDE)))   # I39
     for r, (label, f) in enumerate(totals, 25):
         ws.cell(r, 8, label).border = BOX
         c = ws.cell(r, 9, f); c.font, c.border, c.number_format = BOLD, BOX, '0'
@@ -931,7 +938,7 @@ UPG_COLS = ['Юнит', 'Апгрейд\n(0 = постановка)', 'Цена 
             'Вид DoT', 'Усиление\nDoT, %', 'стр. юнита', 'Призыв: урон\nза цикл (вики)', 'Призыв:\nцикл, с',
             'Призыв: урон\nза убийство', 'Множитель\nурона юнита', 'DPS\nпризывов',
             'Призыв: потолок\nурона за убийства, /с', 'Атакует\nсам', 'Множитель\nбез бафов\nсаппортов',
-            'Урон одного\nпризыва (вики)', 'Тип цикла\nпризыва']
+            'Урон одного\nпризыва (вики)', 'Тип цикла\nпризыва', 'Призыв-\nтаран', 'Убийства\nпризыва']
 
 
 def sheet_upgrades(wb, units, end):
@@ -976,10 +983,14 @@ def sheet_upgrades(wb, units, end):
             ws.cell(r, 37, f'={frag(sm["cap"])}' if sm.get('cap') else None)
             ws.cell(r, 40, f'={frag(sm["hit"])}' if sm.get('hit') else None)
             ws.cell(r, 41, cyc if cyc in ('spa', JELLY) else None)
-            for col in (32, 33, 34, 37, 40, 41):
+            ws.cell(r, 42, 'таран' if sm.get('ram') else None)
+            ws.cell(r, 43, 'свои' if sm.get('own') else None)
+            for col in (32, 33, 34, 37, 40, 41, 42, 43):
                 ws.cell(r, col).fill = GREY
             # DPS призывов = множитель урона × (за цикл / цикл + MIN(за убийство × убийств/с, потолок)) × бафы «Призыв»
-            ws.cell(r, 36, f'=AI{r}*(IF(N(AG{r})>0,N(AF{r})/AG{r},0)+MIN(N(AH{r})*{KPS},IF(N(AK{r})>0,AK{r},1E+300)))'
+            # таран: множитель без бафов × (1 + физ. бафы без Idol); «свои» убийства: не больше целей / SPA юнита
+            ws.cell(r, 36, f'=IF(AP{r}="таран",AM{r}*(1+{BRAM}/100),AI{r})*(IF(N(AG{r})>0,N(AF{r})/AG{r},0)'
+                           f'+MIN(N(AH{r})*IF(AQ{r}="свои",IF(S{r}>0,MIN({KPS},Y{r}/S{r}),0),{KPS}),IF(N(AK{r})>0,AK{r},1E+300)))'
                            f'*(1+{SUMB}/100)')
             # проклятие SPA: «+5%» в игре = атака медленнее → SPA × 1,05
             ws.cell(r, 19, f'=F{r}*MAX(0.1,1-({GS}+{cs}+{BS})/100)*(1-{tS}/100)*MAX(0.1,1+{curS}/100)')
@@ -1043,7 +1054,8 @@ CMP_SPEC = [  # (ключ, заголовок, ширина)
 CMP_HELP = ['urow', 'arow', 'lvl', 'dt', 'el', 'trn', 'rln', 'tD', 'tS', 'tR', 'rD', 'rC', 'rCD', 'pasv', 'cd', 'cs',
             'bd', 'bs', 'br', 'bc', 'disc', 'own', 'crit0', 'crit', 'cm', 'd0', 's0',
             'dk', 'rDot', 'rDotK', 'rdot', 'bdot', 'resm', 'pc', 'pcd', 'pdot', 'kD', 'kS', 'kR',
-            'tsec', 'nat', 'nfull', 'dfull', 'rClk', 'mul0', 'mulx', 'sumb', 'sbase', 'rPwr', 'own_hit', 'cyc', 'dmgdot']
+            'tsec', 'nat', 'nfull', 'dfull', 'rClk', 'mul0', 'mulx', 'sumb', 'sbase', 'rPwr', 'own_hit', 'cyc', 'dmgdot',
+            'bram', 'mram']
 CC = {k: get_column_letter(i) for i, (k, _, _) in enumerate(CMP_SPEC, 1)}
 CC.update({k: get_column_letter(len(CMP_SPEC) + 2 + i) for i, k in enumerate(CMP_HELP)})
 CMP_INPUT = ('name', 'upg', 'lvl_in', 'b1', 'b2', 'b3', 'b4', 'trait', 'relic', 'pas_in')
@@ -1055,7 +1067,7 @@ CMP_HINT = CMP_LAST + 1
 BUFF_ACTIVE = f'{S}$E${BUFF_FIRST}:$E${BUFF_LAST}'
 
 
-def buff_sum(r, kind, who_cell, only_global=False):
+def buff_sum(r, kind, who_cell, only_global=False, exclude=()):
     """Сумма выбранных в строке бафов вида kind. «На кого» проверяется только для Урон и DoT
     (SPA/Радиус/Крит/Скидка действуют на всех — так же, как в «Настройках»).
     only_global=True — только те из выбранных, что ещё и включены в «Настройках» (для вычета двойного учёта при B3=Да)."""
@@ -1070,14 +1082,15 @@ def buff_sum(r, kind, who_cell, only_global=False):
             cond.append(f'OR(INDEX({BUFF_WHO},{m})="Все",INDEX({BUFF_WHO},{m})={who_cell})')
         if only_global:
             cond.append(f'INDEX({BUFF_ACTIVE},{m})="Да"')
+        cond += [f'{CC[k]}{r}<>"{n}"' for n in exclude]
         terms.append(f'IFERROR(IF(AND({",".join(cond)}),N(INDEX({BUFF_VAL},{m})),0),0)')
     return '+'.join(terms)
 
 
-def row_buffs(r, kind, who_cell, glob_total, nostack=False):
+def row_buffs(r, kind, who_cell, glob_total, nostack=False, exclude=()):
     """Бафы строки + (при B3=Да) активные из «Настроек» без двойного учёта; «не складываются» — по общему набору."""
-    own = buff_sum(r, kind, who_cell)
-    dup = buff_sum(r, kind, who_cell, only_global=True)
+    own = buff_sum(r, kind, who_cell, exclude=exclude)
+    dup = buff_sum(r, kind, who_cell, only_global=True, exclude=exclude)
     add_back = f'+{NSG[kind]}' if nostack else ''     # в итогах «Настроек» уже вычтено — вернуть и посчитать заново
     expr = f'{own}+IF($B$3="Да",{glob_total}{add_back}-({dup}),0)'
     if nostack:
@@ -1135,12 +1148,16 @@ def engine(x, end, buf):
             'cyc': f'=IF({ok},0,IF({A("AO")}&""="spa",{x["spa"]},IF({A("AO")}&""="{JELLY}",'
                    f'IF(N({x["spa"]})>0,MAX({x["spa"]},({WALK}+1.5*{x["spa"]})/3),0),N({A("AG")}))))',
             'sumb': '=' + buf['sumb'],
+            'bram': '=' + buf['bram'],
+            # множитель урона призыва: таран — без бафов + физ. бафы без Idol; остальные — как юнит
+            'mram': f'=IF({ok},0,IF({A("AP")}&""="таран",{x["mul0"]}*(1+{x["bram"]}/100),{x["mulx"]}))',
             # призывы: (урон за цикл / цикл + урон за убийство × убийств/с) × множитель урона × бафы призывов
             'sbase': f'=IF({ok},0,IF(N({x["cyc"]})>0,N({A("AF")})/{x["cyc"]},0)'
-                     f'+MIN(N({A("AH")})*{KPS},IF(N({A("AK")})>0,N({A("AK")}),1E+300)))',
+                     f'+MIN(N({A("AH")})*IF({A("AQ")}&""="свои",IF(N({x["spa"]})>0,MIN({KPS},{x["tg"]}/{x["spa"]}),0),{KPS}),'
+                     f'IF(N({A("AK")})>0,N({A("AK")}),1E+300)))',
             # урон ОДНОГО удара/взрыва призыва (с уровнем, статами и бафами)
-            'sumhit': f'=IF({ok},"",IF(N({A("AN")})=0,"—",N({A("AN")})*{x["mulx"]}*(1+{x["sumb"]}/100)))',
-            'sumdps': f'=IF({ok},"",{x["sbase"]}*{x["mulx"]}*(1+{x["sumb"]}/100))',
+            'sumhit': f'=IF({ok},"",IF(N({A("AN")})=0,"—",N({A("AN")})*{x["mram"]}*(1+{x["sumb"]}/100)))',
+            'sumdps': f'=IF({ok},"",{x["sbase"]}*{x["mram"]}*(1+{x["sumb"]}/100))',
             'd0': f'=IF({ok},0,{A("E")}*{x["mul0"]})',
             's0': f'=IF({ok},0,{A("F")}*MAX(0.1,1-({GS}+{x["cs"]})/100)*(1-{x["tS"]}/100)*{x["kS"]})',
             'cost': f'=IF({ok},"",INDEX({uc("cost0")},{x["urow"]})+({A("D")}-INDEX({uc("cost0")},{x["urow"]}))'
@@ -1246,7 +1263,8 @@ def sheet_compare(wb, end, demo):
                'bc': row_buffs(r, 'Крит', x['dt'], BC),
                'disc': row_buffs(r, 'Скидка', x['dt'], DISC),
                'bdot': row_buffs(r, 'DoT', x['dk'], dot_global(x['dk'])),
-               'sumb': row_buffs(r, 'Призыв', x['dt'], SUMB)}
+               'sumb': row_buffs(r, 'Призыв', x['dt'], SUMB),
+               'bram': row_buffs(r, 'Урон', '"Физ"', BRAM, exclude=RAM_EXCLUDE)}
         f = engine(x, end, buf)
         for key, formula in f.items():
             ws[f'{c[key]}{r}'] = formula
@@ -1402,7 +1420,9 @@ def sheet_team(wb, end, demo):
         buf = {'bd': f'IF({x["dt"]}="Физ",{tot(0)},IF({x["dt"]}="Маг",{tot(1)},0))+{tot(2)}'
                      f'-{nostack_expr("Урон", ns_on, ns_val)}',
                'bs': f'{tot(3)}-{nostack_expr("SPA", ns_on, ns_val)}', 'br': tot(4), 'bc': tot(5), 'disc': tot(6),
-               'bdot': f'{dot_by_kind}+{tot(kind_idx[("DoT", "Все")])}', 'sumb': tot(len(TEAM_KINDS) - 1)}
+               'bdot': f'{dot_by_kind}+{tot(kind_idx[("DoT", "Все")])}', 'sumb': tot(len(TEAM_KINDS) - 1),
+               'bram': f'{tot(0)}+{tot(2)}' + ''.join(
+                   f'-{S}$C${BUFF_ROW[n]}*(COUNTIF({pb_rng("pb1")},"{n}")+COUNTIF({pb_rng("pb2")},"{n}"))' for n in RAM_EXCLUDE)}
         for key, formula in engine(x, end, buf).items():
             if key in t:
                 ws[f'{t[key]}{r}'] = formula

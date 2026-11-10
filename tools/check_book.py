@@ -61,7 +61,7 @@ def unit_inputs(Uws, col, r):
 
 
 def expected_dps(u, row, lvl=1.0, buff_pct=0.0, trait=None, relic=None, passive=True, dot_buff=0.0,
-                 crit_buff=0.0, spa_buff=0.0, inp=None, summon_buff=0.0):
+                 crit_buff=0.0, spa_buff=0.0, inp=None, summon_buff=0.0, ram_buff=0.0, targets=1.0):
     inp = inp or {'pas': u['pas_pct'], 'pasc': u['pas_crit'], 'pascd': u['pas_cd'], 'pasdot': u['pas_dot'],
                   'cd': 0, 'cs': 0, 'cc': None, 'curD': 0, 'curS': 0, 'curR': 0}
     tr = TRAIT.get(trait, (None, 0, 0, 0))
@@ -91,8 +91,10 @@ def expected_dps(u, row, lvl=1.0, buff_pct=0.0, trait=None, relic=None, passive=
     ev = lambda key: eval(sm[key].replace('{E}', repr(row['dmg'])).replace('{S}', repr(spa)), {}) if sm.get(key) else 0
     c = sm.get('c')
     cyc = spa if c == 'spa' else (max(spa, (WALK + 1.5 * spa) / 3) if spa > 0 else 0) if c == B.JELLY else (c or 0)
-    k, cap = ev('k') * KPS, ev('cap')
-    summ = mult * ((ev('t') / cyc if cyc else 0) + (min(k, cap) if cap else k)) * (1 + summon_buff / 100)
+    kps = (min(KPS, targets / spa) if spa > 0 else 0) if sm.get('own') else KPS
+    k, cap = ev('k') * kps, ev('cap')
+    smult = mult0 * (1 + ram_buff / 100) if sm.get('ram') else mult
+    summ = smult * ((ev('t') / cyc if cyc else 0) + (min(k, cap) if cap else k)) * (1 + summon_buff / 100)
     if not row['own_hits']:
         return summ
     hits = dmg / spa * (1 + crit * (cm - 1)) + dmg_dot * row['mult'] * row['ticks'] / spa * (1 + amp / 100) if spa > 0 else 0
@@ -142,11 +144,11 @@ for i in B.CMP_SLOTS:
     chosen = list(dict.fromkeys(s for s in (g(k) for k in ('b1', 'b2', 'b3', 'b4')) if s in buff))   # дубли — один раз
     who_ok = lambda s, who: buff[s][3] in ('Все', who)
 
-    def kind_sum(kind, who=None):
-        total = sum(buff[s][2] for s in chosen if buff[s][1] == kind and (who is None or who_ok(s, who)))
+    def kind_sum(kind, who=None, exclude=()):
+        total = sum(buff[s][2] for s in chosen if buff[s][1] == kind and (who is None or who_ok(s, who)) and s not in exclude)
         for k, ga, gb in B.NO_STACK:      # «не складываются» — вычесть меньшую группу
             if k == kind:
-                a = [buff[s][2] for s in chosen if s in ga]; b_ = [buff[s][2] for s in chosen if s in gb]
+                a = [buff[s][2] for s in chosen if s in ga and s not in exclude]; b_ = [buff[s][2] for s in chosen if s in gb and s not in exclude]
                 if a and b_:
                     total -= min(max(a), max(b_))
         return total
@@ -157,7 +159,7 @@ for i in B.CMP_SLOTS:
     uinp = unit_inputs(U, col, urow[u['name']])
     exp = expected_dps(u, row, lvl, pct, g('trait') or uinp['trait'], g('relic') or uinp['relic'],
                        g('pas_in') != 'Нет', dot_pct, kind_sum('Крит'), kind_sum('SPA'), inp=uinp,
-                       summon_buff=kind_sum('Призыв'))
+                       summon_buff=kind_sum('Призыв'), ram_buff=kind_sum('Урон', 'Физ', B.RAM_EXCLUDE))
     got = g('dps')
     print(f'   DoT: {g("dotname")}  усиление={g("dotamp")}  DPS от DoT={g("dotdps")}')
     ok = abs((got or 0) - exp) <= 1e-6 * max(1, exp)
@@ -188,9 +190,9 @@ for r, u, cnt, _ in team:
             given.append((bb, min(cnt, capb) if capb else 1))
 
 
-def team_sum(kind, who=None):
-    total = sum(buff[b][2] * m for b, m in given if buff[b][1] == kind and (who is None or buff[b][3] in ('Все', who)))
-    names = [b for b, _ in given]
+def team_sum(kind, who=None, exclude=()):
+    total = sum(buff[b][2] * m for b, m in given if buff[b][1] == kind and (who is None or buff[b][3] in ('Все', who)) and b not in exclude)
+    names = [b for b, _ in given if b not in exclude]
     for k, ga, gb in B.NO_STACK:
         if k == kind:
             a = [buff[s][2] for s in names if s in ga]; b_ = [buff[s][2] for s in names if s in gb]
@@ -205,7 +207,7 @@ for r, u, cnt, upg in team:
     uinp = unit_inputs(U, col, urow[u['name']])
     exp = expected_dps(u, row, lvl_set, team_sum('Урон', u['dtype']), uinp['trait'], uinp['relic'], True,
                        team_sum('DoT', row['dotkind']) if row['dotkind'] else 0, team_sum('Крит'), team_sum('SPA'),
-                       inp=uinp, summon_buff=team_sum('Призыв'))
+                       inp=uinp, summon_buff=team_sum('Призыв'), ram_buff=team_sum('Урон', 'Физ', B.RAM_EXCLUDE))
     got = T.cell(r, tk['dps']).value or 0
     ok = abs(got - exp) <= 1e-6 * max(1, exp)
     team_bad += not ok

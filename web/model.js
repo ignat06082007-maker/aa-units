@@ -40,7 +40,7 @@
 
   // сумма бафов вида kind, подходящих юниту (who: «Все» или совпадает с match); дубли — один раз; NO_STACK — меньшая группа вычитается
   // элементы names: строка (баф из «Сравнения», дубли — один раз) или {n, m} (баф от баффера команды × число копий — суммируются)
-  function buffSum(D, names, kind, match) {
+  function buffSum(D, names, kind, match, exclude) {
     const list = [], seen = new Set();
     for (const x of names || []) {
       if (typeof x === 'string') { if (!seen.has(x)) { seen.add(x); list.push({ n: x, m: 1 }); } }
@@ -52,6 +52,7 @@
     for (const { n, m } of list) {
       const b = by[n];
       if (!b || b.kind !== kind) continue;
+      if (exclude && exclude.includes(n)) continue;
       if (match !== undefined && b.who !== 'Все' && b.who !== match) continue;
       total += (Number(b.v) || 0) * (Number(m) || 1);
       on.push(n);
@@ -110,6 +111,8 @@
     const bd = buffSum(D, B, 'Урон', dt), bs = buffSum(D, B, 'SPA'), br = buffSum(D, B, 'Радиус');
     const bc = buffSum(D, B, 'Крит'), disc = Math.min(90, buffSum(D, B, 'Скидка'));
     const bdot = dk ? buffSum(D, B, 'DoT', dk) : 0, sumb = buffSum(D, B, 'Призыв');
+    // призывы-тараны бьют физическим уроном: только физ. бафы + «Все», кроме Idol (вики, Supreme Being (Sovereign))
+    const bram = buffSum(D, B, 'Урон', 'Физ', D.ramExclude || []);
 
     const cc = inp.cc === null || inp.cc === '' || inp.cc === undefined ? null : +inp.cc;
     const crit0 = Math.min(1, (cc === null ? u.crit : cc / 100) + ((+S.gCrit || 0) + rC + pc) / 100);
@@ -138,9 +141,12 @@
     const sm = row.summon || {};
     const cyc = sm.c === 'spa' ? spa : sm.c === 'jelly' ? (spa > 0 ? Math.max(spa, (S.walk + 1.5 * spa) / 3) : 0) : (+sm.c || 0);
     const fT = evalFrag(sm.t, E, spa), fK = evalFrag(sm.k, E, spa), fCap = evalFrag(sm.cap, E, spa), fHit = evalFrag(sm.hit, E, spa);
-    const sbase = (cyc > 0 ? fT / cyc : 0) + Math.min(fK * Math.max(0, S.kps), fCap > 0 ? fCap : Infinity);
-    const sumdps = sbase * mulx * (1 + sumb / 100);
-    const sumhit = fHit ? fHit * mulx * (1 + sumb / 100) : 0;
+    // «свои» убийства (Shade Birth): юнит не убьёт больше, чем целей за атаку / SPA
+    const kps = sm.own ? (spa > 0 ? Math.min(Math.max(0, S.kps), tg / spa) : 0) : Math.max(0, S.kps);
+    const sbase = (cyc > 0 ? fT / cyc : 0) + Math.min(fK * kps, fCap > 0 ? fCap : Infinity);
+    const mram = sm.ram ? mul0 * (1 + bram / 100) : mulx;
+    const sumdps = sbase * mram * (1 + sumb / 100);
+    const sumhit = fHit ? fHit * mram * (1 + sumb / 100) : 0;
 
     const dps = hitdps + dotdps + sumdps;
     const cost0 = u.rows[0][2];
