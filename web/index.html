@@ -103,6 +103,11 @@ tbody tr:hover { background: rgba(14,165,233,.06); }
 .charts { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 14px; margin-top: 16px; }
 .chart .card-body { padding: 8px 10px 12px; }
 .chart canvas { width: 100%; display: block; }
+/* главная: карточки не уже таблицы; таблица прокручивается внутри карточки, а не вылезает в соседнюю */
+.home-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 500px), 1fr)) !important; }
+.home-grid .card { min-width: 0; }
+.home-grid .card-body { overflow-x: auto; }
+.home-grid td.uname { white-space: normal; }
 .legend { display: flex; gap: 12px; font-size: 12px; color: var(--muted); padding: 0 4px 6px; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
 
@@ -193,7 +198,7 @@ footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(
   <!-- ГЛАВНАЯ -->
   <section class="tab" id="tab-home">
     <div class="hint" style="margin-bottom:10px" data-ru="Топы считаются с твоими настройками, постоянными бафами, трейтами и реликвиями. Нажми на юнита — откроется карточка. «Лучшие из моих» — юниты, отмеченные ★." data-en="Tops use your settings, always-on buffs, traits and relics. Click a unit to open its card. “Best of mine” — units marked ★."></div>
-    <div class="grid home-grid" id="homeGrid" style="grid-template-columns:repeat(auto-fill,minmax(430px,1fr))"></div>
+    <div class="grid home-grid" id="homeGrid"></div>
   </section>
 
   <!-- СРАВНЕНИЕ -->
