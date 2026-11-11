@@ -76,8 +76,8 @@ def expected_dps(u, row, lvl=1.0, buff_pct=0.0, trait=None, relic=None, passive=
     mult0 = (lvl * (1 + GD / 100) * (1 + inp['cd'] / 100) * (1 + inp['curD'] / 100)
              * (1 + ((inp['pas'] if passive else 0) + rd) / 100) * (1 + tr[1] / 100) * (1 + pwr * (_st['I11'].value or 1.75) / 100))
     mult = mult0 * (1 + buff_pct / 100)
-    dmg = row['dmg'] * mult
-    dmg_dot = dmg                    # любой DoT — от финального удара со всеми бафами
+    dmg = row['dmg'] * mult * row.get('hm', 1)          # скрытый множитель удара (вики, Trivia)
+    dmg_dot = row['dmg'] * mult                         # DoT — от финального удара, без скрытого множителя
     pc, pcd, pdot = (inp['pasc'], inp['pascd'], inp['pasdot']) if passive else (0, 0, 0)
     base_crit = u['crit'] if inp['cc'] is None else inp['cc'] / 100
     crit = min(1, base_crit + (rc + pc + crit_buff) / 100)

@@ -135,8 +135,9 @@
     const ownHit = !!row.own;
 
     const E = row.dmg;
-    const dmg = E * mulx, d0 = E * mul0;
-    const dmgdot = dmg;    // любой DoT — от финального удара со всеми бафами
+    const hm = +row.hm || 1;      // скрытый множитель удара (вики, Trivia) — DoT не затрагивает
+    const dmg = E * mulx * hm, d0 = E * mul0 * hm;
+    const dmgdot = dmg / hm;    // любой DoT — от финального удара со всеми бафами
     const rdot = dk ? ((rl.dotk === 'Все' || rl.dotk === dk) ? +rl.dot || 0 : 0) + pdot : 0;
     const amp = rdot + bdot;
     const dottick = dk && ownHit ? dmgdot * row.mult * (1 + amp / 100) : 0;
@@ -173,7 +174,7 @@
     const cost0 = u.rows[0][2];
     const cost = cost0 + (row.total - cost0) * (1 - disc / 100);
     const dps0 = (ownHit && s0 > 0 ? (d0 / s0 * (1 + crit0 * (cm - 1))
-      + (S.dot ? d0 * row.mult * row.ticks / s0 * (1 + rdot / 100) : 0) + d0 * rClk / 100) * tg : 0) + sbase * mul0;
+      + (S.dot ? d0 / hm * row.mult * row.ticks / s0 * (1 + rdot / 100) : 0) + d0 * rClk / 100) * tg : 0) + sbase * mul0;
 
     // урон за время боя T: атаки в 0, SPA, 2·SPA…; DoT каждой атаки тикает раз в tick с, недотикавшее к концу не считается
     const T = Math.max(0, +S.time || 0), tick = Math.max(0.01, +S.tick || 1);

@@ -17,10 +17,10 @@ def compact_row(r):
     """Одна строка апгрейда — массивом, чтобы файл был меньше (порядок = ROW_KEYS)."""
     sm = r['summon'] or {}
     return [r['upg'], r['step'], r['total'], r['dmg'], r['spa'], r['rng'], r['atype'], r['eff'], r['dotkind'],
-            r['ticks'], r['mult'], r['note'], {k: v for k, v in sm.items()} or 0, 1 if r['own_hits'] else 0]
+            r['ticks'], r['mult'], r['note'], {k: v for k, v in sm.items()} or 0, 1 if r['own_hits'] else 0, r.get('hm', 1)]
 
 
-ROW_KEYS = ['upg', 'step', 'total', 'dmg', 'spa', 'rng', 'atype', 'eff', 'dotkind', 'ticks', 'mult', 'note', 'summon', 'own']
+ROW_KEYS = ['upg', 'step', 'total', 'dmg', 'spa', 'rng', 'atype', 'eff', 'dotkind', 'ticks', 'mult', 'note', 'summon', 'own', 'hm']
 
 
 # цифры способностей (data/ability_fx.json): модель + числа + цитата с вики; нет файла — пусто

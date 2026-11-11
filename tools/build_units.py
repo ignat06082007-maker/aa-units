@@ -144,6 +144,8 @@ SUMMON_RULES = {
                           'Abyssal Jelly: раз в SPA (без врага), до 3; взрыв = урон Elyssia; откат 1,5×SPA. Abyssal Eel за 5 убийств: '
                           'урон ¼, SPA ×2, радиус ×2,5, живёт 60 с, до 3. Сама не атакует'),
 }
+# Скрытый множитель удара (вики, раздел Trivia: «deals 3x its displayed damage at upgrade 6-8», DoT не затронут)
+HIDDEN_HIT = {'Ghost-kun (Bound)': {6: 3, 7: 3, 8: 3}, 'Legendary Assassin (Prime)': {6: 2, 7: 2}}
 NO_OWN_HITS = {'Elyssia', 'Elyssia (Abyssal)'}   # урон только призывами (noown=1 в правиле — то же для одного апгрейда)
 # Призывы-тараны (ram=1) наносят ФИЗИЧЕСКИЙ урон: их усиливают только бафы физ. урона + «Все», кроме Idol
 # (вики, Supreme Being (Sovereign): «Elfy, Wind Dragon, Idol не влияют; Griffin и Commander — да»). own=1 — убийства только свои.
@@ -395,6 +397,7 @@ def load():
             row['summon'] = {k: (v.replace('{hp}', repr(hp or 0)) if isinstance(v, str) else v)
                              for k, v in (rule[0](i, hp or 0) if rule else {}).items()}
             row['own_hits'] = u['name'] not in NO_OWN_HITS and not row['summon'].get('noown')
+            row['hm'] = HIDDEN_HIT.get(u['name'], {}).get(i, 1)
         summ = SUMMON_RULES[u['name']][1] if u['name'] in SUMMON_RULES else SUMMON_NOTES.get(u['name'], '')
         maxdmg = max(r['dmg'] for r in rows)
         role = ('Баффер' if u['name'] in BUFFERS or u.get('aura_buff') else
@@ -402,6 +405,10 @@ def load():
                 'Саппорт' if maxdmg == 0 else 'Урон')
         place = 'Холм' if u.get('hill_unit') else 'Гибрид' if u.get('hybrid_placement') else 'Земля'
         feats = [SPECIAL[u['name']]] if u['name'] in SPECIAL else []
+        if u['name'] in HIDDEN_HIT:
+            hh = HIDDEN_HIT[u['name']]
+            feats.append(f"Вики: на апгрейдах {min(hh)}–{max(hh)} бьёт ×{max(hh.values()):g} от заявленного урона "
+                         f"(DoT — без этого множителя) — учтено в расчёте")
         if u.get('evolve'): feats.append('Эволюция: ' + clean((u['evolve'] or {}).get('evolve_text', '')))
         if u.get('active_attack') and isinstance(u['active_attack'], str) and ':' not in u['active_attack']:
             feats.append('Способность: ' + clean(u['active_attack']))
@@ -978,7 +985,8 @@ UPG_COLS = ['Юнит', 'Апгрейд\n(0 = постановка)', 'Цена 
             'Вид DoT', 'Усиление\nDoT, %', 'стр. юнита', 'Призыв: урон\nза цикл (вики)', 'Призыв:\nцикл, с',
             'Призыв: урон\nза убийство', 'Множитель\nурона юнита', 'DPS\nпризывов',
             'Призыв: потолок\nурона за убийства, /с', 'Атакует\nсам', 'Множитель\nбез бафов\nсаппортов',
-            'Урон одного\nпризыва (вики)', 'Тип цикла\nпризыва', 'Призыв-\nтаран', 'Убийства\nпризыва']
+            'Урон одного\nпризыва (вики)', 'Тип цикла\nпризыва', 'Призыв-\nтаран', 'Убийства\nпризыва',
+            'Скрытый\nмножитель\nудара (вики)']
 
 
 def sheet_upgrades(wb, units, end):
@@ -1011,7 +1019,7 @@ def sheet_upgrades(wb, units, end):
                            f'*(1+{rPwr}*{PWRP}/100)')
             # AI — с бафами саппортов: бафы складываются между собой и умножают урон (Wind Dragon ×4 / Griffin = ×2)
             ws.cell(r, 35, f'=AM{r}*(1+IF(P{r}="Физ",{BF},IF(P{r}="Маг",{BM},{BT}))/100)')
-            ws.cell(r, 18, f'=E{r}*AI{r}')
+            ws.cell(r, 18, f'=E{r}*AI{r}*IF(N(AR{r})>0,AR{r},1)')
             ws.cell(r, 38, 'Да' if row['own_hits'] else 'Нет').fill = GREY
             sm = row['summon']
             frag = lambda s: s.replace('{E}', f'E{r}').replace('{S}', f'S{r}').replace('{TC}', f'IFERROR(VLOOKUP("AoE (Circle)",{AOE},2,0),1)')
@@ -1025,7 +1033,8 @@ def sheet_upgrades(wb, units, end):
             ws.cell(r, 41, cyc if cyc in ('spa', JELLY) else None)
             ws.cell(r, 42, 'таран' if sm.get('ram') else None)
             ws.cell(r, 43, 'свои' if sm.get('own') else None)
-            for col in (32, 33, 34, 37, 40, 41, 42, 43):
+            ws.cell(r, 44, row['hm'] if row['hm'] != 1 else None)
+            for col in (32, 33, 34, 37, 40, 41, 42, 43, 44):
                 ws.cell(r, col).fill = GREY
             # DPS призывов = множитель урона × (за цикл / цикл + MIN(за убийство × убийств/с, потолок)) × бафы «Призыв»
             # таран: множитель без бафов × (1 + физ. бафы без Idol); «свои» убийства: не больше целей / SPA юнита
@@ -1041,7 +1050,7 @@ def sheet_upgrades(wb, units, end):
             ws.cell(r, 29, row['dotkind'] or None).fill = GREY
             ws.cell(r, 30, f'=IF(AC{r}="",0,{dot_global(f"AC{r}")}+{relic_dot(rDot, rDotK, f"AC{r}")}+{pasdot})')
             # DoT (любой) — от финального удара со всеми бафами (R)
-            ws.cell(r, 24, f'=IF(AND({DOT}="Да",S{r}>0,AL{r}<>"Нет"),R{r}'
+            ws.cell(r, 24, f'=IF(AND({DOT}="Да",S{r}>0,AL{r}<>"Нет"),E{r}*AI{r}'
                            f'*N(L{r})*N(K{r})/S{r}*(1+AD{r}/100),0)')
             ws.cell(r, 25, f'=IFERROR(VLOOKUP(H{r},{AOE},2,0),1)')
             # итог = (удар с критом + DoT + часы реликвии) × цели + призывы
@@ -1095,7 +1104,7 @@ CMP_HELP = ['urow', 'arow', 'lvl', 'dt', 'el', 'trn', 'rln', 'tD', 'tS', 'tR', '
             'bd', 'bs', 'br', 'bc', 'disc', 'own', 'crit0', 'crit', 'cm', 'd0', 's0',
             'dk', 'rDot', 'rDotK', 'rdot', 'bdot', 'resm', 'pc', 'pcd', 'pdot', 'kD', 'kS', 'kR',
             'tsec', 'nat', 'nfull', 'dfull', 'rClk', 'mul0', 'mulx', 'sumb', 'sbase', 'rPwr', 'own_hit', 'cyc', 'dmgdot',
-            'bram', 'mram']
+            'bram', 'mram', 'hm']
 CC = {k: get_column_letter(i) for i, (k, _, _) in enumerate(CMP_SPEC, 1)}
 CC.update({k: get_column_letter(len(CMP_SPEC) + 2 + i) for i, k in enumerate(CMP_HELP)})
 CMP_INPUT = ('name', 'upg', 'lvl_in', 'b1', 'b2', 'b3', 'b4', 'trait', 'relic', 'pas_in')
@@ -1197,13 +1206,14 @@ def engine(x, end, buf):
             # урон ОДНОГО удара/взрыва призыва (с уровнем, статами и бафами)
             'sumhit': f'=IF({ok},"",IF(N({A("AN")})=0,"—",N({A("AN")})*{x["mram"]}*(1+{x["sumb"]}/100)))',
             'sumdps': f'=IF({ok},"",{x["sbase"]}*{x["mram"]}*(1+{x["sumb"]}/100))',
-            'd0': f'=IF({ok},0,{A("E")}*{x["mul0"]})',
+            'hm': f'=IF({ok},1,IF(N({A("AR")})>0,N({A("AR")}),1))',
+            'd0': f'=IF({ok},0,{A("E")}*{x["mul0"]}*{x["hm"]})',
             's0': f'=IF({ok},0,{A("F")}*MAX(0.1,1-({GS}+{x["cs"]})/100)*(1-{x["tS"]}/100)*{x["kS"]})',
             'cost': f'=IF({ok},"",INDEX({uc("cost0")},{x["urow"]})+({A("D")}-INDEX({uc("cost0")},{x["urow"]}))'
                     f'*(1-{x["disc"]}/100))',
-            'dmg': f'=IF({ok},"",{A("E")}*{x["mulx"]})',
+            'dmg': f'=IF({ok},"",{A("E")}*{x["mulx"]}*{x["hm"]})',
             # урон, от которого считается DoT: финальный удар со всеми бафами (кровотечение, горение, яд, иссушение)
-            'dmgdot': f'=IF({ok},0,{x["dmg"]})',
+            'dmgdot': f'=IF({ok},0,{x["dmg"]}/{x["hm"]})',
             'dottick': f'=IF({ok},"",IF(OR({x["dk"]}="",{x["own_hit"]}="Нет"),"—",{x["dmgdot"]}*N({A("L")})'
                        f'*(1+({x["rdot"]}+{x["bdot"]})/100)))',
             'dotatk': f'=IF({ok},"",IF(N({x["dottick"]})=0,"—",{x["dottick"]}*N({A("K")})))',
@@ -1226,7 +1236,7 @@ def engine(x, end, buf):
             'dps': f'=IF({ok},"",{x["hitdps"]}+{x["dotdps"]}+{x["sumdps"]})',
             'dpsk': f'=IF(OR({ok},N({x["cost"]})=0),"",{x["dps"]}/{x["cost"]}*1000)',
             'dps0': f'=IF({ok},"",IF(AND({x["s0"]}>0,{x["own_hit"]}<>"Нет"),({x["d0"]}/{x["s0"]}*(1+{x["crit0"]}*({x["cm"]}-1))'
-                    f'+IF({DOT}="Да",{x["d0"]}*N({A("L")})*N({A("K")})/{x["s0"]}*(1+{x["rdot"]}/100),0)'
+                    f'+IF({DOT}="Да",{x["d0"]}/{x["hm"]}*N({A("L")})*N({A("K")})/{x["s0"]}*(1+{x["rdot"]}/100),0)'
                     f'+{x["d0"]}*{x["rClk"]}/100)*{x["tg"]},0)+{x["sbase"]}*{x["mul0"]})',
             'gain': f'=IF(OR({ok},N({x["dps0"]})=0),"",{x["dps"]}/{x["dps0"]}-1)',
             # «разгон» DoT: % базового урона юнита (вики × уровень), который DoT наносит за одну атаку
