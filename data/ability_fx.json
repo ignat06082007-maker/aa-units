@@ -1,0 +1,1686 @@
+{
+ "Agony (Divine)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Pushes enemies towards their spawn.",
+   "ru": "Отталкивание врагов назад — контроль, на урон не влияет."
+  }
+ ],
+ "Dracula (Unholy King)": [
+  {
+   "ability": "Soul Restraint: Level 0",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "summons a total of 20 units from the base ... Global Cooldown: 120s",
+   "ru": "Призывает 20 упырей из базы (глобальный КД 120 с) — урон призывов, не самого юнита."
+  }
+ ],
+ "Fiery Commander (Hellfire)": [
+  {
+   "ability": "Zanka No Tachi",
+   "type": "active",
+   "model": "burst",
+   "mult": 11,
+   "cd": null,
+   "hits": 1,
+   "aoe": null,
+   "needs_input": true,
+   "quote": "The attack deals Yamamoto's base damage, plus 2% damage for every soul consumed",
+   "ru": "Разовый удар ×(1 + 0,02×души): на 500 душах ×11. Перезарядка и AoE на вики не указаны — впиши КД (фактически души копятся с убийств).",
+   "souls_pct_each": 2,
+   "souls_max": 500
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Zanka No Tachi» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Ice Queen (Empire's Strongest)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect (Has a cooldown of 10-12 seconds)",
+   "ru": "Заморозка врагов (КД 10–12 с) — контроль, на урон не влияет."
+  }
+ ],
+ "Illusionist (Transcended)": [
+  {
+   "ability": "Transcending Heavenly Pressure",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "enemies ... 25% health or lower ... set into a fragile state, which leaves them one hit",
+   "ru": "Враги ≤25% HP (не боссы) становятся «хрупкими» и умирают от любого удара — добивание, в формулу DPS не переводится."
+  },
+  {
+   "ability": "Beyond the Heavens",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "all enemies on the map ... are stunned for 5 seconds ... Ability Cooldown is 6 minutes",
+   "ru": "Стан всех врагов на 5 с (КД 6 мин) + хрупкость ≤35% HP — контроль, урон не повышает."
+  }
+ ],
+ "Infinity Mage (Endless)": [
+  {
+   "ability": "Hexed",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": 30,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "25% (Upgrade 7+) chance to Hex enemies - enemies affected ... take 30% more Magic damage permanently",
+   "ru": "Дебафф Hex (шанс 25% за удар, навсегда): цель получает +30% маг. урона, сама Infinity Mage маг — считаем как постоянные +30% по уже проклятой цели.",
+   "chance_pct": 25
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Hexed» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "InHuman (Nullifier)": [
+  {
+   "ability": "No Longer Human",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "temporarily nullifies enemy passives ... Duration: 20s *Global Cooldown: 90s",
+   "ru": "Снимает пассивки врагов (огонь, лёд, броня, щиты, полёт) на 20 с, КД 90 с — косвенно, числа урона нет."
+  }
+ ],
+ "JIO (Over Heaven)": [
+  {
+   "ability": "This is... The Universe Over Heaven!",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "can stop time for 20 seconds at the whole map ... The cooldown is 6 minutes.",
+   "ru": "Остановка времени на всей карте на 20 с (КД 6 мин) — контроль, урон не повышает."
+  }
+ ],
+ "Lulu (Emperor)": [
+  {
+   "ability": "Mind Control",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Duration: 5s * Cooldown: 40s",
+   "ru": "Враги в радиусе идут назад 5 с (КД 40 с) — контроль."
+  }
+ ],
+ "Mangaka (Artist)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "dot",
+   "kind": null,
+   "pct_per_tick": null,
+   "ticks": null,
+   "cd": null,
+   "on_hit": true,
+   "needs_input": true,
+   "quote": "Wild Card: Applies fire, slow, bleed, freeze, or knockback randomly.",
+   "ru": "Случайный эффект за удар: иногда горение или кровотечение (числа не указаны), иначе контроль — впиши долю DoT сам или оставь 0."
+  }
+ ],
+ "Pirate King (Final)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect.",
+   "ru": "Стан/заморозка врагов — контроль, на урон самого юнита не влияет."
+  }
+ ],
+ "Ratio (Overtime)": [
+  {
+   "ability": "Overtime",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": 35,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "will gain a compound 1% Damage buff each time a wave passes",
+   "ru": "+1% урона за волну (сложный процент): к 30-й волне ≈ +35%, к 50-й ≈ +64% — поменяй под свою волну.",
+   "per_wave_pct": 1
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Overtime» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Shadowgirl (Time Traveller)": [
+  {
+   "ability": "homura:timestop",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "перезарядка 42.0 с, длительность 4.0 с",
+   "ru": "Остановка времени (КД 42 с, длит. 4 с по данным игры) — контроль, урон не повышает."
+  }
+ ],
+ "Snow Reaper (Final)": [
+  {
+   "ability": "Gale of the Moon",
+   "type": "active",
+   "model": "burst",
+   "mult": 0.1667,
+   "cd": 40,
+   "hits": 40,
+   "aoe": true,
+   "needs_input": true,
+   "quote": "take 1/6th of her damage every half second ... bar ... fills up by 1.25 every half second",
+   "ru": "Пока активно — 1/6 урона каждые 0,5 с всем в радиусе (+ доп. удар ×1 на 6 стаках Chilled). Оценка: шкала 100, расход 5/с → ~20 с = 40 тиков, перезарядка ~40 с (2,5/с) — проверь в игре."
+  }
+ ],
+ "Supreme Being (Sovereign)": [
+  {
+   "ability": "Shade Birth",
+   "type": "passive",
+   "model": "burst",
+   "mult": 5,
+   "cd": null,
+   "hits": 1,
+   "aoe": false,
+   "needs_input": true,
+   "quote": "Summons a Shade Birth after taking down 10 enemies (max 3) ... 5x of his displayed damage",
+   "ru": "Каждые 10 убийств — призрак, бьющий при столкновении на ×5 урона (физ.); частота зависит от убийств — впиши КД."
+  },
+  {
+   "ability": "Nihilism",
+   "type": "active",
+   "model": "burst",
+   "mult": 5,
+   "cd": null,
+   "hits": 1,
+   "aoe": true,
+   "needs_input": true,
+   "quote": "any enemy in the range of Supreme Being will take 5x of his damage",
+   "ru": "Nihilism: через 12 с после включения ×5 урона всем в радиусе. Перезарядка на вики не указана — впиши."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Shade Birth / Nihilism» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Switchblade": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "crit",
+   "crit_pct": null,
+   "critdmg_pct": 100,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "крит наносит +100% урона (×2), как у Lex",
+   "ru": "Криты бьют ×2 (+100% крит-урона), постоянно; шанс крита — из статов/трейтов."
+  }
+ ],
+ "Switchblade (Deception)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "crit",
+   "crit_pct": null,
+   "critdmg_pct": 100,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "Dismember ... take 20% more damage permanently; крит наносит +100% урона (×2)",
+   "ru": "Криты ×2 (+100% крит-урона), плюс Dismember: цель получает +20% урона навсегда (не стакается) — добавлено в extra.",
+   "extra": {
+    "model": "selfbuff",
+    "pct": 20,
+    "always": true
+   }
+  }
+ ],
+ "Trickster (Release)": [
+  {
+   "ability": "Kannonbiraki Benihime Aratame",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Kisuke will buff his allies' range by 20% and SPA by 10%.",
+   "ru": "Бафф союзникам: +20% радиуса и −10% SPA — это саппорт, на свой урон по тексту не влияет."
+  }
+ ],
+ "Vengeful Swordsman (Sky Reaver)": [
+  {
+   "ability": "Spellforged Blades",
+   "type": "passive",
+   "model": "extra_hit",
+   "pct_dps": 100,
+   "needs_input": false,
+   "quote": "also deal his damage as additional Magic damage ... This means he does x2 his displayed damage",
+   "ru": "Каждый удар дублируется магическим уроном — DPS ×2 (+100%), постоянно."
+  },
+  {
+   "ability": "White Flash Draw Technique",
+   "type": "passive",
+   "model": "crit",
+   "crit_pct": 100,
+   "critdmg_pct": null,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": true,
+   "quote": "The first hit against an enemy will have + 100% Critical Chance and penetrate 60%",
+   "ru": "Только ПЕРВЫЙ удар по каждому врагу — гарантированный крит и пробитие 60% сопротивлений; доля таких ударов зависит от режима — впиши сам.",
+   "first_hit_only": true
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Spellforged Blades» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Arlem": [
+  {
+   "ability": "armin:titan_shift",
+   "type": "active",
+   "model": "burst",
+   "mult": null,
+   "cd": 60,
+   "hits": 1,
+   "aoe": null,
+   "needs_input": true,
+   "quote": "armin:titan_shift ... перезарядка 60.0 с",
+   "ru": "Активная атака (превращение в титана), КД 60 с по данным игры; множитель урона нигде не указан — впиши."
+  }
+ ],
+ "Ashborn (Decay)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Wither: ; Prevents regen enemies from healing.",
+   "ru": "Иссушение мешает врагам с регеном лечиться — урон не повышает."
+  }
+ ],
+ "Black Blade (Captain)": [
+  {
+   "ability": "True Damage",
+   "type": "passive",
+   "model": "extra_hit",
+   "pct_dps": 10,
+   "needs_input": false,
+   "quote": "deal 10% True Damage on every attack and attack through shields",
+   "ru": "+10% чистого урона за каждую атаку и урон сквозь щиты."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «True Damage» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Blaze Frost": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Blaze Frost (Released)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Blood (Unleashed)": [
+  {
+   "ability": "Bleed Amplification",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "making them take 5x more bleed damage",
+   "ru": "Враги получают ×5 урона от кровотечения — усиливает других кровотечников, свой удар не меняет."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Bleed Amplification» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Bloodcry (Fallen)": [
+  {
+   "ability": "True Vampire",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "making them take 5x bleed damage",
+   "ru": "Враги получают ×5 урона от кровотечения — по тексту сам юнит кровотечение не накладывает, свой DPS не меняет."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «True Vampire» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Bunny (Night)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect.",
+   "ru": "Стан/заморозка врагов — контроль, на урон самого юнита не влияет."
+  }
+ ],
+ "Calm Killer (Meets the End)": [
+  {
+   "ability": "Meets the End",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Duration: 6 Seconds *Global Cooldown: 60 Seconds",
+   "ru": "Все враги идут назад 6 с (глоб. КД 60 с) — контроль."
+  }
+ ],
+ "Chuuni (Delusion)": [
+  {
+   "ability": "Pact Of Frailty",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": 50,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "takes 50% increased Magic damage. This effect can be stack up to 3 times.",
+   "ru": "Цель получает +50% маг. урона, до 3 стаков (+150%), только одна цель на Chuuni. По боссу ставь 150.",
+   "max_pct": 150,
+   "stacks": 3,
+   "single_target": true
+  },
+  {
+   "ability": "Pact Of Revelation",
+   "type": "passive",
+   "model": "extra_hit",
+   "pct_dps": 126,
+   "needs_input": false,
+   "quote": "takes damage equal to 7% of Chuuni (Delusion) damage each 0.5 seconds",
+   "ru": "7% урона каждые 0,5 с по цели = 14%/с; при SPA 9 это +126% к DPS по одной цели (пересчитай, если SPA другой).",
+   "single_target": true
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Pact of Frailty / Revelation» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Cold Mage": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect (Has a cooldown of 10-12 seconds)",
+   "ru": "Заморозка врагов (КД 10–12 с) — контроль, на урон не влияет."
+  }
+ ],
+ "Cold Mage (Devil Slayer)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect (Has a cooldown of 10-12 seconds)",
+   "ru": "Заморозка врагов (КД 10–12 с) — контроль, на урон не влияет."
+  }
+ ],
+ "Cotton": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Cotton (Sheep)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Cowardly (Scared)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "extra_hit",
+   "pct_dps": 50,
+   "needs_input": false,
+   "quote": "каждый 2-й удар ×2 урона ≈ +50% в среднем",
+   "ru": "Каждый второй удар двойной — в среднем +50% DPS."
+  }
+ ],
+ "Crimson Thief (Hunt)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": 99,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "Each attack increases damage by 3% up to 33% (99% on a max upgrade) for 90 seconds.",
+   "ru": "+3% урона за атаку, на макс. апгрейде до +99%, держится 90 с — в долгом бою считаем как постоянные +99%.",
+   "stacking": true
+  }
+ ],
+ "Crush (Ace)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Removes all shield instances on enemies when hit.",
+   "ru": "Снимает все щиты с врагов — урон по формуле не меняет."
+  }
+ ],
+ "Curse (Contract)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "extra_hit",
+   "pct_dps": 15,
+   "needs_input": true,
+   "quote": "каждые 4 крита — +200% чистого урона; при 30% крита ≈ +15% в среднем",
+   "ru": "Форма Curse Devil: каждые 4 крита +200% чистого урона ≈ +15% DPS при 30% крита (зависит от шанса крита). Форма Kon: +50% урона, но SPA +50%.",
+   "alt_form": {
+    "name": "Kon",
+    "dmg_pct": 50,
+    "spa_pct_up": 50
+   }
+  }
+ ],
+ "Cursed King": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": 20,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "causes the enemy to take 20% more damage permanently (does not stack)",
+   "ru": "Dismember: цель получает +20% урона навсегда (не стакается) — считаем как постоянные +20%, если эффект уже повешен (шанс не указан)."
+  }
+ ],
+ "Delinquent (The Universe)": [
+  {
+   "ability": "The Universe",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Every attack he starts to timestop/freeze enemies",
+   "ru": "Каждой атакой останавливает время врагам в AoE на пару секунд — контроль; мультихит уже в уроне атаки."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemy for duration of the effect",
+   "ru": "Остановка времени (КД 10–12 с) — контроль."
+  }
+ ],
+ "Devil Boss": [
+  {
+   "ability": "Time Erase",
+   "type": "active",
+   "model": "selfbuff",
+   "pct": 50,
+   "dur": 8,
+   "cd": 90,
+   "always": false,
+   "needs_input": false,
+   "quote": "gives every unit on the map a 50% damage boost while heavily slowing units down (duration is 8-9 seconds)",
+   "ru": "+50% урона ВСЕМ юнитам (вероятно, и себе) на 8–9 с, но сильно замедляет юнитов; перезарядка не указана — впиши. Перезарядка 90 с — из таблицы бафов (страница Devil Boss)."
+  }
+ ],
+ "Divine General": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "crit",
+   "crit_pct": 100,
+   "critdmg_pct": null,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": true,
+   "quote": "Adapted Slash grants a +100% Crit Rate while using his Slash attack.",
+   "ru": "В режиме Boss удар Slash всегда критует (+100% шанса). Статы зависят от Shadow Sorcerer (Ritual), в базе нули — впиши урон сам."
+  }
+ ],
+ "Doll (Spirit Archer)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Forces enemies with a 10% chance in range to walk back for 1.5 seconds.",
+   "ru": "10% шанс заставить врага идти назад 1,5 с — контроль."
+  }
+ ],
+ "Dolphin (Determination)": [
+  {
+   "ability": "Web Prison",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "She can stun enemies during her attack in AOE for 1 second",
+   "ru": "С 8-го апгрейда станит врагов в AoE на 1 с — контроль."
+  }
+ ],
+ "Donut": [
+  {
+   "ability": "Burn",
+   "type": "passive",
+   "model": "dot",
+   "kind": "Горение",
+   "pct_per_tick": null,
+   "ticks": null,
+   "cd": null,
+   "on_hit": true,
+   "needs_input": true,
+   "quote": "All attacks of Donut apply Burn DoT DMG",
+   "ru": "Каждая атака поджигает; доля урона и число тиков не указаны — впиши."
+  }
+ ],
+ "Donut (ABLAZE)": [
+  {
+   "ability": "Burn",
+   "type": "passive",
+   "model": "dot",
+   "kind": "Горение",
+   "pct_per_tick": null,
+   "ticks": null,
+   "cd": null,
+   "on_hit": true,
+   "needs_input": true,
+   "quote": "All attacks of Donut (ABLAZE) apply Burn DoT DMG",
+   "ru": "Каждая атака поджигает; доля урона и число тиков не указаны — впиши."
+  }
+ ],
+ "Elfy (Sylph)": [
+  {
+   "ability": "Verdant Enchantment",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "increases the Magic damage stats of units in her range by 50% ... lasts for 30 seconds",
+   "ru": "Саппорт: +50% маг. урона юнитам в радиусе на 30 с (КД 60 с) — бафф другим, не себе."
+  }
+ ],
+ "Elyssia (Abyssal)": [
+  {
+   "ability": "Elyssia's Seaborn",
+   "type": "passive",
+   "model": "extra_hit",
+   "pct_dps": null,
+   "needs_input": true,
+   "quote": "Abyssal Jellies ... explode dealing a full AoE burst ... equal to Elyssia's damage ... cooldown for 1.5x her SPA",
+   "ru": "Призывы: медузы взрываются на ×1 урона AoE (новая через ~1,5×SPA после смерти), угри (3 шт., 1 мин после 5 убийств) бьют на ¼ урона с SPA ×2. Частота зависит от врагов — впиши %."
+  }
+ ],
+ "Gambler (Jackpot)": [
+  {
+   "ability": "Waver with Death",
+   "type": "active",
+   "model": "crit",
+   "crit_pct": 50,
+   "critdmg_pct": null,
+   "dur": 30,
+   "cd": 32,
+   "always": false,
+   "needs_input": false,
+   "quote": "Frenzy will increase Crit Rate ... by +50% ... for 30 seconds with about a 32 seconds cooldown",
+   "ru": "При 100% удачи — Frenzy: +50% крит-шанса себе и юнитам в радиусе на 30 с, КД ~32 с (числа со страницы вики, не из описания способности)."
+  }
+ ],
+ "Ghost Lady (Princess)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Ghosty (Sacrifice)": [
+  {
+   "ability": "Final Sacrifice",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "removes Himeno from the map and summons the Ghost Devil ... hitting twice, with each dealing half",
+   "ru": "Жертвует себя и призывает Ghost Devil (2 удара по ½ урона) — юнит пропадает, считать отдельно."
+  }
+ ],
+ "Griffin (Ascension)": [
+  {
+   "ability": "femto_egg:sacrifice",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "femto_egg:sacrifice",
+   "ru": "Жертвоприношение юнитов для призыва Griffin (Reincarnation/Darkness) — не урон самого юнита."
+  }
+ ],
+ "Honey (Hive)": [
+  {
+   "ability": "Hivemind + Nectar Nova",
+   "type": "passive",
+   "model": "burst",
+   "mult": 8,
+   "cd": null,
+   "hits": 1,
+   "aoe": true,
+   "needs_input": true,
+   "quote": "bee field, dealing 3x of her current DMG over 3 ticks ... nectar cannon ... 5x of her current DMG",
+   "ru": "Иногда поле пчёл (×3 за 3 тика) и с апгрейда 6 пушка (×5) — вместе ×8 за цикл; частота «occasionally» не указана — впиши КД.",
+   "parts": [
+    {
+     "name": "Bee field",
+     "mult": 1,
+     "hits": 3
+    },
+    {
+     "name": "Nectar cannon",
+     "mult": 5,
+     "hits": 1
+    }
+   ]
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Hivemind + Nectar Nova» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Hubris (The One)": [
+  {
+   "ability": "Passive",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": 125,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "boosts his Damage and Range overtime for 15 waves, capping at around 125.1% Damage increase",
+   "ru": "Растёт каждую волну, к 15-й волне после установки +125% урона (и +67,5% радиуса)."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Sunshine» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Ice Lily": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Illusionist (Betrayal)": [
+  {
+   "ability": "Attack: Illusionist: Illusion",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "making the base Invincible for 10 seconds",
+   "ru": "База неуязвима 10 с — защита, урон не повышает."
+  }
+ ],
+ "Illusionist (Chrysalis)": [
+  {
+   "ability": "aizen:illusion",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "перезарядка 420.0 с, длительность 10.0 с",
+   "ru": "Иллюзия (КД 420 с, длит. 10 с) — контроль/защита, урон не повышает."
+  }
+ ],
+ "Illusionist (Final)": [
+  {
+   "ability": "Illusion",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "this state lasts for 10 seconds and takes 6 minutes / 360 seconds to recharge",
+   "ru": "Иллюзия отталкивает врагов 10 с, КД 360 с — контроль."
+  }
+ ],
+ "Illusionist (Fusion)": [
+  {
+   "ability": "aizen:illusion",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "перезарядка 390.0 с, длительность 10.0 с",
+   "ru": "Иллюзия (КД 390 с, длит. 10 с) — контроль/защита, урон не повышает."
+  }
+ ],
+ "Iron Knight (Arsenal)": [
+  {
+   "ability": "Arsenal Drones",
+   "type": "passive",
+   "model": "extra_hit",
+   "pct_dps": null,
+   "needs_input": true,
+   "quote": "His drones will inherit 50% of his DMG, 120% of his Range ... 4.0 SPA ... last 1 minute",
+   "ru": "За каждые 20 убийств дрон на 1 мин: 50% урона, SPA 4, 3 удара (не AoE). Один дрон ≈ +81% DPS при SPA 6,5 (0,5×6,5/4), но число дронов зависит от убийств — впиши."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Arsenal Drones» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Izo (Samurai)": [
+  {
+   "ability": "Black Flames",
+   "type": "passive",
+   "model": "dot",
+   "kind": "Горение",
+   "pct_per_tick": 0.1,
+   "ticks": 10,
+   "cd": null,
+   "on_hit": true,
+   "needs_input": false,
+   "quote": "he can deal 100% burn damage ... given his duration of 10 ticks (100% before the relic",
+   "ru": "Каждая атака поджигает на 100% урона за 10 тиков (по 10%); с реликвией Infernal Gaze — ×2."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Black Flames» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Jackal (Alpha)": [
+  {
+   "ability": "Los Lobos",
+   "type": "passive",
+   "model": "burst",
+   "mult": 0.3334,
+   "cd": null,
+   "hits": 1,
+   "aoe": true,
+   "needs_input": true,
+   "quote": "Spirit Wolf with 1 HP that deals 1/3 (33.34%) of Jackal (Alpha)'s current damage upon death",
+   "ru": "Волк-призыв взрывается на ⅓ урона по области (и по летающим); как часто призывается — не указано, впиши КД."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Los Lobos» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Jose (Shining Gem)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect.",
+   "ru": "Стан/заморозка врагов — контроль, на урон самого юнита не влияет."
+  }
+ ],
+ "Jose (Unbreakable)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect.",
+   "ru": "Стан/заморозка врагов — контроль, на урон самого юнита не влияет."
+  }
+ ],
+ "Juozu": [
+  {
+   "ability": "Bleed",
+   "type": "passive",
+   "model": "dot",
+   "kind": "Кровотечение",
+   "pct_per_tick": null,
+   "ticks": null,
+   "cd": null,
+   "on_hit": true,
+   "needs_input": true,
+   "quote": "he causes Bleed to all enemies in the AoE, which do a tick DMG",
+   "ru": "Каждая атака вешает кровотечение; доля и тики не указаны — впиши."
+  }
+ ],
+ "Juozu (Joker)": [
+  {
+   "ability": "Bleed",
+   "type": "passive",
+   "model": "dot",
+   "kind": "Кровотечение",
+   "pct_per_tick": null,
+   "ticks": null,
+   "cd": null,
+   "on_hit": true,
+   "needs_input": true,
+   "quote": "attacks apply bleed damage to all enemies hit, dealing damage over time",
+   "ru": "Каждая атака вешает кровотечение; доля и тики не указаны — впиши."
+  }
+ ],
+ "Kansai (Daydream)": [
+  {
+   "ability": "Daydream",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": 40,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "After 10 seconds of ... inactivity, enter a Daydream ... 10% damage buff every second up to 200%",
+   "ru": "После 10 с без атаки +10%/с. При SPA 14 перед каждым ударом 4 с «мечты» = +40%; с бафами SPA меньше — уменьши."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Daydream» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Karma (Thunder Fiend)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": 25,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "Each attack increases damage by 5% up to 25% as long as the unit has a target.",
+   "ru": "+5% урона за атаку до +25%, пока есть цель — почти всегда +25%."
+  }
+ ],
+ "Killer (Godspeed)": [
+  {
+   "ability": "Stun",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "his lightning attacks are able to stun enemies for a few seconds",
+   "ru": "Стан/заморозка врагов — контроль, на урон самого юнита не влияет."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect.",
+   "ru": "Стан/заморозка врагов — контроль, на урон самого юнита не влияет."
+  }
+ ],
+ "Legendary Assassin (Prime)": [
+  {
+   "ability": "Passive",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": 200,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "increases his damage by 0.8% maxing at 200% ... up to a max of 2% per attack",
+   "ru": "Копит урон за каждую атаку (до 2%/атака), на 100% получает ещё +100% → максимум +200% (≈50 атак)."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Slim Down» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Martial Demon (Destruction)": [
+  {
+   "ability": "Compass Needle",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": 50,
+   "dur": 5,
+   "cd": 12,
+   "always": false,
+   "needs_input": false,
+   "quote": "After 12 seconds (two attacks), Martial Demon boosts his damage by 50% for around 5 seconds.",
+   "ru": "Каждые 12 с +50% урона на ~5 с (в среднем ≈ +21%)."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Compass Needle» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Menace (Terror)": [
+  {
+   "ability": "Terror",
+   "type": "active",
+   "model": "burst",
+   "mult": 3,
+   "cd": 20,
+   "hits": 1,
+   "aoe": true,
+   "needs_input": false,
+   "quote": "x3 Menace's current DMG to every BLEEDING enemy inside his range ... 20 Seconds Ability Cooldown",
+   "ru": "Раз в 20 с ×3 урона всем КРОВОТОЧАЩИМ врагам в радиусе (крит ×4,5) + стан 2 с; без кровотечения на цели — 0.",
+   "crit_mult": 4.5,
+   "bleeding_only": true
+  }
+ ],
+ "Mochi (Rage)": [
+  {
+   "ability": "Sticky Mochi",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Operator (ROOM)": [
+  {
+   "ability": "Scramble",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "teleports enemies back 50% of Lao's Range ... Global Cooldown: 75s",
+   "ru": "Телепортирует врагов назад на 50% радиуса, КД 75 с — контроль."
+  }
+ ],
+ "Packy (Maniac)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect.",
+   "ru": "Стан/заморозка врагов — контроль, на урон самого юнита не влияет."
+  }
+ ],
+ "Paradox (Divine Sight)": [
+  {
+   "ability": "Unlimited Void",
+   "type": "active",
+   "model": "selfbuff",
+   "pct": 100,
+   "dur": 8,
+   "cd": 60,
+   "always": false,
+   "needs_input": false,
+   "quote": "buffs his damage by 100% for the duration of his domain ... Global Cooldown: 60 *Duration: 8",
+   "ru": "Unlimited Void: +100% урона себе на 8 с раз в 60 с (≈ +13% в среднем) + остановка врагов.",
+   "pas_overlap": 13
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": null,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": true,
+   "quote": "Every Limitless upgrade increases Paradox's DMG by 10% of his DMG at Upgrade 9",
+   "ru": "Limitless: +10% урона за каждый уровень Limitless (впиши 10 × уровень). Unlimited Void в этой заметке — дубль, не считать.",
+   "per_level_pct": 10
+  }
+ ],
+ "Paragon (Devil)": [
+  {
+   "ability": "???",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Requires base hp to attack.",
+   "ru": "Для атаки тратит HP базы; без HP базы не атакует — на формулу урона не влияет."
+  }
+ ],
+ "Priest (Heaven)": [
+  {
+   "ability": "Time Acceleration",
+   "type": "active",
+   "model": "selfspa",
+   "pct": 50,
+   "dur": 30,
+   "cd": 300,
+   "always": false,
+   "needs_input": false,
+   "quote": "decreases the SPA of all units ... SPA Decrease: 50% * Duration: 30 Seconds * Global Cooldown: 300",
+   "ru": "−50% SPA всем юнитам на карте (включая себя) на 30 с, КД 300 с."
+  }
+ ],
+ "Prime Force (Peace)": [
+  {
+   "ability": "Overwhelming Strength",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Pushes enemies towards their spawn.",
+   "ru": "Отталкивание врагов назад — контроль, на урон не влияет."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Pushes enemies towards their spawn.",
+   "ru": "Отталкивание врагов назад — контроль, на урон не влияет."
+  }
+ ],
+ "Puppet Girl": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Puppet Girl (Spirit)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Red Scar (Conqueror)": [
+  {
+   "ability": "Conqueror's Haki",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "sleep/unconscious for 3 seconds with a cooldown of 15 seconds",
+   "ru": "Усыпляет врагов в радиусе на 3 с, КД 15 с — контроль."
+  }
+ ],
+ "Reliable Student (Echoes)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Sepsis": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "crit",
+   "crit_pct": 100,
+   "critdmg_pct": null,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": true,
+   "quote": "OverCrit: ; Guarantees a crit on enemies that are currently bleeding.",
+   "ru": "Гарантированный крит по кровоточащим врагам; без кровотечения на цели — 0. Включай, только если рядом есть кровотечник.",
+   "bleeding_only": true
+  }
+ ],
+ "Sepsis (Moon)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "crit",
+   "crit_pct": 100,
+   "critdmg_pct": null,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": true,
+   "quote": "Guarantees a crit on enemies that are currently bleeding.",
+   "ru": "100% крит по кровоточащим; если кровотечения нет — поставь 0.",
+   "bleeding_only": true
+  }
+ ],
+ "Shadow Sorcerer (Hybrid Shadow)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": 30,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "Cursed (30%): Makes enemies take 30% more damage.",
+   "ru": "Дебафф цели: враг получает +30% урона от всех, включая самого юнита — считаем как постоянные +30% (если проклятие держится на цели)."
+  }
+ ],
+ "Shadow Sorcerer (Incident)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": 30,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "Cursed (30%): Makes enemies take 30% more damage.",
+   "ru": "Дебафф цели: враг получает +30% урона от всех, включая самого юнита — считаем как постоянные +30% (если проклятие держится на цели)."
+  }
+ ],
+ "Shadow Sorcerer (Ritual)": [
+  {
+   "ability": "Ritual",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "delete itself in return for summoning Divine General",
+   "ru": "Удаляет себя и призывает Divine General — отдельный юнит."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": 30,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "Cursed (30%): Makes enemies take 30% more damage.",
+   "ru": "Дебафф цели: враг получает +30% урона от всех, включая самого юнита — считаем как постоянные +30% (если проклятие держится на цели)."
+  }
+ ],
+ "Shinobi (Storm)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect.",
+   "ru": "Стан/заморозка врагов — контроль, на урон самого юнита не влияет."
+  }
+ ],
+ "Silver King": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Makes the enemy unconscious for 0.5s.",
+   "ru": "Оглушает врага на 0,5 с — контроль."
+  }
+ ],
+ "Siren": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Siren (Harpy)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Skeleton (Soul King)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Each attack buffs all allies in range by 15% damage or 10% range for 10 seconds",
+   "ru": "Бафф союзникам в радиусе: +15% урона или +10% радиуса на 10 с — саппорт, не себе."
+  }
+ ],
+ "Snake Princess": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect (Has a cooldown of 10-12 seconds)",
+   "ru": "Заморозка врагов (КД 10–12 с) — контроль, на урон не влияет."
+  }
+ ],
+ "Spirit Archer (Reversal)": [
+  {
+   "ability": "Ablity: Holy Arrow",
+   "type": "passive",
+   "model": "extra_hit",
+   "pct_dps": 20,
+   "needs_input": false,
+   "quote": "Every five attacks ... Holy Arrow can do double damage of Rain of Light.",
+   "ru": "Каждая 5-я атака двойная — в среднем +20% DPS."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Holy Arrow» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Spirit Reaper (Final Dusk)": [
+  {
+   "ability": "Attack: Pale Sky",
+   "type": "active",
+   "model": "burst",
+   "mult": 10,
+   "cd": null,
+   "hits": 1,
+   "aoe": null,
+   "needs_input": false,
+   "quote": "Damage will increase by 900% (10x). however, he will be completely removed from the map after his next attack.",
+   "ru": "Одноразово: следующий удар ×10, после чего юнит уходит с карты. Перезарядки нет — это разовый удар, в DPS не усредняется.",
+   "one_shot": true
+  }
+ ],
+ "Tamiki (Tornado)": [
+  {
+   "ability": "Psychic Knockback",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Pushes enemies towards their spawn.",
+   "ru": "Отталкивание врагов назад — контроль, на урон не влияет."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Pushes enemies towards their spawn.",
+   "ru": "Отталкивание врагов назад — контроль, на урон не влияет."
+  }
+ ],
+ "Time Wizard (Chronos)": [
+  {
+   "ability": "Chrono Reversal",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Global Cooldown: 90s * Duration: 5s",
+   "ru": "Враги в радиусе идут назад 5 с (КД 90 с), кроме боссов — контроль."
+  }
+ ],
+ "Toad Sensei (Toad Sage)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Usurper (Founder)": [
+  {
+   "ability": "The Extinction",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "can spawn 10 Wall Titans ... Cooldown: 480s",
+   "ru": "Призывает 10 стенных титанов (КД 480 с) — урон призывов, не самого юнита."
+  }
+ ],
+ "Violentine (Brutal Angel)": [
+  {
+   "ability": "Twisted Love",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Summon the last dead enemy ... with 25% of their original health every 5 attacks",
+   "ru": "Каждые 5 атак воскрешает убитого врага союзником (25% HP) — призыв, на свой урон не влияет."
+  }
+ ],
+ "Waterfist": [
+  {
+   "ability": "Piercing Fangs",
+   "type": "passive",
+   "model": "extra_hit",
+   "pct_dps": 50,
+   "needs_input": false,
+   "quote": "three hits, each now dealing 50% of his base damage, contributing to an overall 50% DPS increase",
+   "ru": "С апгрейда 4 три удара по 50% — +50% DPS."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Piercing Fangs» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Waterfist (White Tooth)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "extra_hit",
+   "pct_dps": 0,
+   "needs_input": false,
+   "quote": "Piercing Fangs: +50% на апгрейдах 4–7, на апгрейде 8 пропадает",
+   "ru": "Piercing Fangs: +50% только на апгрейдах 4–7; на макс. апгрейде (8) бонуса нет — впиши 50, если стоишь на 4–7."
+  }
+ ],
+ "Weather Girl (Thief)": [
+  {
+   "ability": "Treasure Thief",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Upon killing the enemy in question mark, the player will receive additional gold.",
+   "ru": "Помечает врага: за его убийство доп. золото (до 3000) — деньги, не урон."
+  }
+ ],
+ "Zombie (Risen)": [
+  {
+   "ability": "Undead Blessing",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "+25% dmg and +10% range for each Zombie (Risen) placed on the map",
+   "ru": "Бафф призывам: +25% урона и +10% радиуса за каждую копию (до 8) — не свой урон."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "",
+   "ru": "Дублирует «Undead Blessing» (заметка таблицы) — числа взяты в основной записи, здесь не учитывать, чтобы не посчитать дважды."
+  }
+ ],
+ "Agony": [
+  {
+   "ability": "ALMIGHTY PUSH!",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Pushes enemies towards their spawn.",
+   "ru": "Отталкивание врагов назад — контроль, на урон не влияет."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Pushes enemies towards their spawn.",
+   "ru": "Отталкивание врагов назад — контроль, на урон не влияет."
+  }
+ ],
+ "Blackhair": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "selfbuff",
+   "pct": 15,
+   "dur": 0,
+   "cd": 0,
+   "always": true,
+   "needs_input": false,
+   "quote": "Cursed (15%): Makes enemies take 15% more damage.",
+   "ru": "Дебафф цели: враг получает +15% урона от всех, включая самого юнита — считаем как постоянные +15% (если проклятие держится на цели)."
+  }
+ ],
+ "Commander": [
+  {
+   "ability": "Dedicate your hearts!",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "increases the Physical damage stats of units in his range by 25%",
+   "ru": "Саппорт: +25% физ. урона юнитам в радиусе на 30 с (КД 60 с) — не себе (урон юнита 0)."
+  }
+ ],
+ "Ghoul (Centipede)": [
+  {
+   "ability": "Bleed",
+   "type": "passive",
+   "model": "dot",
+   "kind": "Кровотечение",
+   "pct_per_tick": null,
+   "ticks": null,
+   "cd": null,
+   "on_hit": true,
+   "needs_input": true,
+   "quote": "deals bleed damage to all enemies he attacks, dealing damage over time",
+   "ru": "Каждая атака вешает кровотечение; доля и тики не указаны — впиши."
+  }
+ ],
+ "JIO": [
+  {
+   "ability": "The World",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "JIO stops time and freezes every enemy he attacks.",
+   "ru": "Замораживает каждого атакованного врага (дальше у врага иммунитет) — контроль."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect (Has a cooldown of 10-12 seconds)",
+   "ru": "Заморозка врагов (КД 10–12 с) — контроль, на урон не влияет."
+  }
+ ],
+ "Magician": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Scorch": [
+  {
+   "ability": "Burn",
+   "type": "passive",
+   "model": "dot",
+   "kind": "Горение",
+   "pct_per_tick": null,
+   "ticks": null,
+   "cd": null,
+   "on_hit": true,
+   "needs_input": true,
+   "quote": "applies burn damage to all enemies he attacks, dealing damage over time",
+   "ru": "Каждая атака поджигает; доля и тики не указаны — впиши."
+  }
+ ],
+ "Silent": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect.",
+   "ru": "Стан/заморозка врагов — контроль, на урон самого юнита не влияет."
+  }
+ ],
+ "Snow Reaper": [
+  {
+   "ability": "Passive Ability:",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "She can freeze enemies with her attacks",
+   "ru": "Замораживает врагов атаками (одна цель → конус → AoE) — контроль."
+  },
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect (Has a cooldown of 10-12 seconds)",
+   "ru": "Заморозка врагов (КД 10–12 с) — контроль, на урон не влияет."
+  }
+ ],
+ "Wind Dragon": [
+  {
+   "ability": "Sky Enchantment",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "increases the magical damage stats of units in her range by 30%",
+   "ru": "Саппорт: +30% маг. урона юнитам в радиусе на 30 с (КД 60 с) — бафф другим."
+  }
+ ],
+ "Blaze Frost (Epic)": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "The speed of enemies is reduced for the duration of the effect.",
+   "ru": "Замедление врагов — контроль, на урон не влияет."
+  }
+ ],
+ "Delinquent": [
+  {
+   "ability": "Time Stop",
+   "type": "active",
+   "model": "none",
+   "needs_input": false,
+   "quote": "stop time, stunning enemies in place for 4 seconds",
+   "ru": "Останавливает время врагам на 4 с (очень короткий КД) — контроль."
+  }
+ ],
+ "Sand Ninja": [
+  {
+   "ability": "Sand Coffin",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "covers the enemy in sand stunning them for a few seconds",
+   "ru": "Станит врага песком на несколько секунд — контроль."
+  }
+ ],
+ "Josuka": [
+  {
+   "ability": "из данных атак / заметки таблицы",
+   "type": "passive",
+   "model": "none",
+   "needs_input": false,
+   "quote": "Freezes enemies for the duration of the effect.",
+   "ru": "Стан/заморозка врагов — контроль, на урон самого юнита не влияет."
+  }
+ ]
+}

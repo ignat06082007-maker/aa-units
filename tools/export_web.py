@@ -23,6 +23,14 @@ def compact_row(r):
 ROW_KEYS = ['upg', 'step', 'total', 'dmg', 'spa', 'rng', 'atype', 'eff', 'dotkind', 'ticks', 'mult', 'note', 'summon', 'own']
 
 
+# цифры способностей (data/ability_fx.json): модель + числа + цитата с вики; нет файла — пусто
+_FXP = os.path.join(B.ROOT, 'data', 'ability_fx.json')
+FX = {n: [dict(type=f.get('type'), ability=f.get('ability'), model=f.get('model'), **{k: f[k] for k in
+      ('pct', 'dur', 'cd', 'always', 'mult', 'hits', 'aoe', 'pct_dps', 'crit_pct', 'critdmg_pct', 'kind', 'needs_input', 'quote', 'ru', 'pas_overlap')
+      if f.get(k) not in (None, '')}) for f in v] for n, v in
+      (json.load(open(_FXP, encoding='utf-8')) if os.path.exists(_FXP) else {}).items()}
+
+
 def main():
     units = B.load()
     out_units = []
@@ -31,7 +39,11 @@ def main():
             n=u['name'], r=u['rarity'], dt=u['dtype'], role=u['role'], place=u['place'], cap=u['cap'] or 0,
             farm=u['farm'] or 0, crit=u['crit'], cdm=u['critdmg'] or 0, lim=u['limited'] == 'Да',
             el=u['elem'], pas=u['passives'], pp=u['pas_pct'], pc=u['pas_crit'], pcd=u['pas_cd'], pdot=u['pas_dot'],
-            summ=u['summ'], evo=u['evo_from'], feats=u['feats'],
+            summ=u['summ'], evo=u['evo_from'],
+            feats=('Призыв Shadow Sorcerer (Ritual): не ставится сам — его урон считается от Shadow Sorcerer (Ritual) на макс. апгрейде '
+                   '(строка «↳ Divine General» в «Сравнении» и «Команде», режимы Атака / Защита / Босс)') if u['name'] == 'Divine General' else u['feats'],
+            ab=[dict(t=a['type'], n=a['name'], x=a['text']) for a in u['abilities']],
+            fx=FX.get(u['name'], []),
             rows=[compact_row(r) for r in u['rows']]))
     data = dict(
         version=datetime.date.today().isoformat(),
@@ -52,6 +64,15 @@ def main():
         elems=list(B.ELEM_RU.values()),
         ramExclude=list(B.RAM_EXCLUDE),
         special=list(B.SPECIAL),
+        # имена призывов для строк «↳ призыв» на сайте: t — призыв по циклу, k — за убийства
+        summonNames={
+            'Commander': {'t': 'Survey Corps Member'}, 'Usurper': {'t': 'Titan'},
+            'Usurper (Founder)': {'t': '10 Wall Titan + Founding Titan'}, 'Dracula (Unholy King)': {'t': '15 Ghoul + 5 Ghoul Rider'},
+            'Supreme Being (Sovereign)': {'k': 'Shade Birth'}, 'Jackal (Alpha)': {'t': 'Spirit Wolf'},
+            'Iron Knight (Arsenal)': {'k': 'Drone'}, 'Elyssia': {'t': 'Abyssal Jelly'},
+            'Elyssia (Abyssal)': {'t': 'Abyssal Jelly', 'k': 'Abyssal Eel'},
+            'Shadow Sorcerer (Ritual)': {'dg': 'Divine General'},
+        },
         atypes=['Single', 'AoE (Circle)', 'AoE (Cone)', 'AoE (Line)', 'AoE (Full)', '(нет данных)'],
         units=out_units,
     )

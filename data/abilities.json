@@ -1,0 +1,962 @@
+{
+ "Android AAA": [],
+ "Blue Devil": [],
+ "Boxer": [],
+ "Deer-tan": [],
+ "Demonshade": [],
+ "Dispenser": [],
+ "Dog Demon": [],
+ "Fan Ninja": [],
+ "Future Guhon": [],
+ "Joker": [],
+ "Jozo": [],
+ "Julias": [],
+ "Katana": [],
+ "Kimoaro": [],
+ "Komo": [],
+ "Messi": [],
+ "Mist Ninja": [],
+ "Saickik": [],
+ "Stitches": [],
+ "Tattermo": [],
+ "Windspire": [],
+ "Wukong": [],
+ "???": [],
+ "Agony (Divine)": [],
+ "Agony (Path)": [],
+ "Alien King": [],
+ "Blade Beast (Past)": [],
+ "Bubblegum": [],
+ "Bubblegum (Ultimate)": [],
+ "Chance (Focus)": [],
+ "Chance (Frenzy)": [],
+ "Chance (Lethal)": [],
+ "Chance (Precision)": [],
+ "Chance (Random Blessing)": [],
+ "Dark Mage": [],
+ "Dark Mage (Fallen Star)": [],
+ "Dracula": [],
+ "Dracula (Unholy King)": [
+  {
+   "type": "active",
+   "name": "Soul Restraint: Level 0",
+   "text": "When the moon turns red and the area is encased in a bloody fog, Dracula (Unholy King) lets go of all restraints and summons a total of 20 units from the base, composed of 15 Ghouls and 5 Ghoul Riders, with the Ghoul Riders having 2 bars, letting them collide with enemies twice. Note that the Ghoul Riders would clip through enemies when they hit them with the first bar. * Global Cooldown: 120s"
+  }
+ ],
+ "Enlightened": [],
+ "Enlightened (Nirvana)": [],
+ "Fiery Commander": [],
+ "Fiery Commander (Hellfire)": [
+  {
+   "type": "active",
+   "name": "Zanka No Tachi",
+   "text": "Yamamoto gains one soul for each kill (including kills prior to upgrade 8). When you activate his ability, he starts a hybrid attack that hits several times and multiplies his base damage depending on the amount of souls received. The attack deals Yamamoto's base damage, plus 2% damage for every soul consumed in the attack. If he consumes 50 souls, he would be doing 200% damage (100% damage + (50 x 2%) = 200%). At 500 souls, he does 1100% damage or 1,063,069.48 damage with his manual ability."
+  }
+ ],
+ "Fire Fist": [],
+ "Gazu": [],
+ "Gazu (Maximum)": [],
+ "Golden King": [],
+ "Golden King (Lord of Heroes)": [],
+ "Green Alien (Fusion)": [],
+ "Green Alien (Nameless)": [],
+ "Ice Queen": [],
+ "Ice Queen (Empire's Strongest)": [],
+ "Illusionist (Transcended)": [
+  {
+   "type": "passive",
+   "name": "Transcending Heavenly Pressure",
+   "text": "Enemies that are hit by Illusionist (Transcended) that are 25% health or lower (not including bosses) are set into a fragile state, which leaves them one hit to anything. * Note: Enemies with purple health bars will say \"Fragile\" on it and have a text in full black saying \"SHATTERED\" when this is activates."
+  },
+  {
+   "type": "active",
+   "name": "Beyond the Heavens",
+   "text": "On placement, Illusionist (Transcended) is given this ability that makes all enemies on the map (Including bosses) are stunned for 5 seconds whilst any enemy 35% health or lower to a fragile state. * Note: Boss enemies that give themselves hyper armor (Like martial boss that gives itself a speed boost and regen) Or a buff might be unaffected by the ability. * Ability Cooldown is 6 minutes."
+  }
+ ],
+ "Infinity Mage": [],
+ "Infinity Mage (Endless)": [
+  {
+   "type": "passive",
+   "name": "Hexed",
+   "text": "Similar to Sukuno's Dismember, she has either 20% (Upgrades 4-6), or 25% (Upgrade 7+) chance to Hex enemies - enemies affected this way take 30% more Magic damage permanently."
+  }
+ ],
+ "InHuman": [],
+ "InHuman (Nullifier)": [
+  {
+   "type": "active",
+   "name": "No Longer Human",
+   "text": "His ability temporarily nullifies enemy passives (such as Fire, Ice, Armored, Shields or Flying) for the given amount of time. This does not temporarily nullify shields that had any damage modifiers. *Duration: 20s *Global Cooldown: 90s"
+  }
+ ],
+ "Jelly": [],
+ "Jelly (Heaven)": [],
+ "JIO (Over Heaven)": [
+  {
+   "type": "active",
+   "name": "This is... The Universe Over Heaven!",
+   "text": "JIO (Over Heaven) can stop time for 20 seconds at the whole map including the wave timer. Take that ability as an advantage to destroy insanely high HP enemies. The cooldown is 6 minutes."
+  }
+ ],
+ "Lord Alien King": [],
+ "Lulu": [],
+ "Lulu (Emperor)": [
+  {
+   "type": "active",
+   "name": "Mind Control",
+   "text": "On his max upgrade, Lulu (Emperor) can make enemies within his range walk back for a couple of seconds. This includes bosses, which makes him a good support unit. Stun/Freeze/Walkback/knockback and similar effects can't stack, and there is a 1s delay before an enemy can be affected again * Duration: 5s * Cooldown: 40s * delay before another walkback can be used on the same enemy is 50 seconds * this effect scales of enemy speed so make sure not to use it when enemy is stunned or slowed"
+  }
+ ],
+ "Lyla (Celestial)": [],
+ "Mangaka": [],
+ "Mangaka (Artist)": [],
+ "Pirate King": [],
+ "Pirate King (Final)": [],
+ "Ratio (Overtime)": [
+  {
+   "type": "passive",
+   "name": "Overtime",
+   "text": "When deployed, Ratio (Overtime) will gain a compound 1% Damage buff each time a wave passes."
+  }
+ ],
+ "Renzi": [],
+ "Saka": [],
+ "Saka (Ribbon)": [],
+ "Sea God": [],
+ "Sea God (Tyrant of the Seas)": [],
+ "Shadowgirl": [],
+ "Shadowgirl (Time Traveller)": [],
+ "Shizo": [],
+ "Shizo (Flicker)": [],
+ "Skeleton Knight": [],
+ "Skeleton Knight (King)": [],
+ "Snow Reaper (Final)": [
+  {
+   "type": "active",
+   "name": "Gale of the Moon",
+   "text": "On placement Snow Reaper (Final) obtains a bar which fills up by 1.25 every half second, maxing out at 100. At Upgrade 1, Snow Reaper (Final) unlocks the ability Gale of the Moon. While this ability is active, the bar will be drained by 2.5 every half second, enemies within her range are slowed, take 1/6th of her damage every half second and are inflicted with Chilled. Chilled enemies have an icon of a snowflake that freezes the enemy and deals an additional hit equal to her damage stat once it reaches 6. Pressing the ability again will deactivate it manually, or it will automatically deactivate if the bar reach to 0."
+  }
+ ],
+ "Snow Reaper (War)": [],
+ "Sorcerer Killer": [],
+ "Sorcerer Killer (Heavenly Body)": [],
+ "Spirit Reaper (Full Hollow)": [],
+ "Stringy": [],
+ "Stringy (Awakened)": [],
+ "Supreme Being": [],
+ "Supreme Being (Sovereign)": [
+  {
+   "type": "passive",
+   "name": "Shade Birth",
+   "text": "Summons a Shade Birth after taking down 10 enemies (max 3), the Shade Birth will have 5x of his displayed damage. * Zombie (Risen) increases the amount of HP the Shade Birth spawns in by 25% of each placement (up to 200%). Buffs to Supreme Being (Sovereign) by Elfy (Slyph), Wind Dragon or Idol, do not affect the amount of HP the Shade Birth spawns with. * Griffin (Reincarnation) and Commander increase the amount of damage Shade Birth does when colliding with an enemy. * You can increase the damage the Shade Birth does by increasing Supreme Being (Sovereign)'s base damage stats: having high stat potential, Traits that increase damage and Relics. * Shade Birth does not do Dark damage like Supreme Being (Sovereign), instead only doing physical."
+  },
+  {
+   "type": "active",
+   "name": "Nihilism",
+   "text": "Once Activated, a 12-second interval will appear above Supreme Being (Sovereign), once the time ticks down to zero, any enemy in the range of Supreme Being will take 5x of his damage, enemies who are caught by this also have a purple effect around them."
+  }
+ ],
+ "Switchblade": [],
+ "Switchblade (Deception)": [],
+ "Trickster (Release)": [
+  {
+   "type": "active",
+   "name": "Kannonbiraki Benihime Aratame",
+   "text": "Kisuke will buff his allies’ range by 20% and SPA by 10%. This ability is stackable with other buffs (except Priest (Heaven)'s Time Acceleration, but range buffs still stack), his ability cooldown is not global and is very useful for pretty much every mode making Kisuke very worth getting."
+  }
+ ],
+ "Umbra": [],
+ "Umbra (Nuclear)": [],
+ "Vengeful Swordsman": [],
+ "Vengeful Swordsman (Sky Reaver)": [
+  {
+   "type": "passive",
+   "name": "Spellforged Blades",
+   "text": "Attacks from Vengeful Swordsman (Sky Reaver) also deal his damage as additional Magic damage. Buffs to Physical damage apply to his Magic damage as well. This means he does x2 his displayed damage"
+  },
+  {
+   "type": "passive",
+   "name": "White Flash Draw Technique",
+   "text": "The first hit against an enemy will have + 100% Critical Chance and penetrate 60% of enemy Physical and Magic Resistances (If they have ones)"
+  }
+ ],
+ "Akemy": [],
+ "Akemy (Fallen Angel)": [],
+ "Ant": [],
+ "Aquatic Mage": [],
+ "Aquatic Mage (Valkyrie Armor)": [],
+ "Ariva": [],
+ "Ariva (Reaper)": [],
+ "Arlem": [],
+ "Ashborn": [],
+ "Ashborn (Decay)": [],
+ "Berserker": [],
+ "Berserker (Rage)": [],
+ "Black Assassin": [],
+ "Black Assassin (Reaper)": [],
+ "Black Blade": [],
+ "Black Blade (Captain)": [
+  {
+   "type": "passive",
+   "name": "True Damage",
+   "text": "Black Blade (Captain) has the ability to deal 10% True Damage on every attack and attack through shields on enemies. Black Blade (Captain) deals full damage through shields and also damages shields after Upgrade 7."
+  }
+ ],
+ "Black Dog": [],
+ "Black Dog (HellHound)": [],
+ "Blade Beast": [],
+ "Blade Beast (Hybrid)": [],
+ "Blaze Frost": [],
+ "Blaze Frost (Released)": [],
+ "Blood": [],
+ "Blood (Unleashed)": [
+  {
+   "type": "passive",
+   "name": "Bleed Amplification",
+   "text": "Blood (Unleashed) places a debuff on enemies she hits, making them take 5x more bleed damage. Her best pair is with Berserker (Rage) or other good bleed units."
+  }
+ ],
+ "Bloodcry": [],
+ "Bloodcry (Fallen)": [
+  {
+   "type": "passive",
+   "name": "True Vampire",
+   "text": "Attacks from Bloodcry (Fallen) place a debuff on enemies hit, making them take 5x bleed damage."
+  }
+ ],
+ "Bodybuilder": [],
+ "Bodybuilder (Muscles)": [],
+ "Bombietta": [],
+ "Brawler": [],
+ "Brawler (Soul)": [],
+ "Bro": [],
+ "Bunny": [],
+ "Bunny (Night)": [],
+ "Calm Killer": [],
+ "Calm Killer (Meets the End)": [
+  {
+   "type": "active",
+   "name": "Meets the End",
+   "text": "A global effect that causes enemies to gain an effect making enemies walk backwards for a duration of time. *Enemy Effect : Rewind * Duration: 6 Seconds *Global Cooldown: 60 Seconds"
+  }
+ ],
+ "Captain (God)": [],
+ "Captain (Timeskip)": [],
+ "Carrot (Super III)": [],
+ "Carrot (Ultra)": [],
+ "Cat Guard": [],
+ "Cat Guard (Ballet)": [],
+ "Catgirl": [],
+ "Catgirl (Hell-Cat)": [],
+ "Chairman Prayer Master": [],
+ "Chance": [],
+ "Cherub": [],
+ "Cherub (Overseer)": [],
+ "Chuuni": [],
+ "Chuuni (Delusion)": [
+  {
+   "type": "passive",
+   "name": "Pact Of Frailty",
+   "text": "Targeted enemies by Chuuni (Delusion) takes 50% increased Magic damage. This effect can be stack up to 3 times. ; ; Pact Of Frailty can only affect one enemy per each Chuuni (Delusion) at a time."
+  },
+  {
+   "type": "passive",
+   "name": "Pact Of Revelation",
+   "text": "Targeted enemies by Chuuni (Delusion) takes damage equal to 7% of Chuuni (Delusion) damage each 0.5 seconds."
+  }
+ ],
+ "Cold Mage": [],
+ "Cold Mage (Devil Slayer)": [],
+ "Connor": [],
+ "Connor (Wizard King)": [],
+ "Cotton": [],
+ "Cotton (Sheep)": [],
+ "Cowardly": [],
+ "Cowardly (Scared)": [],
+ "Cream": [],
+ "Cream (Void)": [],
+ "Crimson Thief": [],
+ "Crimson Thief (Hunt)": [],
+ "Crusader": [],
+ "Crusader (Admin)": [],
+ "Crush": [],
+ "Crush (Ace)": [],
+ "Crystal Rose": [],
+ "Crystal Rose (Impact)": [],
+ "Curse": [],
+ "Curse (Contract)": [],
+ "Cursed King": [],
+ "Cyborg (Incinerate)": [],
+ "Cyborg (Overdrive)": [],
+ "Death Ninja": [],
+ "Death Ninja (Immortal Butcher)": [],
+ "Delinquent (Serious)": [],
+ "Delinquent (The Universe)": [
+  {
+   "type": "passive",
+   "name": "The Universe",
+   "text": "Every attack he starts to timestop/freeze enemies (even flying) in his AoE for a few seconds and attacking them after (multi-hit) making him very useful for Fire Enemies when they are sprinting past."
+  }
+ ],
+ "Demihuman": [],
+ "Demihuman (Gamer)": [],
+ "Devil Boss": [
+  {
+   "type": "active",
+   "name": "Time Erase",
+   "text": "When Devil Boss uses his ability \"Time Erase\", he gives every unit on the map a 50% damage boost while heavily slowing units down (duration is 8-9 seconds)."
+  }
+ ],
+ "Divine General": [],
+ "Doll": [],
+ "Doll (Spirit Archer)": [],
+ "Dolphin": [],
+ "Dolphin (Determination)": [
+  {
+   "type": "passive",
+   "name": "Web Prison",
+   "text": "Jolyna (Determination) after her 8th upgrade. She can stun enemies during her attack in AOE for 1 second"
+  }
+ ],
+ "Donut": [
+  {
+   "type": "passive",
+   "name": "Burn",
+   "text": "All attacks of Donut apply Burn DoT DMG (Damage over Time) to all enemies."
+  }
+ ],
+ "Donut (ABLAZE)": [
+  {
+   "type": "passive",
+   "name": "Burn",
+   "text": "All attacks of Donut (ABLAZE) apply Burn DoT DMG (Damage over Time) to all enemies."
+  }
+ ],
+ "Dragon Knight": [],
+ "Dragon Knight (Gauntlet)": [],
+ "Dragonslayer": [],
+ "Dragonslayer (Lightning Mode)": [],
+ "Dreamer": [],
+ "Dreamer (Visionary)": [],
+ "Eccentric Researcher": [],
+ "Eccentric Researcher (Captain)": [],
+ "Elf Mage": [],
+ "Elf Mage (Aura)": [],
+ "Elf Spirit": [],
+ "Elf Spirit (Wind)": [],
+ "Elfy": [],
+ "Elfy (Sylph)": [
+  {
+   "type": "active",
+   "name": "Verdant Enchantment",
+   "text": "When activated, increases the Magic damage stats of units in her range by 50%. If Leafy buffs other Leafy´s in her range, their ability is going to buff by 100%. The buff lasts for 30 seconds and the ability has a cooldown of 60 seconds."
+  }
+ ],
+ "Elize": [],
+ "Elize (Lightning)": [],
+ "Elize (Random Equip)": [],
+ "Elize (True Heart)": [],
+ "Elize (Valkyrie)": [],
+ "Elyssia": [],
+ "Elyssia (Abyssal)": [
+  {
+   "type": "passive",
+   "name": "Elyssia's Seaborn",
+   "text": "Elyssia (Abyssal) has the ability to summon Abyssal Jellies and Abyssal Eels. |-|Echoes From Below= Abyssal Jellies will be summoned on Elyssia (Abyssal)'s SPA maxing out at 3. Abyssal Jellies have only 1 HP, but explode dealing a full AoE burst of Magic damage equal to Elyssia (Abyssal)'s damage on death. The range of this explosion is believed to be equivalent to Elyssia (Abyssal)'s range. Once an Abyssal Jelly dies, she will be put on cooldown for 1.5x her SPA and begin summoning another one afterwards. |-|Wretched Communion= Abyssal Eels will be summoned once Elyssia (Abyssal) takes down 5 enemies. Abyssal Eels will be spawned near Elyssia (Abyssal) maxing out at 3, despawning after a minute passes. Abyssal Eels will attack with a small circle AoE with 1/4x Elyssia (Abyssal)'s damage, 2x her SPA, and 2.5x her range."
+  }
+ ],
+ "Emperor Whitehair": [],
+ "Eta": [],
+ "Eta (One-Eye)": [],
+ "Experiment X (Perfect)": [],
+ "Experiment X (SUPER PERFECT)": [],
+ "Explosion Hero (Bang)": [],
+ "Explosion Hero (Impact)": [],
+ "Fairy Ruler": [],
+ "Fairy Ruler (Sloth)": [],
+ "Faker": [],
+ "Faker (Hero's Soul)": [],
+ "Falcon": [],
+ "Falcon (Feather Strike)": [],
+ "Fiend Girl": [],
+ "Fiend Girl (Buttterfly)": [],
+ "Flame Hero": [],
+ "Flame Hero (Hellfire)": [],
+ "Flamefeather": [],
+ "Flamefeather (Arcane Blaze)": [],
+ "Flash Ninja": [],
+ "Fleet Admiral Magma": [],
+ "Flower Ninja": [],
+ "Flower Ninja (Austere Flame)": [],
+ "Fox Ninja (Beast Cloak)": [],
+ "Fox Ninja (Sage)": [],
+ "Fox Ninja (Six Tails)": [],
+ "Fridge": [],
+ "Frost Navy": [],
+ "Frost Navy (Blue Pigeon)": [],
+ "Fused Hero": [],
+ "Gambler": [],
+ "Gambler (Jackpot)": [],
+ "Gamer": [],
+ "Gamer (Dual)": [],
+ "Gamer Girl": [],
+ "Gamer Girl (Flash)": [],
+ "Gas": [],
+ "Gas (Toxic)": [],
+ "Gene (???)": [],
+ "Gene (Adult)": [],
+ "Ghost Lady": [],
+ "Ghost Lady (Princess)": [],
+ "Ghost-kun": [],
+ "Ghost-kun (Bound)": [],
+ "Ghosty": [],
+ "Ghosty (Sacrifice)": [
+  {
+   "type": "active",
+   "name": "Final Sacrifice",
+   "text": "This ability is obtained on Himeno's 8th upgrade which upon being used, removes Himeno from the map and summons the Ghost Devil. It has aproximately 335k-350k HP at Level 100, and will attack any nearby enemy, hitting twice, with each dealing half of Himeno's damage when sacrificed."
+  }
+ ],
+ "Golden Navy": [],
+ "Golden Navy (Buddha)": [],
+ "Golden Tyrant": [],
+ "Golden Tyrant (Emperor)": [],
+ "Gravity Mage": [],
+ "Gravity Mage (Void)": [],
+ "Gravity Navy": [],
+ "Gravity Navy (Admiral)": [],
+ "Griffin": [],
+ "Griffin (Ascension)": [],
+ "Griffin (Darkness)": [],
+ "Griffin (Reincarnation)": [],
+ "Gunslinger": [],
+ "Gunslinger (Cross)": [],
+ "Hammer Giantess": [],
+ "Hammer Giantess (Creation)": [],
+ "Hammerhead": [],
+ "Hammerhead (Shark Empress)": [],
+ "Haze": [],
+ "Haze (Rage)": [],
+ "Heavy Weather": [],
+ "Hermy": [],
+ "Hermy (Duplicate)": [],
+ "Hex": [],
+ "Hex (Witch of Betrayal)": [],
+ "Honey": [],
+ "Honey (Hive)": [
+  {
+   "type": "passive",
+   "name": "Hivemind + Nectar Nova",
+   "text": "On Upgrade 3, Honey (Hive) will occasionally launch a bee field, dealing 3x of her current DMG over 3 ticks. At Upgrade 6, Honey (Hive) will also gain an additional nectar cannon attack, occasionally dealing 5x of her current DMG over 1 tick."
+  }
+ ],
+ "Hubris (Day)": [],
+ "Hubris (Night)": [],
+ "Hubris (The One)": [
+  {
+   "type": "passive",
+   "name": "Passive",
+   "text": "Hubris (The One) has slightly similar passive to Kent (Overtime) that boosts his Damage and Range overtime for 15 waves, capping at around 125.1% Damage increase and 67.5% Range increase. *It is recommended to place him at wave 4 during wave 20 Portals/Raids to get his full buff. {| class=\"article-table\" style=\"border: 1px solid #302D40; border-radius:2em; overflow:hidden; box-shadow: 5px 5px 15px #e69c2e;\" ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" | Wave ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" | Buff ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Total Buff ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Wave ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Buff ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Total Buff |- ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Spawn |; |; ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |8 |; |; |- ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |1 |; |; ! style=\""
+  }
+ ],
+ "Ice Lily": [],
+ "Iceclaw (Azure Fang)": [],
+ "Iceclaw (Rebirth)": [],
+ "Icy Dragon": [],
+ "Icy Dragon (Lotus)": [],
+ "Idol": [],
+ "Idol (Star)": [],
+ "Illusionist": [],
+ "Illusionist (Betrayal)": [
+  {
+   "type": "active",
+   "name": "Attack: Illusionist: Illusion",
+   "text": "Upon activation Illusionist will cast an illusion upon the enemies, making the base Invincible for 10 seconds. This ability is deemed very useful for leaderboard runs which is the main reason Illusionist is mainly used in leaderboard runs."
+  }
+ ],
+ "Illusionist (Chrysalis)": [],
+ "Illusionist (Final)": [
+  {
+   "type": "active",
+   "name": "Illusion",
+   "text": "On activation, Illusionist will summon an illusion that pushes back any enemies on contact, this state lasts for 10 seconds and takes 6 minutes / 360 seconds to recharge."
+  }
+ ],
+ "Illusionist (Fusion)": [],
+ "Iron Knight": [],
+ "Iron Knight (Arsenal)": [
+  {
+   "type": "passive",
+   "name": "Arsenal Drones",
+   "text": "Iron Knight (Arsenal) can spawn Arsenal Drones every time he takes down 20 enemies (despite showing it is 50). Note that its drones' attacks are not AoE and has 3 hits. * His drones will inherit 25% of his DMG, same range, and will have 5.5 SPA. Each individual drone last 30 seconds upon deployment. * After Upgrade 6, His drones will inherit 50% of his DMG, 120% of his Range, will last longer and have 4.0 SPA as well. Each individual drone last 1 minute upon deployment."
+  }
+ ],
+ "Itukoda": [],
+ "Izo (Black Fire)": [],
+ "Izo (Samurai)": [
+  {
+   "type": "passive",
+   "name": "Black Flames",
+   "text": "Enemies can take more Burn DoT and he can deal 100% burn damage making his burn DPS very efficient. it's also really good for Fire Affinity Stages (weakness), or any stages with Ice enemies involved, such as Magic Town or Clover Kingdom. However, it's worth noting that since half of his damage comes from burn, he isn't as effective against Regen enemies. This is because burn damage is dealt over time; as a result, it gives Regen enemies time to heal. Consider a Regen enemy with 2000 HP, an Itochi (Susanoo) that does 1000 damage plus 1000 burn, and a different character that does 2000 damage. Since Itochi (Susanoo)'s burn occurs over time, the enemy would be able to regen and survive his attack. On the other hand, the character that dealt the damage all at once would prevent regeneration from occurring. With the Infernal Gaze, his Burn Damage will be doubled and given his duration of 10 ticks (100% before the relic is applied), he would technically deal triple damage if including his normal damage. A max level Izo (Samurai) can deal up to 660k+ damage with his burn, each burn dealing around 30k damage and also adding on the initial attack damage. His burn stacks with other burn unit"
+  }
+ ],
+ "Jackal": [],
+ "Jackal (Alpha)": [
+  {
+   "type": "passive",
+   "name": "Los Lobos",
+   "text": "Jackal (Alpha) summons a Spirit Wolf with 1 HP that deals 1/3 (33.34%) of Jackal (Alpha)'s current damage upon death, which it hits anyone within the explosion radius. The explosion even hits flying enemies."
+  }
+ ],
+ "Jose (Shining Gem)": [],
+ "Jose (Unbreakable)": [],
+ "Joykid (Bounce)": [],
+ "Joykid (Mode IV)": [],
+ "Juozu": [
+  {
+   "type": "passive",
+   "name": "Bleed",
+   "text": "Every time Juozu attacks, he causes Bleed to all enemies in the AoE, which do a tick DMG and reduces greatly HP regen for the duration of the bleed."
+  }
+ ],
+ "Juozu (Joker)": [
+  {
+   "type": "passive",
+   "name": "Bleed",
+   "text": "Juozu's attacks apply bleed damage to all enemies hit, dealing damage over time and greatly reducing HP regen for the duration of the bleed."
+  }
+ ],
+ "Kansai": [],
+ "Kansai (Daydream)": [
+  {
+   "type": "passive",
+   "name": "Daydream",
+   "text": "After 10 seconds of Kansai (Daydream) inactivity, enter a Daydream. During the daydream, Kansai (Daydream) gain a 10% damage buff every second up to 200%. This bonus resets upon finishing an attack."
+  }
+ ],
+ "Karma": [],
+ "Karma (Thunder Fiend)": [],
+ "Killer (Godspeed)": [
+  {
+   "type": "passive",
+   "name": "Stun",
+   "text": "Killer (Godspeed)'s lightning attacks are able to stun enemies for a few seconds. Unlike other stunners like Packy (Maniac) or Jolyna (Determination), his stun is available, even at Upgrade 0, making him useful for emergency stuns for other units to have another chance of finishing them off."
+  }
+ ],
+ "Killer (Whirlwind)": [],
+ "Killstreak": [],
+ "Killstreak (Speedrun)": [],
+ "King Ant": [],
+ "Kyko": [],
+ "Kyko (Crimson Spear)": [],
+ "Legendary Assassin": [],
+ "Legendary Assassin (Prime)": [
+  {
+   "type": "passive",
+   "name": "Passive",
+   "text": "Slim Down - Every time Legendary Assassin (Prime) attacks, he increases his damage by 0.8% maxing at 200%. Every other upgrade changes the value of increase, up to a max of 2% per attack. Once he reaches 100%, another 100% will be added to his damage and his model will change into a slimmer version of himself, representing Legendary Assassin (Prime) in his prime. {| class=\"article-table\" style=\"border: 1px solid #302D40; border-radius:2em; overflow:hidden; box-shadow: 5px 5px 15px #e69c2e;\" ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Upgrade ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Increase |- ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Spawn | |- ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Upgrade 2 | |- ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Upgrade 4 | |- ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Upgrade 6 | |- ! style=\"text-align: center; font-family: rubik,helvetica,arial,sans-serif;\" |Upgrade 8 | |}"
+  }
+ ],
+ "Lex": [],
+ "Lex Akoman": [],
+ "Lightning God": [],
+ "Lightning God (Awakened)": [],
+ "Lilia": [],
+ "Lilia (Homunculus)": [],
+ "Lucifer": [],
+ "Lucifer (Demon Emperor)": [],
+ "Lunar Hare": [],
+ "Lunar Hare (Tiger)": [],
+ "Lyla": [],
+ "Magic Disbeliever": [],
+ "Magic Disbeliever (Dark)": [],
+ "Magic Girl": [],
+ "Magic Girl (Salvation)": [],
+ "Magma": [],
+ "Martial Demon (Destruction)": [
+  {
+   "type": "passive",
+   "name": "Compass Needle",
+   "text": "After 12 seconds (two attacks), Martial Demon boosts his damage by 50% for around 5 seconds."
+  }
+ ],
+ "Mazara": [],
+ "Mazara (Founder)": [],
+ "Menace": [],
+ "Menace (Terror)": [
+  {
+   "type": "active",
+   "name": "Terror",
+   "text": "*x3 Menace's current DMG to every BLEEDING enemy inside his range (including Air) *Ability can crit for x4.5 Menace's current DMG *Stuns Enemies for 2 seconds *10 Seconds Stun Cooldown on enemies which have been affected by it. *20 Seconds Ability Cooldown (No Global Cooldown)"
+  }
+ ],
+ "Millie": [],
+ "Millie (Holy)": [],
+ "Mimic Sorcerer": [],
+ "Mimic Sorcerer (Cursed Child)": [],
+ "Mirror Ninja": [],
+ "Mirror Ninja (Reflection)": [],
+ "Mochi": [],
+ "Mochi (Rage)": [
+  {
+   "type": "passive",
+   "name": "Sticky Mochi",
+   "text": "Mochi (Rage) slows down each enemy he attacks using a sticky mochi, making him a useful support unit."
+  }
+ ],
+ "Morbid": [],
+ "Morbid (Shadow Lord)": [],
+ "Operator (Heart)": [],
+ "Operator (ROOM)": [
+  {
+   "type": "active",
+   "name": "Scramble",
+   "text": "Operator (ROOM) has an ability called \"Scramble\" that teleports enemies back 50% of Lao's Range. This scales with his range, so the more range Operator (ROOM) has, the further back the enemies are teleported. For example, if he has 10 Range, Scramble will teleport enemies 5 'range' backwards on the Path. Scramble works on all enemies in his range, including Bosses. * Global Cooldown: 75s * This ability wont work on enemies that have already been affected by Scramble 3 times."
+  }
+ ],
+ "Origami": [],
+ "Origami (Paper Angel)": [],
+ "Packy": [],
+ "Packy (Maniac)": [],
+ "Paradox": [],
+ "Paradox (Divine Sight)": [
+  {
+   "type": "active",
+   "name": "Unlimited Void",
+   "text": "Paradox (Divine Sight) Stops every enemy in their tracks and buffs his damage by 100% for the duration of his domain. If an enemy has already been affected by Timestop less than 10 seconds before use, the enemy will not be stopped in the domain. *Global Cooldown: 60 *Duration: 8"
+  }
+ ],
+ "Paragon": [],
+ "Paragon (Devil)": [
+  {
+   "type": "passive",
+   "name": "???",
+   "text": "Angel Requires base hp to attack. If the base does not have enough HP then Angel will stop attacking. The base HP will not go to 0 when Angel attacks."
+  }
+ ],
+ "Player": [],
+ "Player (Argus)": [],
+ "Prayer Master": [],
+ "Priest": [],
+ "Priest (Heaven)": [
+  {
+   "type": "active",
+   "name": "Time Acceleration",
+   "text": "Priest (Heaven) decreases the SPA of all units in the map for the duration when used. * SPA Decrease: 50% * Duration: 30 Seconds * Global Cooldown: 300 Seconds Note that this does not stack with Trickster's ability (only the SPA part). However, this boost doesn't work on units whose SPA is lower than their actual attack animation."
+  }
+ ],
+ "Priest (New Moon)": [],
+ "Prime Force": [],
+ "Prime Force (Peace)": [
+  {
+   "type": "passive",
+   "name": "Overwhelming Strength",
+   "text": "Prime Force (Peace)'s attacks are able to push back enemies due to his overwhelming strength."
+  }
+ ],
+ "Psychic Princess": [],
+ "Psychic Princess (Evo)": [],
+ "Puppet Girl": [],
+ "Puppet Girl (Spirit)": [],
+ "Ratio": [],
+ "Rebel": [],
+ "Rebel (Flame Ruler)": [],
+ "Red Scar": [],
+ "Red Scar (Conqueror)": [
+  {
+   "type": "active",
+   "name": "Conqueror's Haki",
+   "text": "Shanks uses the Haoshoku Haki to make enemies in his range sleep/unconscious for 3 seconds with a cooldown of 15 seconds. This works against flying enemies as well. This ability stacks with any other effects (stun, freeze, mind control) making it very useful for stalling enemies. (must be used 1 second after previous effect wears off)"
+  }
+ ],
+ "Reliable Student": [],
+ "Reliable Student (Echoes)": [],
+ "Riony": [],
+ "Riony (Devil Princess)": [],
+ "Robot Sorcerer": [],
+ "Saki": [],
+ "Saki (Cyanblade)": [],
+ "Scarlet Slayer": [],
+ "Scarlet Slayer (Cursed Frost)": [],
+ "Sepsis": [],
+ "Sepsis (Moon)": [],
+ "Shadow Sorcerer": [],
+ "Shadow Sorcerer (Hybrid Shadow)": [],
+ "Shadow Sorcerer (Incident)": [],
+ "Shadow Sorcerer (Ritual)": [
+  {
+   "type": "active",
+   "name": "Ritual",
+   "text": "Upon being maxed Shadow Sorcerer (Ritual) will gain the ability to delete itself in return for summoning Divine General."
+  }
+ ],
+ "Sharkfin": [],
+ "Sharkfin (Tailless Beast)": [],
+ "Shinobi (Awakened)": [],
+ "Shinobi (Eternal)": [],
+ "Shinobi (Hood)": [],
+ "Shinobi (Storm)": [],
+ "Shrimp": [],
+ "Shrimp (White Terror)": [],
+ "Silver King": [],
+ "Silver Slayer": [],
+ "Silver Slayer (Hunter)": [],
+ "Siren": [],
+ "Siren (Harpy)": [],
+ "Skater": [],
+ "Skater (Album)": [],
+ "Skeleton": [],
+ "Skeleton (Soul King)": [],
+ "Smoka": [],
+ "Smoka (Hunter)": [],
+ "Snake Princess": [],
+ "Somber": [],
+ "Somber (Buzzsaw)": [],
+ "Spearer": [],
+ "Spearer (Child of Light)": [],
+ "Spider": [],
+ "Spider (Immolation)": [],
+ "Spirit Archer": [],
+ "Spirit Archer (Reversal)": [
+  {
+   "type": "passive",
+   "name": "Ablity: Holy Arrow",
+   "text": "Every five attacks, Spirit Archer (Reversal) change his attack type from Rain of Light to Holy Arrow. Holy Arrow can do double damage of Rain of Light."
+  }
+ ],
+ "Spirit Reaper (Dusk)": [],
+ "Spirit Reaper (Final Dusk)": [
+  {
+   "type": "active",
+   "name": "Attack: Pale Sky",
+   "text": "When used, Spirit Reaper (Final Dusk)'s Damage will increase by 900% (10x). however, he will be completely removed from the map after his next attack."
+  }
+ ],
+ "Spirit Sniper": [],
+ "Spirit Sniper (Prodigy)": [],
+ "Super Bro": [],
+ "Super Chunks": [],
+ "Supersound": [],
+ "Supersound (Speed)": [],
+ "Sword Queen": [],
+ "Sword Queen (Knight)": [],
+ "Takamu": [],
+ "Takamu (Reborn)": [],
+ "Tamiki": [],
+ "Tamiki (Tornado)": [
+  {
+   "type": "passive",
+   "name": "Psychic Knockback",
+   "text": "After upgrading to upgrade 6 Tamiki can push back all enemies but bosses every time she attacks."
+  }
+ ],
+ "Tango": [],
+ "Tango (Flash God)": [],
+ "Tango (Score)": [],
+ "Tarata": [],
+ "Tarata (Ignite)": [],
+ "Thunder Maid": [],
+ "Thunder Maid (Servant)": [],
+ "Tiger": [],
+ "Tiger (Moonlight Beast)": [],
+ "Time Wizard": [],
+ "Time Wizard (Chronos)": [
+  {
+   "type": "active",
+   "name": "Chrono Reversal",
+   "text": "Time Wizard (Chronos) forces every enemy (including flyings) in his range to walk back towards their spawn during its duration (including not only the currently affected targets, but also those who enter his range while the ability is active) . It does not affect bosses. * Global Cooldown: 90s * Duration: 5s"
+  }
+ ],
+ "Toad Sensei": [],
+ "Toad Sensei (Toad Sage)": [],
+ "Toby": [],
+ "Trickster": [],
+ "Turtle Master": [],
+ "Unohona": [],
+ "Usurper (Founder)": [
+  {
+   "type": "active",
+   "name": "The Extinction",
+   "text": "Usurper (Founder) can spawn 10 Wall Titans and 1 Usurper (Founder) upon using the ability. All titans spawned are capable of damaging Flying and Boss enemies. * Duration: N/A (it varies on the HP of the enemies and the timing) * Cooldown: 480s"
+  }
+ ],
+ "Vego (Mage II)": [],
+ "Vego (Mage)": [],
+ "Vego (Super II)": [],
+ "Vego (Super)": [],
+ "Verdant Hero (Dark)": [],
+ "Verdant Hero (String)": [],
+ "Violentine": [],
+ "Violentine (Brutal Angel)": [
+  {
+   "type": "passive",
+   "name": "Twisted Love",
+   "text": "Summon the last dead enemy damaged by Violentine (Brutal Angel) with 25% of their original health every 5 attacks. (Global Limit of 10 summons at once). This passive is also called Resurrection Dance, which unlocks at Upgrade 1."
+  }
+ ],
+ "Virtual Samurai": [],
+ "Virtual Samurai (Bachelor)": [],
+ "Void Spear": [],
+ "Void Spear (Revival)": [],
+ "Wasp": [],
+ "Wasp (Hornet)": [],
+ "Waterfist": [
+  {
+   "type": "passive",
+   "name": "Piercing Fangs",
+   "text": "After upgrade 4, Waterfist gains a significant boost in DPS. This enhancement results from his three hits, each now dealing 50% of his base damage, contributing to an overall 50% DPS increase."
+  }
+ ],
+ "Waterfist (White Tooth)": [],
+ "Weather": [],
+ "Weather Girl": [],
+ "Weather Girl (Thief)": [
+  {
+   "type": "passive",
+   "name": "Treasure Thief",
+   "text": "Upon placement, Weather Girl (Thief) will mark an enemy (one per placement, so up to 3 per round) with a Beli symbol. Upon killing the enemy in question mark, the player will receive additional gold. Bonus gold amount increases with levels. *Deployment: 300 *Upgrade 1: 450 *Upgrade 2: 600 *Upgrade 3: 800 *Upgrade 4: 1,000 *Upgrade 5: 1,500 *Upgrade 6: 2,000 *Upgrade 7: 2,500 *Upgrade 8: 3,000"
+  }
+ ],
+ "White Snake": [],
+ "White Snake (Sacred Spear)": [],
+ "Whitehair": [],
+ "Wratho": [],
+ "Wratho (Assault)": [],
+ "Zombie": [],
+ "Zombie (Risen)": [
+  {
+   "type": "passive",
+   "name": "Undead Blessing",
+   "text": "Zombie (Risen) provides a buff to all summons spawned on the map. This buff increases the damage dealt by summons and the range of summons by +25% dmg and +10% range for each Zombie (Risen) placed on the map. The damage bonus is capped at 8 placements (+200% dmg (3x), +80% rng (1.8x). The buff stacks multiplicatively with other buffers such as Commander, Wind Dragon, and Griffin (Reincarnation)."
+  }
+ ],
+ "Agony": [
+  {
+   "type": "passive",
+   "name": "ALMIGHTY PUSH!",
+   "text": "Every time Agony attacks, he uses the Almighty Push's overwhelming force to push back enemies by a few studs. Agony is a good support legendary though it is not recommended to get him as your first legendary as there are more useful ones."
+  }
+ ],
+ "Blackhair": [],
+ "Bulby": [],
+ "Carrot (Super)": [],
+ "Carrot Black": [],
+ "Chunks": [],
+ "Commander": [
+  {
+   "type": "active",
+   "name": "Dedicate your hearts!",
+   "text": "When activated, Commander increases the Physical damage stats of units in his range by 25%. If he buffs other Commanders in his range, their ability is going to buff by 56% to 95 to 100%. The buff lasts for 30 seconds and the ability has a cooldown of 60 seconds."
+  }
+ ],
+ "Experiment X (Semi-Perfect)": [],
+ "Flame Wizard": [],
+ "Fox Ninja (Demon Cloak)": [],
+ "Gajoze": [],
+ "Gene": [],
+ "Ghoul (Centipede)": [
+  {
+   "type": "passive",
+   "name": "Bleed",
+   "text": "Ghoul (Centipede) deals bleed damage to all enemies he attacks, dealing damage over time and greatly reducing HP regeneration for the duration of the bleed. This makes him effective against Regen enemies. He's also recommended as a budget bleeder along with Hammergirl. His case is his SPA with no upgrades on is extremely cost-efficient on Shielded enemies."
+  }
+ ],
+ "Gold Boy": [],
+ "Hammergirl": [],
+ "Ice Shaper": [],
+ "Iceclaw": [],
+ "Izo": [],
+ "JIO": [
+  {
+   "type": "passive",
+   "name": "The World",
+   "text": "JIO stops time and freezes every enemy he attacks. Although, the enemies then gain immunity to stuns from JIO or any other Freeze units, but can still be stunned by Killer (Godspeed) or Red Scar's active ability."
+  }
+ ],
+ "Juvy": [],
+ "Light Admiral": [],
+ "Magician": [],
+ "Martial Demon": [],
+ "Mecha Tyrant": [],
+ "Monkey": [],
+ "Nightmare Joykid": [],
+ "Norro": [],
+ "Scorch": [
+  {
+   "type": "passive",
+   "name": "Burn",
+   "text": "Dabo applies burn damage to all enemies he attacks, dealing damage over time. __NOTOC____NOEDITSECTION__ Category:Legendary Units Category:Burn Units"
+  }
+ ],
+ "Silent": [],
+ "Snow Reaper": [
+  {
+   "type": "passive",
+   "name": "Passive Ability:",
+   "text": "She can freeze enemies with her attacks (Single-target --> Cone --> Full AOE). She is the best stunner for beginners."
+  }
+ ],
+ "Swingo": [],
+ "Touci": [],
+ "Usurper": [],
+ "Wind Dragon": [
+  {
+   "type": "active",
+   "name": "Sky Enchantment",
+   "text": "Sky Enchantment is available upon placement. When activated, Wenda increases the magical damage stats of units in her range by 30%. The buff lasts for 30 seconds and the ability has a cooldown of 60 seconds. When correctly placed down and timed correctly, she can buff units by 100%."
+  }
+ ],
+ "Zorrawk": [],
+ "Bakayua": [],
+ "Beast": [],
+ "Blaze Frost (Epic)": [],
+ "C.E.O.": [],
+ "Copy Ninja": [],
+ "Delinquent": [
+  {
+   "type": "active",
+   "name": "Time Stop",
+   "text": "Delinquent uses his stand ability to stop time, stunning enemies in place for 4 seconds. This ability makes Delinquent a nice unit to have in early game. Though his attacks do not inflict Freeze (unlike JIO, Cold Mage and his evo, Snake Princess, etc.,), he is still recommended for everyone due to his strong range for his ability, extremely low CD of an active ability, especially you can activate it at the desired time. He benefits from SPA Curses extremely well due to even lowering the cooldown, but unlike Paradox (Divine Sight), his ability is hindered by Short Range challenges and the like. In addition to that, his overall cost is even cheaper than Time Wizard (Chrono)'s placement cost, costing 775 less."
+  }
+ ],
+ "Experiment X (Imperfect)": [],
+ "Geno": [],
+ "Joykid  (Navy Bay)": [],
+ "Karyn": [],
+ "Killer": [],
+ "Operator": [],
+ "Piccoru": [],
+ "Sand Ninja": [
+  {
+   "type": "passive",
+   "name": "Sand Coffin",
+   "text": "Gaara covers the enemy in sand stunning them for a few seconds."
+  }
+ ],
+ "Sandy": [],
+ "Spirit Reaper (Masked)": [],
+ "Tyrant (Final)": [],
+ "Underhaul": [],
+ "Zapstu": [],
+ "Aman": [],
+ "Blossom": [],
+ "Carrot": [],
+ "Demon Girl": [],
+ "Demonkiller": [],
+ "Explosion Hero": [],
+ "Fox Ninja": [],
+ "Ghoul": [],
+ "Joan": [],
+ "Johna": [],
+ "Josuka": [],
+ "Joykid": [],
+ "Kolo": [],
+ "Sosuke": [],
+ "Spirit Reaper": [],
+ "Urakara": [],
+ "Usoap": [],
+ "Vego": [],
+ "Verdant Hero": [],
+ "Zen": []
+}

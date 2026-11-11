@@ -20,12 +20,13 @@
     targets: {},       // тип атаки → целей под ударом (по умолчанию 1)
   };
 
+  // множитель урона от уровня 1–110 (как lvl_mult в build_units): 1→100 плавно до ×9,204, 100→110 ещё до ×1,19
   function lvlMul(v, D, custom) {
-    const s = String(v == null ? '' : v);
-    if (s === '110') return D.lvl110;
-    if (s === '100') return D.lvl100;
+    const s = String(v == null ? '' : v).replace(',', '.');
     if (s === 'custom') return Number(custom) || 1;
-    return 1;
+    let n = parseFloat(s); if (!isFinite(n)) return 1;
+    n = Math.max(1, Math.min(110, n));
+    return n >= 100 ? D.lvl100 * Math.pow(1.19, (n - 100) / 10) : Math.pow(D.lvl100, (n - 1) / 99);
   }
 
   // фрагменты правил призыва из генератора: только числа, {E}, {S}, + - * / ( ) — проверяем и считаем
@@ -114,29 +115,35 @@
     // призывы-тараны бьют физическим уроном: только физ. бафы + «Все», кроме Idol (вики, Supreme Being (Sovereign))
     const bram = buffSum(D, B, 'Урон', 'Физ', D.ramExclude || []);
 
+    // активная способность (вики): opt.act = 'avg' — в среднем за бой (длительность / перезарядка), 'peak' — пока действует
+    const act = activeFx(opt.fx, opt.act);
     const cc = inp.cc === null || inp.cc === '' || inp.cc === undefined ? null : +inp.cc;
-    const crit0 = Math.min(1, (cc === null ? u.crit : cc / 100) + ((+S.gCrit || 0) + rC + pc) / 100);
+    const crit0 = Math.min(1, (cc === null ? u.crit : cc / 100) + ((+S.gCrit || 0) + rC + pc + act.crit) / 100);
     const crit = Math.min(1, crit0 + bc / 100);
-    const cm = (u.cdm > 0 ? u.cdm : S.critDef) + (rCD + pcd) / 100;
-    const own = pasv + rD;
+    const cm = (u.cdm > 0 ? u.cdm : S.critDef) + (rCD + pcd + act.critdmg) / 100;
+    // активка, чьё среднее уже заложено в пассивку (Paradox: +13%), при включении не считается дважды
+    const overlap = opt.act && opt.fx ? opt.fx.reduce((a, f) => a + (+f.pas_overlap || 0), 0) : 0;
+    const own = Math.max(0, pasv - overlap) + rD;
     const mul0 = lvl * (1 + GD / 100) * (1 + cd / 100) * (1 + kD / 100) * (1 + own / 100) * (1 + tr.d / 100) * resm
-      * (1 + rPwr * S.pwrp / 100);
+      * (1 + rPwr * S.pwrp / 100) * (1 + act.dmg / 100);
     const mulx = mul0 * (1 + bd / 100);
-    const spa = row.spa * Math.max(0.1, 1 - ((+S.gSpa || 0) + cs + bs) / 100) * (1 - tr.s / 100) * kS;
-    const s0 = row.spa * Math.max(0.1, 1 - ((+S.gSpa || 0) + cs) / 100) * (1 - tr.s / 100) * kS;
+    const aS = Math.max(0.1, 1 - act.spa / 100);
+    const spa = row.spa * Math.max(0.1, 1 - ((+S.gSpa || 0) + cs + bs) / 100) * (1 - tr.s / 100) * kS * aS;
+    const s0 = row.spa * Math.max(0.1, 1 - ((+S.gSpa || 0) + cs) / 100) * (1 - tr.s / 100) * kS * aS;
     const rng = row.rng * (1 + ((+S.gRng || 0) + br) / 100) * (1 + tr.r / 100) * kR;
     const tg = S.targets && S.targets[row.atype] != null ? +S.targets[row.atype] : 1;
     const ownHit = !!row.own;
 
     const E = row.dmg;
     const dmg = E * mulx, d0 = E * mul0;
-    const dmgdot = dk === 'Кровотечение' ? dmg : d0;    // горение/яд/иссушение — от урона без бафов
+    const dmgdot = dmg;    // любой DoT — от финального удара со всеми бафами
     const rdot = dk ? ((rl.dotk === 'Все' || rl.dotk === dk) ? +rl.dot || 0 : 0) + pdot : 0;
     const amp = rdot + bdot;
     const dottick = dk && ownHit ? dmgdot * row.mult * (1 + amp / 100) : 0;
     const dotatk = dottick * row.ticks;
     const dotdps = S.dot && spa > 0 && ownHit ? dmgdot * row.mult * row.ticks / spa * (1 + amp / 100) * tg : 0;
-    const hitdps = ownHit ? (spa > 0 ? dmg / spa * (1 + crit * (cm - 1)) * tg : 0) + dmg * rClk / 100 * tg : 0;
+    const hitdps = (ownHit ? (spa > 0 ? dmg / spa * (1 + crit * (cm - 1)) * tg : 0) + dmg * rClk / 100 * tg : 0) * (1 + act.extra / 100)
+      + act.burst.reduce((s, b) => s + b.rate * dmg * (b.aoe ? tg : 1), 0);   // взрывы способности: урон × множитель / перезарядка
 
     const sm = row.summon || {};
     const cyc = sm.c === 'spa' ? spa : sm.c === 'jelly' ? (spa > 0 ? Math.max(spa, (S.walk + 1.5 * spa) / 3) : 0) : (+sm.c || 0);
@@ -147,6 +154,12 @@
     const mram = sm.ram ? mul0 * (1 + bram / 100) : mulx;
     const sumdps = sbase * mram * (1 + sumb / 100);
     const sumhit = fHit ? fHit * mram * (1 + sumb / 100) : 0;
+    // по существам: t — призыв по циклу, k — призыв за убийства (для строк «↳ призыв»)
+    const smul = mram * (1 + sumb / 100), fKhit = evalFrag(sm.khit, E, spa);
+    const sumParts = [];
+    if (fT && cyc > 0) sumParts.push({ kind: 't', dps: fT / cyc * smul, hit: fHit * smul, every: cyc });
+    if (fK) sumParts.push({ kind: 'k', dps: Math.min(fK * kps, fCap > 0 ? fCap : Infinity) * smul,
+      hit: (fKhit || (fT ? 0 : fHit)) * smul, kps, perKill: fK * smul, capped: fCap > 0 && fK * kps > fCap });
 
     const dps = hitdps + dotdps + sumdps;
     const cost0 = u.rows[0][2];
@@ -171,7 +184,7 @@
       upg, maxUpg: u.rows.length - 1, row, cost, dmg, maxhit: dmg * (crit > 0 ? cm : 1), spa, rng, tg, crit, cm,
       dotkind: dk, eff: row.eff, dottick, dotatk, amp, dotpct, dotpct2: dotpct * (1 + amp / 100), hitdps, dotdps, sumhit, sumdps, dps,
       dpsk: cost ? dps / cost * 1000 : 0, dps0, gain: dps0 ? dps / dps0 - 1 : 0,
-      tot, totHit, totDot, totSum, avgdps: T ? tot / T : 0, ownHit, disc,
+      tot, totHit, totDot, totSum, avgdps: T ? tot / T : 0, ownHit, disc, sumParts, sumb, mul0, mulx,
       // что дали трейт / реликвия / пассивка / проклятия этому юниту — для подсказок в интерфейсе
       info: { trait: tr.n || '', tD: tr.d || 0, tS: tr.s || 0, tR: tr.r || 0, relic: rl.n || '', rD, rC, rCD, rPwr, rClk,
         rDot: dk && (rl.dotk === 'Все' || rl.dotk === dk) ? +rl.dot || 0 : 0, rDotAny: +rl.dot || 0, rDotK: rl.dotk || '', resm,
@@ -207,6 +220,22 @@
     return out;
   }
 
+
+  /* Активная способность. fx — [{model, pct, dur, cd, always, mult, hits, aoe, pct_dps, crit_pct, critdmg_pct}] (только active).
+     mode: '' — выкл, 'avg' — доля времени действия (dur / cd), 'peak' — как будто действует всегда. Взрывы (burst) — всегда в среднем. */
+  function activeFx(fx, mode) {
+    const r = { dmg: 0, spa: 0, crit: 0, critdmg: 0, extra: 0, burst: [] };
+    if (!mode || !fx) return r;
+    for (const f of fx) {
+      const up = mode === 'peak' || f.always ? 1 : (+f.cd > 0 ? Math.min(1, (+f.dur || 0) / +f.cd) : 0);
+      if (f.model === 'selfbuff') r.dmg += (+f.pct || 0) * up;
+      else if (f.model === 'selfspa') r.spa += (+f.pct || 0) * up;
+      else if (f.model === 'crit') { r.crit += (+f.crit_pct || 0) * up; r.critdmg += (+f.critdmg_pct || 0) * up; }
+      else if (f.model === 'extra_hit') r.extra += (+f.pct_dps || 0) * (f.always || !+f.cd ? 1 : up);
+      else if (f.model === 'burst' && +f.cd > 0) r.burst.push({ rate: (+f.mult || 0) * (+f.hits || 1) / +f.cd, aoe: !!f.aoe });
+    }
+    return r;
+  }
   // данные с правками пользователя: свои значения реликвий/трейтов и свои копии реликвий
   function withEdits(D, edits) {
     edits = edits || {};
@@ -220,7 +249,25 @@
     });
   }
 
-  const api = { calc, buffSum, teamBuffs, withEdits, tiers, lvlMul, evalFrag, DEFAULT_SETTINGS };
+  /* Divine General (вики): призывается Shadow Sorcerer (Ritual) на макс. апгрейде, она при этом исчезает.
+     Крик = 0,51 × урона Shadow Sorcerer; остальные атаки — от крика; скорость — от SPA Shadow Sorcerer.
+     Бафы Elfy / Wind Dragon / Griffin / Blossom / Zombie действуют на него — берём финальный удар Shadow Sorcerer
+     (магический, бафы те же) × бафы «Призыв». r — результат calc() для Shadow Sorcerer (Ritual). */
+  const DG_MODES = {
+    attack: [{ m: 1.25, every: 1, at: 'AoE (Circle)' }, { m: 2, every: 2, at: 'AoE (Circle)' }],   // Car Toss + Jump
+    defend: [{ m: 1, every: 1, at: 'AoE (Full)' }, { m: 2, every: 2, at: 'AoE (Circle)' }],      // Scream + Jump
+    boss: [{ m: 2.5, every: 0.5, at: 'Single' }, { m: 2, every: 1.5, at: 'AoE (Circle)' }],      // Slash + Jump
+  };
+  function divineGeneral(r, S, mode) {
+    S = Object.assign({}, DEFAULT_SETTINGS, S || {});
+    const scream = 0.51 * r.dmg * (1 + (r.sumb || 0) / 100);
+    const hits = DG_MODES[mode] || DG_MODES.attack;
+    const tgt = a => S.targets && S.targets[a] != null ? +S.targets[a] : 1;
+    const dps = r.spa > 0 ? hits.reduce((s, h) => s + h.m * scream * tgt(h.at) / (h.every * r.spa), 0) : 0;
+    return { dps, hit: scream * hits[0].m, scream, mode: DG_MODES[mode] ? mode : 'attack' };
+  }
+
+  const api = { calc, activeFx, divineGeneral, buffSum, teamBuffs, withEdits, tiers, lvlMul, evalFrag, DEFAULT_SETTINGS };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.AAModel = api;
 })(typeof window !== 'undefined' ? window : globalThis);

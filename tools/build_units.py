@@ -134,7 +134,7 @@ SUMMON_RULES = {
                 'Abyssal Jelly: раз в SPA (без врага), до 3 на Elyssia; взрыв = урон Elyssia; после смерти откат 1,5×SPA. '
                 'Сама не атакует'),
     # + угорь за 5 убийств: урон ¼, SPA ×2, живёт 60 с, ≤3 одновременно → потолок 3 угря постоянно
-    'Elyssia (Abyssal)': (lambda i, hp: dict(t='{E}', c=JELLY, hit='{E}', k='{E}/4*60/(2*{S})/5', cap='3*{E}/4/(2*{S})'),
+    'Elyssia (Abyssal)': (lambda i, hp: dict(t='{E}', c=JELLY, hit='{E}', k='{E}/4*60/(2*{S})/5', cap='3*{E}/4/(2*{S})', khit='{E}/4'),
                           'Abyssal Jelly: раз в SPA (без врага), до 3; взрыв = урон Elyssia; откат 1,5×SPA. Abyssal Eel за 5 убийств: '
                           'урон ¼, SPA ×2, радиус ×2,5, живёт 60 с, до 3. Сама не атакует'),
 }
@@ -160,6 +160,23 @@ SUMMON_NOTES = {   # призыватели, у которых урон приз
 }
 LVL100 = 9.20406501834430488   # множитель урона 100 ур. из шаблона вики Stats Box
 LVL110 = LVL100 * 1.19         # Limit Break до 110 ур.: «примерно +19% урона» (вики, Powerups)
+
+
+def lvl_mult(level):
+    """Множитель урона от уровня 1–110. Вики даёт точки 1 (×1), 100 (×9,204) и 110 (ещё ×1,19);
+    между ними — плавный (геометрический) рост: 100→110 ≈ +1,75% за уровень, как у PWR."""
+    try:
+        v = float(str(level).replace(',', '.'))
+    except (TypeError, ValueError):
+        return 1.0
+    v = max(1.0, min(110.0, v))
+    return LVL100 * 1.19 ** ((v - 100) / 10) if v >= 100 else LVL100 ** ((v - 1) / 99)
+
+
+def lvl_expr(cell):
+    """То же формулой Excel: уровень в ячейке (число или текст «100»), пусто/текст → 1."""
+    v = f'MAX(1,MIN(110,IFERROR(VALUE(SUBSTITUTE({cell}&"",",",".")),1)))'
+    return f'IF({v}>=100,{LVL100}*1.19^(({v}-100)/10),{LVL100}^(({v}-1)/99))'
 
 ELEM_RU = {'fire_damage': 'Огонь', 'water_damage': 'Вода', 'rose_damage': 'Роза', 'air_damage': 'Воздух',
            'lightning_damage': 'Шторм', 'light_damage': 'Свет', 'dark_damage': 'Тьма', 'ice_damage': 'Лёд'}
@@ -293,8 +310,22 @@ def num(v):
     return round(float(v), 4) if isinstance(v, (int, float)) and not isinstance(v, bool) else None
 
 
+def ability_list(u, wiki_items):
+    """Способности юнита: разделы страницы вики + активная атака из данных (перезарядка / длительность)."""
+    items = [dict(type=i['type'], name=i['name'], text=i['text']) for i in wiki_items]
+    if u.get('active_attack') and not any(i['type'] == 'active' for i in items):
+        st = u.get('active_attack_stats') if isinstance(u.get('active_attack_stats'), dict) else {}
+        tail = ', '.join(x for x in (f"перезарядка {num(st.get('attack_cooldown')):g} с" if num(st.get('attack_cooldown')) else '',
+                                     f"длительность {num(st.get('attack_duration')):g} с" if num(st.get('attack_duration')) else '') if x)
+        items.append(dict(type='active', name=clean(str(u['active_attack'])), text='Активная способность' + (f' ({tail})' if tail else '')))
+    return items
+
+
 def load():
     data = json.load(open(os.path.join(ROOT, 'data', 'data.json'), encoding='utf-8'))
+    # способности со страниц вики (tools/fetch_abilities.py); нет файла — пусто
+    ab_path = os.path.join(ROOT, 'data', 'abilities.json')
+    wiki_ab = json.load(open(ab_path, encoding='utf-8')) if os.path.exists(ab_path) else {}
     aoe = json.load(open(os.path.join(ROOT, 'data', 'aoe.json'), encoding='utf-8'))
     units = []
     for u in data.values():
@@ -379,7 +410,8 @@ def load():
                           elem=', '.join(ELEM_RU[k] for k in (u.get('_secondary_damage_types') or {}) if k in ELEM_RU),
                           passives='; '.join(f'{n}: {d}' for n, d in passives), pas_pct=pas_pct,
                           pas_crit=pas_crit, pas_cd=pas_cd, pas_dot=pas_dot, summ=summ,
-                          evo_from=evo_from, feats='; '.join(f for f in feats if f.strip(': ')), rows=rows))
+                          evo_from=evo_from, feats='; '.join(f for f in feats if f.strip(': ')), rows=rows,
+                          abilities=ability_list(u, wiki_ab.get(u['name']) or [])))
     units.sort(key=lambda x: (RARITY_ORDER.index(x['rarity']), x['name'].lower()))
     return units
 
@@ -400,6 +432,7 @@ def title(ws, text, hint):
 def dv_list(ws, formula, rng):
     dv = DataValidation(type='list', formula1=formula, allow_blank=True)
     dv.showDropDown = False   # в openpyxl False = ПОКАЗЫВАТЬ стрелку
+    dv.showErrorMessage = False   # список — подсказка: своё значение (например, уровень 57) тоже принимается
     ws.add_data_validation(dv); dv.add(rng)
 
 
@@ -625,13 +658,13 @@ def sheet_settings(wb):
 
     ws['A3'] = 'ОБЩИЕ'; ws['A3'].font = BOLD
     rows = [
-        ('Уровень юнитов (1 / 100 / 110 / Свой)', '1', None, '100 ур. = урон ×9,204; 110 (Limit Break) = ещё +19%'),
+        ('Уровень юнитов (любой 1–110 или «Свой»)', '1', None, '100 ур. = урон ×9,204; 110 (Limit Break) = ещё +19%; '
+         'между ними — плавный рост (приближение, вики даёт только 1 / 100 / 110)'),
         ('Свой множитель урона от уровня', 1, NUM2, 'работает, если выше выбрано «Свой»'),
-        ('→ Множитель урона от уровня', f'=IF(OR(B4=110,B4="110"),{LVL110},IF(OR(B4=100,B4="100"),{LVL100},'
-                                        f'IF(B4="Свой",B5,1)))', '0.000', 'считается сам'),
+        ('→ Множитель урона от уровня', f'=IF(B4="Свой",B5,{lvl_expr("B4")})', '0.000', 'считается сам'),
         ('Множитель крита по умолчанию', 1.5, NUM2, 'вики: крит = ×1,5 (у кого-то свой — он в данных)'),
         ('Учитывать DoT (кровотечение, горение, яд)', 'Да', None,
-         'DoT за атаку = урон × множитель × тики; бафы саппортов усиливают только КРОВОТЕЧЕНИЕ (горение — от урона без бафов)'),
+         'DoT за атаку = финальный удар (со всеми бафами) × множитель × тики'),
         ('Общий бонус урона, %', 0, '0', 'всем юнитам сразу (трейты, реликвии, проклятия — у юнита, не сюда)'),
         ('Общее снижение SPA, %', 0, '0', '10 = атака на 10% чаще'),
         ('Общий бонус крит-шанса, %', 0, '0', 'прибавляется к шансу из вики'),
@@ -742,7 +775,7 @@ UNIT_SPEC = [
     ('rankv', 'Место по\nвыгоде'),
     ('rankd', 'Место\nпо DPS'), ('dpsall', 'DPS всех копий\n(× лимит)'), ('costall', 'Цена всех\nкопий'),
     ('farm', 'Ферма\n(за волну)'), ('lim', 'Лимитка'), ('evo', 'Эволюция из'), ('feats', 'Особенности'),
-    ('passdesc', 'Пассивки (из вики)'),
+    ('passdesc', 'Пассивки (из вики)'), ('abil', 'Способности (вики)'),
     ('trait', 'Трейт'), ('relic', 'Реликвия'), ('pas', 'Пассивка,\n+% урона'),
     ('pasc', 'Пассивка,\n+% крит-шанса'), ('pascd', 'Пассивка,\n+% крит-урона'), ('pasdot', 'Пассивка,\n+% к DoT'),
     ('k1s', 'Проклятие 1:\nстат'), ('k1v', 'Проклятие 1:\n%'), ('k2s', 'Проклятие 2:\nстат'), ('k2v', 'Проклятие 2:\n%'),
@@ -850,7 +883,8 @@ def sheet_units(wb, units):
             'hd': -1 if u['name'] in SPECIAL else f'=IF({c["dps"]}{r}>0,{c["dps"]}{r}-{c["idx"]}{r}/1E9,-1)',
             'hv': -1 if u['name'] in SPECIAL else f'=IF({c["dpsk"]}{r}>0,{c["dpsk"]}{r}-{c["idx"]}{r}/1E9,-1)',
             'hm': f'=IF(AND({c["mine"]}{r}="Да",{c["dps"]}{r}>0),{c["dps"]}{r}-{c["idx"]}{r}/1E9,-1)',
-            'elem': u['elem'] or None, 'passdesc': u['passives'] or None, 'dot': last['eff'] or None,
+            'elem': u['elem'] or None, 'passdesc': u['passives'] or None,
+            'abil': '\n'.join(f"{'Активная' if a['type'] == 'active' else 'Пассивная'}: {a['name']} — {a['text']}"[:600] for a in u['abilities']) or None, 'dot': last['eff'] or None,
         }
         vals.update({k: '=' + f for k, f in mods_formulas(f'{c["trait"]}{r}', f'{c["relic"]}{r}',
                                                           f'{c["dtype"]}{r}', f'{c["elem"]}{r}').items()})
@@ -921,7 +955,7 @@ def sheet_units(wb, units):
                     c['best']: 12, c['bestup']: 9, c['rankv']: 9, c['rankd']: 8, c['dpsall']: 14, c['costall']: 11,
                     c['tier']: 7, c['tierv']: 7, c['mine']: 8, c['cd']: 9, c['cs']: 9, c['cc']: 12, c['note']: 30,
                     c['trait']: 16, c['relic']: 20, c['pas']: 10, c['pasc']: 12, c['pascd']: 12, c['pasdot']: 10},
-            wrap_cols={c['feats']: 60, c['passdesc']: 60, c['note']: 40, c['summ']: 45})
+            wrap_cols={c['feats']: 60, c['passdesc']: 60, c['abil']: 70, c['note']: 40, c['summ']: 45})
     ws.freeze_panes = f'{get_column_letter(3)}5'     # имя и «Есть у меня» всегда видны
     # автофильтр — на ВСЕ столбцы, включая скрытые: сортировка через него переставляет строку целиком.
     # Если бы скрытые служебные столбцы остались вне фильтра, при сортировке они не переехали бы вместе с юнитом
@@ -1000,8 +1034,8 @@ def sheet_upgrades(wb, units, end):
             ws.cell(r, 23, f'=IF(AL{r}="Нет",0,IF(S{r}>0,R{r}/S{r},0))')
             ws.cell(r, 29, row['dotkind'] or None).fill = GREY
             ws.cell(r, 30, f'=IF(AC{r}="",0,{dot_global(f"AC{r}")}+{relic_dot(rDot, rDotK, f"AC{r}")}+{pasdot})')
-            # DoT: бафы саппортов усиливают только кровотечение; остальные DoT — от урона без бафов (E × AM)
-            ws.cell(r, 24, f'=IF(AND({DOT}="Да",S{r}>0,AL{r}<>"Нет"),IF(AC{r}="Кровотечение",R{r},E{r}*AM{r})'
+            # DoT (любой) — от финального удара со всеми бафами (R)
+            ws.cell(r, 24, f'=IF(AND({DOT}="Да",S{r}>0,AL{r}<>"Нет"),R{r}'
                            f'*N(L{r})*N(K{r})/S{r}*(1+AD{r}/100),0)')
             ws.cell(r, 25, f'=IFERROR(VLOOKUP(H{r},{AOE},2,0),1)')
             # итог = (удар с критом + DoT + часы реликвии) × цели + призывы
@@ -1112,8 +1146,7 @@ def engine(x, end, buf):
             'used': f'=IF({x["urow"]}="","",IF({numf(x["upg"])}="",INDEX({uc("ups")},{x["urow"]}),'
                     f'MAX(0,MIN(INT({numf(x["upg"])}),INDEX({uc("ups")},{x["urow"]})))))',
             'arow': f'=IF({x["urow"]}="","",INDEX({uc("first")},{x["urow"]})+{x["used"]})',
-            'lvl': f'=IF({x["lvl_in"]}="",{LVL},IF(OR({x["lvl_in"]}=110,{x["lvl_in"]}="110"),{LVL110},'
-                   f'IF(OR({x["lvl_in"]}=100,{x["lvl_in"]}="100"),{LVL100},1)))',
+            'lvl': f'=IF({x["lvl_in"]}="",{LVL},{lvl_expr(x["lvl_in"])})',
             'dt': f'=IF({ok},"",{A("P")})',
             'el': f'=IF({x["urow"]}="","",INDEX({uc("elem")},{x["urow"]})&"")',
             'trn': f'=IF({x["trait"]}<>"",{x["trait"]},IF({x["urow"]}="","",INDEX({uc("trait")},{x["urow"]})&""))',
@@ -1163,8 +1196,8 @@ def engine(x, end, buf):
             'cost': f'=IF({ok},"",INDEX({uc("cost0")},{x["urow"]})+({A("D")}-INDEX({uc("cost0")},{x["urow"]}))'
                     f'*(1-{x["disc"]}/100))',
             'dmg': f'=IF({ok},"",{A("E")}*{x["mulx"]})',
-            # урон, от которого считается DoT: кровотечение — с бафами саппортов, горение/яд/иссушение — без них (вики)
-            'dmgdot': f'=IF({ok},0,IF({x["dk"]}="Кровотечение",{x["dmg"]},{x["d0"]}))',
+            # урон, от которого считается DoT: финальный удар со всеми бафами (кровотечение, горение, яд, иссушение)
+            'dmgdot': f'=IF({ok},0,{x["dmg"]})',
             'dottick': f'=IF({ok},"",IF(OR({x["dk"]}="",{x["own_hit"]}="Нет"),"—",{x["dmgdot"]}*N({A("L")})'
                        f'*(1+({x["rdot"]}+{x["bdot"]})/100)))',
             'dotatk': f'=IF({ok},"",IF(N({x["dottick"]})=0,"—",{x["dottick"]}*N({A("K")})))',
@@ -1658,7 +1691,7 @@ def sheet_help(wb, n_units, n_rows):
         ('Пассивки: 4 жёлтых столбца у юнита — +% урона, +% крит-шанса, +% крит-урона, +% к DoT. Предзаполнены по страницам вики', False),
         ('   (Battlelust, Sunshine, Spellforged Blades ×2, крит ×2 Switchblade, чистый урон Black Blade/Curse/Chuuni, OverCrit Sepsis и др.).', False),
         ('   Условные пассивки (волны, бездействие, ульты) — 0, подсказка с числами в столбце «Пассивки (из вики)». В «Сравнении» «Пассивка = Нет» выключает все 4.', False),
-        ('Кровотечение считается от урона С бафами саппортов (30% при бафе +100% = 60%, вики Effects); горение, яд, иссушение — от урона БЕЗ бафов.', False),
+        ('Любой DoT (кровотечение, горение, яд, иссушение) считается от ФИНАЛЬНОГО удара — после всех бафов (30% при бафе +100% = 60%).', False),
         ('DPS DoT = урон итог × множитель DoT × тики / SPA (горение и кровотечение за каждую атаку)', False),
         ('DPS итог = (DPS удара с критом + DPS DoT + часы реликвии) × число целей + DPS призывов', False),
         ('DPS призывов = множитель урона юнита × (урон призывов за цикл / цикл + урон за убийство × убийств/с) × (1 + бафы «Призыв»)', False),

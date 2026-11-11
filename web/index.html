@@ -75,6 +75,10 @@ th.sort:hover { color: var(--text); }
 th.sort.on { color: var(--accent2); }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 tbody tr:hover { background: rgba(14,165,233,.06); }
+/* строки призывов под юнитом */
+tr.subrow td { background: rgba(14,165,233,.035); font-size: 12px; border-bottom-style: dashed; }
+tr.subrow .sub { padding-left: 24px; color: var(--accent2); font-weight: 600; white-space: normal; min-width: 160px; }
+tr.subrow .tag { margin-left: 4px; }
 #unitTable tbody tr { cursor: pointer; }
 .star { cursor: pointer; font-size: 16px; color: var(--dim); background: none; border: 0; padding: 0 2px; }
 .star.on { color: var(--warn); }
@@ -243,6 +247,7 @@ footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(
       <button class="btn primary" id="teamAdd" data-ru="+ Добавить юнита" data-en="+ Add unit"></button>
       <span class="hint" data-ru="Бафферы в команде (Commander, Wind Dragon, Griffin, Blossom, Idol, Trickster, Zombie (Risen), Bloodcry…) сами бафают остальных. Трейт, реликвия, пассивка и проклятия — из карточки юнита («Мой юнит»)." data-en="Buffers in the team (Commander, Wind Dragon, Griffin, Blossom, Idol, Trickster, Zombie (Risen), Bloodcry…) buff the others automatically. Trait, relic, passive and curses come from the unit card (“My unit”)."></span>
       <span class="grow"></span>
+      <label><span data-ru="Активки:" data-en="Actives:"></span> <select id="teamAct"></select></label>
       <button class="btn ghost" id="teamClear" data-ru="Очистить" data-en="Clear"></button>
     </div>
     <div class="tbl-wrap">
@@ -266,7 +271,7 @@ footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(
       <div class="card"><div class="card-header"><h2 data-ru="Формула урона" data-en="Damage formula"></h2></div>
         <div class="card-body" data-ru-html="<p>Урон удара = урон из вики × уровень (100 ур. = ×9,204, 110 ур. = ещё ×1,19) × (1 + общий бонус) × (1 + 5% × Limit Break отряда) × (1 + свой % ранга) × (1 + проклятие) × (1 + пассивка + реликвия) × (1 + трейт) × PWR × <b>(1 + бафы саппортов)</b>.</p><p>Каждая скобка — отдельный множитель, как в игре (сверено: Shinobi (Eternal) 256K). Бафы саппортов складываются между собой: Commander + Blossom = ×2,1.</p><p>DPS = урон / SPA × (1 + шанс крита × (множитель крита − 1)) × целей + DoT + призывы.</p>" data-en-html="<p>Hit = wiki damage × level (lv100 = ×9.204, lv110 = another ×1.19) × (1 + global) × (1 + 5% × team Limit Breaks) × (1 + own rank %) × (1 + curse) × (1 + passive + relic) × (1 + trait) × PWR × <b>(1 + support buffs)</b>.</p><p>Every bracket is a separate multiplier, as in game (checked: Shinobi (Eternal) 256K). Support buffs add up with each other: Commander + Blossom = ×2.1.</p><p>DPS = damage / SPA × (1 + crit chance × (crit mult − 1)) × targets + DoT + summons.</p>"></div></div>
       <div class="card"><div class="card-header"><h2 data-ru="DoT и призывы" data-en="DoT and summons"></h2></div>
-        <div class="card-body" data-ru-html="<p><b>Кровотечение</b> считается от урона с бафами, <b>горение, яд, иссушение</b> — от урона без бафов саппортов (вики). Усилители DoT (Bleed Amp, Infernal Gaze) умножают урон DoT.</p><p><b>Призывы</b>: урон за цикл / цикл + урон за убийства × «врагов в секунду». Elyssia сама не атакует — только медузы и угри. Бафы вида «Призыв» (Zombie (Risen)) усиливают только призывы.</p><p><b>Призывы-тараны</b> (тени Supreme Being, гули Dracula, солдаты Commander, титаны Usurper) бьют <b>физическим</b> уроном: их усиливают только физ. бафы и Griffin, а Wind Dragon, Elfy и Idol — нет (вики). Тень Supreme Being — за 10 <b>его</b> убийств, а он убивает не больше «целей за атаку / SPA» в секунду.</p><p><b>Урон за бой</b>: атаки в 0, SPA, 2·SPA…; DoT, не дотикавший к концу боя, не считается; призывы начинают бить после пути до врага.</p>" data-en-html="<p><b>Bleed</b> uses buffed damage, <b>burn, poison, wither</b> use damage without support buffs (wiki). DoT amplifiers (Bleed Amp, Infernal Gaze) multiply DoT damage.</p><p><b>Summons</b>: damage per cycle / cycle + damage per kill × kills per second. Elyssia does not attack herself — only jellies and eels. “Summon” buffs (Zombie (Risen)) boost summons only.</p><p><b>Ramming summons</b> (Supreme Being shades, Dracula ghouls, Commander soldiers, Usurper titans) deal <b>physical</b> damage: only physical buffs and Griffin boost them, not Wind Dragon, Elfy or Idol (wiki). Supreme Being gets a shade per 10 of <b>his own</b> kills, and he can’t kill more than “targets per attack / SPA” per second.</p><p><b>Battle damage</b>: attacks at 0, SPA, 2·SPA…; DoT not finished by the end is not counted; summons start after walking to the enemy.</p>"></div></div>
+        <div class="card-body" data-ru-html="<p><b>Любой DoT</b> (кровотечение, горение, яд, иссушение) считается от <b>финального удара</b> — после всех бафов. Усилители DoT (Bleed Amp, Infernal Gaze) умножают урон DoT.</p><p><b>Призывы</b>: урон за цикл / цикл + урон за убийства × «врагов в секунду». Elyssia сама не атакует — только медузы и угри. Бафы вида «Призыв» (Zombie (Risen)) усиливают только призывы.</p><p><b>Призывы-тараны</b> (тени Supreme Being, гули Dracula, солдаты Commander, титаны Usurper) бьют <b>физическим</b> уроном: их усиливают только физ. бафы и Griffin, а Wind Dragon, Elfy и Idol — нет (вики). Тень Supreme Being — за 10 <b>его</b> убийств, а он убивает не больше «целей за атаку / SPA» в секунду.</p><p><b>Урон за бой</b>: атаки в 0, SPA, 2·SPA…; DoT, не дотикавший к концу боя, не считается; призывы начинают бить после пути до врага.</p>" data-en-html="<p><b>Every DoT</b> (bleed, burn, poison, wither) uses the <b>final hit</b> — after all buffs. DoT amplifiers (Bleed Amp, Infernal Gaze) multiply DoT damage.</p><p><b>Summons</b>: damage per cycle / cycle + damage per kill × kills per second. Elyssia does not attack herself — only jellies and eels. “Summon” buffs (Zombie (Risen)) boost summons only.</p><p><b>Ramming summons</b> (Supreme Being shades, Dracula ghouls, Commander soldiers, Usurper titans) deal <b>physical</b> damage: only physical buffs and Griffin boost them, not Wind Dragon, Elfy or Idol (wiki). Supreme Being gets a shade per 10 of <b>his own</b> kills, and he can’t kill more than “targets per attack / SPA” per second.</p><p><b>Battle damage</b>: attacks at 0, SPA, 2·SPA…; DoT not finished by the end is not counted; summons start after walking to the enemy.</p>"></div></div>
       <div class="card"><div class="card-header"><h2 data-ru="Твои данные" data-en="Your data"></h2></div>
         <div class="card-body" data-ru-html="<p>Всё, что ты вводишь (★ мои юниты, трейты, реликвии, проклятия, сравнение, настройки), хранится <b>только в этом браузере</b>. Обновление сайта их не стирает.</p><p><b>⬇ Экспорт</b> сохраняет файл — с ним можно перенести данные на другой компьютер или телефон (<b>⬆ Импорт</b>) или скинуть другу свою сборку.</p>" data-en-html="<p>Everything you enter (★ owned units, traits, relics, curses, comparison, settings) is stored <b>only in this browser</b>. Site updates don’t erase it.</p><p><b>⬇ Export</b> saves a file — use it to move data to another computer or phone (<b>⬆ Import</b>) or share your build with a friend.</p>"></div></div>
     </div>
@@ -329,7 +334,7 @@ const T = {
     mine: 'Есть у меня', step: 'Шаг', total: 'Всего', atype: 'Атака', eff: 'DoT', marg: 'Прирост DPS', crit: 'Крит', dtype: 'Тип урона',
     elem: 'Стихии', place: 'Место', cap: 'Лимит', summNote: 'Призывы', yes: 'да', no: 'нет',
     dotatk: 'DoT за атаку', dotpct: 'DoT, % урона', dotpct2: 'DoT, % с усил.', totHit: 'За бой: удары', totDot: 'За бой: DoT',
-    totSum: 'За бой: призывы', avgdps: 'Ср. DPS за бой', best: 'Лучш. DPS/1000', bestUp: 'на апгр.', tierv: 'Тир выгоды',
+    totSum: 'За бой: призывы', avgdps: 'Ср. DPS за бой', act: 'Активка', best: 'Лучш. DPS/1000', bestUp: 'на апгр.', tierv: 'Тир выгоды',
     rankv: 'Место выгоды', topDps: 'Сильнейшие (DPS)', topVal: 'Самые выгодные (DPS на 1000)', topMine: 'Лучшие из моих (★)',
     noMine: 'Отметь своих юнитов ★ во вкладке «Юниты» — здесь появится их топ.' },
   en: { all: 'All', allR: 'All rarities', allT: 'All types', allRole: 'All roles', shown: (a, b) => `${a} of ${b} shown`,
@@ -345,7 +350,7 @@ const T = {
     mine: 'I own it', step: 'Step', total: 'Total', atype: 'Attack', eff: 'DoT', marg: 'DPS gain', crit: 'Crit', dtype: 'Damage type',
     elem: 'Elements', place: 'Placement', cap: 'Limit', summNote: 'Summons', yes: 'yes', no: 'no',
     dotatk: 'DoT per attack', dotpct: 'DoT, % of dmg', dotpct2: 'DoT, % boosted', totHit: 'Battle: hits', totDot: 'Battle: DoT',
-    totSum: 'Battle: summons', avgdps: 'Avg battle DPS', best: 'Best DPS/1000', bestUp: 'at upg', tierv: 'Value tier',
+    totSum: 'Battle: summons', avgdps: 'Avg battle DPS', act: 'Active', best: 'Best DPS/1000', bestUp: 'at upg', tierv: 'Value tier',
     rankv: 'Value rank', topDps: 'Strongest (DPS)', topVal: 'Best value (DPS per 1000)', topMine: 'Best of mine (★)',
     noMine: 'Mark your units with ★ on the Units tab — their top will appear here.' },
 };
@@ -465,7 +470,7 @@ function renderUnits() {
   $('#unitTable tbody').innerHTML = rows.map(x => {
     const u = x.u, r = x.r;
     return `<tr data-n="${esc(u.n)}"><td><button class="star ${x.mine ? 'on' : ''}" data-star="${esc(u.n)}" title="${esc(t('mine'))}">★</button></td>
-      <td class="uname">${esc(u.n)}</td><td>${rarBadge(u.r)}</td>
+      <td class="uname">${esc(u.n)}${(u.ab || []).length ? ` <span class="tag" title="${esc(u.ab.map(a => a.n).join(', '))}">${u.ab.some(a => a.t === 'active') ? '⚡' : '✦'} ${u.ab.length}</span>` : ''}</td><td>${rarBadge(u.r)}</td>
       <td>${esc(tr(u.dt))}</td><td>${esc(tr(u.role))}</td><td class="num">${r.maxUpg}</td><td class="num">${fmt(r.cost, 0)}</td>
       <td class="num">${short(r.dmg)}</td><td class="num">${fmt(r.spa, 2)}</td><td class="num">${fmt(r.rng, 1)}</td>
       <td class="num dps">${short(r.dps)}</td><td class="num">${fmt(r.dpsk, 1)}</td>
@@ -523,6 +528,9 @@ function renderModal() {
     <div><div class="kv"><span>${t('dps')}</span><span class="dps">${fmt(r.dps)}</span></div><div class="kv"><span>${t('dpsk')}</span><span>${fmt(r.dpsk, 1)}</span></div>
       <div class="kv"><span>${t('cost')}</span><span>${fmt(r.cost, 0)}</span></div><div class="kv"><span>${t('maxhit')}</span><span>${fmt(r.maxhit)}</span></div>
       <div class="kv"><span>${t('dotdps')}</span><span>${fmt(r.dotdps)}</span></div><div class="kv"><span>${t('sumdps')}</span><span>${fmt(r.sumdps)}</span></div>
+      ${summonSubs(u, r, {}).map(x => x.kind === 'dg'
+        ? `<div class="kv"><span>↳ Divine General (${L ? 'Атака / Защита / Босс' : 'Attack / Defend / Boss'})</span><span>${['attack', 'defend', 'boss'].map(m => short(M.divineGeneral(r, s, m).dps)).join(' / ')}</span></div>`
+        : `<div class="kv"><span>↳ ${esc(x.name)}</span><span>${short(x.dps)}</span></div>`).join('')}
       ${u.cap ? `<div class="kv"><span>${L ? 'DPS всех копий (× ' + u.cap + ')' : 'DPS of all copies (× ' + u.cap + ')'}</span><span class="dps">${fmt(r.dps * u.cap)}</span></div>
         <div class="kv"><span>${L ? 'Цена всех копий' : 'Cost of all copies'}</span><span>${fmt(r.cost * u.cap, 0)}</span></div>` : ''}
       ${u.farm ? `<div class="kv"><span>${L ? 'Ферма (за волну)' : 'Farm (per wave)'}</span><span>${fmt(u.farm, 0)}</span></div>` : ''}
@@ -543,6 +551,24 @@ function renderModal() {
       ${p.curD || p.curS || p.curR ? `<div class="hint">${L ? 'Старые суммы проклятий' : 'Old curse totals'}: ${[p.curD && 'урон ' + p.curD, p.curS && 'SPA ' + p.curS, p.curR && 'радиус ' + p.curR].filter(Boolean).join(', ')}% <button class="btn small" data-clearcur="1">✕</button></div>` : ''}
       <div class="field" style="grid-template-columns:1fr"><span>${L ? 'Заметка' : 'Note'}</span><textarea data-pk="note" rows="2" style="width:100%;background:var(--input);border:1px solid var(--border2);border-radius:8px;padding:6px 8px;color:var(--text)">${esc(p.note || '')}</textarea></div>
     </div></div>`;
+  if ((u.ab || []).length) {
+    h += `<h3 style="margin:6px 0">${L ? 'Способности (вики)' : 'Abilities (wiki)'}</h3>`;
+    // цифры способностей (для переключателя «Активка» в «Сравнении» / «Команде») — можно поправить под себя
+    const FXF = { selfbuff: ['pct', 'dur', 'cd'], selfspa: ['pct', 'dur', 'cd'], crit: ['crit_pct', 'critdmg_pct', 'dur', 'cd'],
+      burst: ['mult', 'hits', 'cd'], extra_hit: ['pct_dps'] };
+    const FXL = L ? { pct: '%', dur: 'длит., с', cd: 'перезарядка, с', crit_pct: 'крит %', critdmg_pct: 'крит-урон %', mult: '× урона', hits: 'ударов', pct_dps: '+% DPS' }
+      : { pct: '%', dur: 'dur, s', cd: 'cooldown, s', crit_pct: 'crit %', critdmg_pct: 'crit dmg %', mult: '× dmg', hits: 'hits', pct_dps: '+% DPS' };
+    const pfx = p.fx || {};
+    (u.fx || []).forEach((f0, i) => {
+      if (f0.type !== 'active' || !FXF[f0.model]) return;
+      const f = Object.assign({}, f0, pfx[i] || {});
+      h += `<div class="key-block" style="margin-bottom:8px"><b>⚡ ${esc(f.ability || '')}</b> — ${esc(fxText(f))}${f.needs_input ? ` <span class="tag" style="color:var(--warn)">${L ? 'впиши цифры' : 'enter numbers'}</span>` : ''}
+        ${f.quote ? `<div class="hint">«${esc(f.quote)}»</div>` : ''}
+        <div class="toolbar" style="margin:6px 0 0">${FXF[f.model].map(k => `<label>${esc(FXL[k])} <input type="number" step="any" data-fx="${i}" data-fk="${k}" value="${f[k] ?? ''}" style="width:80px"></label>`).join('')}
+        ${pfx[i] ? `<button class="btn small" data-fxreset="${i}">↺ ${L ? 'как на вики' : 'wiki'}</button>` : ''}</div></div>`;
+    });
+    for (const a of u.ab) h += `<div class="note"><span class="tag" style="color:${a.t === 'active' ? 'var(--warn)' : 'var(--good)'}">${a.t === 'active' ? (L ? 'Активная' : 'Active') : (L ? 'Пассивная' : 'Passive')}</span> <b>${esc(a.n)}</b> — ${esc(a.x)}</div>`;
+  }
   if (u.pas || u.summ || u.feats) {
     h += `<h3 style="margin:6px 0">${t('passive')}</h3>`;
     for (const x of [u.pas, u.summ && `${t('summNote')}: ${u.summ}`, u.feats]) if (x) h += `<div class="note">${esc(x)}</div>`;
@@ -563,7 +589,15 @@ function renderModal() {
   $('#mBody').innerHTML = h;
 }
 $('#mBody').addEventListener('input', e => {
-  const el = e.target, k = el.dataset.pk; if (!k) return;
+  const el = e.target;
+  if (el.dataset.fx !== undefined) {
+    const p = state.profiles[modalUnit.n] || (state.profiles[modalUnit.n] = {}), fx = p.fx || (p.fx = {});
+    const o = fx[el.dataset.fx] || (fx[el.dataset.fx] = {});
+    if (el.value === '') delete o[el.dataset.fk]; else o[el.dataset.fk] = Number(el.value);
+    if (!Object.keys(o).length) delete fx[el.dataset.fx];
+    save(); updateCompare(); updateTeam(); return;
+  }
+  const k = el.dataset.pk; if (!k) return;
   const v = el.type === 'checkbox' ? (el.checked ? 1 : '') : el.type === 'number' ? (el.value === '' ? '' : Number(el.value)) : el.value;
   setProf(modalUnit.n, k, v);
   if (k === 'note') return;          // заметка на расчёт не влияет
@@ -573,6 +607,8 @@ $('#mBody').addEventListener('input', e => {
 $('#mBody').addEventListener('change', e => { if (e.target.type === 'number') renderModal(); });
 $('#mBody').addEventListener('click', e => {
   const a = e.target.closest('[data-open]'); if (a) { e.preventDefault(); openUnit(a.dataset.open); return; }
+  const fr = e.target.closest('[data-fxreset]');
+  if (fr) { const p = prof(modalUnit.n); if (p.fx) delete p.fx[fr.dataset.fxreset]; save(); updateCompare(); updateTeam(); renderModal(); return; }
   if (e.target.closest('[data-clearcur]')) { ['curD', 'curS', 'curR'].forEach(k => setProf(modalUnit.n, k, '')); computeUnits(); renderUnits(); updateCompare(); updateTeam(); renderModal(); }
 });
 $('#mClose').onclick = () => $('#modal').classList.remove('on');
@@ -586,6 +622,33 @@ const COUT = ['cost', 'dmg', 'maxhit', 'spa', 'rng', 'hitdps', 'dotdps', 'sumdps
 const CMORE = ['dottick', 'dotatk', 'dotpct', 'dotpct2', 'sumhit', 'totHit', 'totDot', 'totSum', 'avgdps', 'cap'];
 const cmpCols = () => state.cmpMore ? [...COUT, ...CMORE] : COUT;
 const LOWER_BETTER = { cost: 1, spa: 1 };
+
+// ── активные способности: цифры (u.fx, из вики) + правки игрока в карточке (profile.fx) ──
+function fxFor(u) {
+  if (!u || !u.fx) return [];
+  const pf = prof(u.n).fx || {};
+  return u.fx.map((f, i) => Object.assign({}, f, pf[i] || {})).filter(f => f.type === 'active' && f.model && f.model !== 'none');
+}
+const ACT_LAB = () => state.lang === 'ru' ? { '': 'выкл', avg: 'в среднем', peak: 'пока действует' } : { '': 'off', avg: 'average', peak: 'while active' };
+function actSelect(u, val) {
+  const has = fxFor(u).length;
+  if (!has) return `<span class="hint" title="${esc(state.lang === 'ru' ? 'у юнита нет активки, влияющей на урон' : 'no damage active ability')}">—</span>`;
+  return `<select data-f="act">${Object.entries(ACT_LAB()).map(([k, v]) => `<option value="${k}" ${(val || '') === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select>`;
+}
+// описание эффекта для карточки: что даёт и сколько в среднем
+function fxText(f) {
+  const L = state.lang === 'ru', up = f.always ? 1 : (+f.cd > 0 ? Math.min(1, (+f.dur || 0) / +f.cd) : 0);
+  const per = f.always ? (L ? 'постоянно' : 'always') : `${fmt(+f.dur || 0, 1)} ${L ? 'с из' : 's of'} ${fmt(+f.cd || 0, 0)} ${L ? 'с' : 's'} (${fmt(up * 100, 0)}%)`;
+  switch (f.model) {
+    case 'selfbuff': return `${L ? 'урон' : 'damage'} +${fmt(+f.pct || 0, 1)}% · ${per}`;
+    case 'selfspa': return `SPA −${fmt(+f.pct || 0, 1)}% · ${per}`;
+    case 'crit': return `${L ? 'крит' : 'crit'} +${fmt(+f.crit_pct || 0, 0)}%${+f.critdmg_pct ? `, ${L ? 'крит-урон' : 'crit dmg'} +${fmt(+f.critdmg_pct, 0)}%` : ''} · ${per}`;
+    case 'extra_hit': return `DPS +${fmt(+f.pct_dps || 0, 1)}%`;
+    case 'burst': return `${L ? 'удар' : 'hit'} ${fmt(+f.mult || 0, 2)}× ${L ? 'урона' : 'damage'}${+f.hits > 1 ? ' × ' + f.hits : ''}${f.aoe ? ' AoE' : ''} · ${L ? 'раз в' : 'every'} ${fmt(+f.cd || 0, 0)} ${L ? 'с' : 's'}`;
+    case 'dot': return `DoT ${esc(f.kind || '')}`;
+    default: return L ? 'на урон юнита не влияет' : 'no effect on unit damage';
+  }
+}
 function newRow(n) { return { name: n || '', upg: '', lvl: '', buffs: [], trait: '', relic: '', passive: true }; }
 function addCmp(n) { state.compare.push(newRow(n)); save(); renderCompare(); }
 function buffOptions() { return `<option value="">${esc(t('addBuff'))}</option>` + ED.buffs.map(b => `<option value="${esc(b.n)}" title="${esc(bnote(b))}">${esc(bn(b.n))} (${esc(tr(b.kind))} ${b.v}%)</option>`).join(''); }
@@ -600,7 +663,7 @@ function renderCompare(full) {
   $('#cmpTime').value = String(state.settings.time ?? 30);
   $('#cmpGlobal').checked = !!state.cmpGlobal;
   $('#cmpMore').checked = !!state.cmpMore;
-  const heads = ['', 'unit', 'upg', 'lvl', 'buffs', 'trait', 'relic', 'pas', ...cmpCols()];
+  const heads = ['', 'unit', 'upg', 'lvl', 'buffs', 'trait', 'relic', 'pas', 'act', ...cmpCols()];
   $('#cmpTable thead tr').innerHTML = heads.map((k, i) => `<th class="${i > 7 ? 'num' : ''}">${k ? esc(t(k)) : ''}</th>`).join('');
   $('#cmpEmpty').style.display = state.compare.length ? 'none' : 'block';
   $('#cmpTable tbody').innerHTML = state.compare.map((row, i) => `<tr data-i="${i}">
@@ -608,12 +671,14 @@ function renderCompare(full) {
     <td><input class="uin" list="unitList" data-f="name" value="${esc(row.name)}" placeholder="${esc(t('pickUnit'))}">
       <div class="hint">${byName[row.name] ? esc(tr(byName[row.name].dt)) + ' · ' + esc(rar(byName[row.name].r)) : ''}</div></td>
     <td><select data-f="upg">${upgOptions(row)}</select></td>
-    <td><select data-f="lvl"><option value="">${esc(state.lang === 'ru' ? 'как в настр.' : 'settings')}</option>${['1', '100', '110'].map(v => `<option ${row.lvl === v ? 'selected' : ''}>${v}</option>`).join('')}</select></td>
+    <td><input type="number" min="1" max="110" step="1" list="lvlList" data-f="lvl" value="${esc(row.lvl || '')}" style="width:84px"
+      placeholder="${esc(state.lang === 'ru' ? 'как в настр.' : 'settings')}" title="${esc(state.lang === 'ru' ? 'любой уровень 1–110; пусто — как в «Настройках»' : 'any level 1–110; empty = Settings')}"></td>
     <td><div class="chips">${row.buffs.map((b, j) => `<span class="chip">${esc(bn(b))}<button data-act="unbuff" data-j="${j}">✕</button></span>`).join('')}
       <select data-f="addbuff">${buffOptions()}</select></div></td>
     <td><select data-f="trait">${traitOpts(row.trait, t('fromProfile'))}</select></td>
     <td><select data-f="relic">${relicOpts(row.relic, t('fromProfile'))}</select></td>
     <td><input type="checkbox" data-f="passive" ${row.passive ? 'checked' : ''}></td>
+    <td>${actSelect(byName[row.name], row.act)}</td>
     ${cmpCols().map(k => `<td class="num" data-o="${k}"></td>`).join('')}</tr>`).join('');
   updateCompare();
 }
@@ -622,8 +687,29 @@ function cmpCalc() {
   return state.compare.map(row => {
     const u = byName[row.name]; if (!u) return null;
     return Object.assign(M.calc(ED, u, { upg: row.upg, lvl: row.lvl || null, buffs: [...row.buffs, ...gb], trait: row.trait, relic: row.relic,
-      passive: row.passive, inp: inpFor(u.n) }, s), { cap: u.cap || 0 });
+      passive: row.passive, inp: inpFor(u.n), fx: fxFor(u), act: row.act || '' }, s), { cap: u.cap || 0 });
   });
+}
+
+// ── призывы отдельными строками: из чего состоит «DPS призывов» юнита + Divine General ──
+function summonSubs(u, r, row) {
+  if (!u) return [];
+  const L = state.lang === 'ru', names = (D.summonNames || {})[u.n] || {}, out = [];
+  for (const p of r.sumParts || []) {
+    out.push({ kind: p.kind, name: names[p.kind] || (L ? 'Призыв' : 'Summon'), hit: p.hit, dps: p.dps,
+      what: L ? 'призыв · входит в DPS юнита' : 'summon · included in unit DPS',
+      info: p.kind === 't' ? (L ? `1 раз в ${fmt(p.every, 1)} с` : `once per ${fmt(p.every, 1)} s`)
+        : (L ? `за убийства: ${fmt(p.kps, 2)} убийств/с${p.capped ? ' · упёрлось в лимит живых' : ''}` : `per kill: ${fmt(p.kps, 2)} kills/s${p.capped ? ' · alive cap reached' : ''}`) });
+  }
+  if (names.dg && r.upg === r.maxUpg) {
+    const mode = row.dgMode || 'attack', g = M.divineGeneral(r, S(), mode);
+    const lab = { attack: L ? 'Атака' : 'Attack', defend: L ? 'Защита' : 'Defend', boss: L ? 'Босс' : 'Boss' };
+    out.push({ kind: 'dg', name: names.dg, hit: g.hit, dps: g.dps,
+      what: L ? 'после Ritual заменяет юнита · в DPS не складывается' : 'replaces the unit after Ritual · not added to DPS',
+      info: `<select data-f="dgMode">${Object.keys(lab).map(k => `<option value="${k}" ${k === mode ? 'selected' : ''}>${lab[k]}</option>`).join('')}</select> `
+        + esc(L ? 'крик = 0,51 × удара, скорость от SPA юнита (вики)' : 'scream = 0.51 × hit, speed from unit SPA (wiki)') });
+  }
+  return out;
 }
 function updateCompare() {
   const res = cmpCalc();
@@ -646,6 +732,15 @@ function updateCompare() {
       td.title = pctK || k === 'spa' || k === 'rng' || k === 'cap' ? '' : fmt(v);
       td.className = 'num' + (k === 'dps' ? ' dps' : '') + (k === 'gain' && v > 0 ? ' gain' : '') + (best[k] !== undefined && v === best[k] ? ' out-best' : '');
     });
+  });
+  // строки призывов под юнитами: удалить старые и вставить заново (ввод — в основных строках)
+  document.querySelectorAll('#cmpTable tbody tr.subrow').forEach(x => x.remove());
+  document.querySelectorAll('#cmpTable tbody tr[data-i]').forEach(tr_ => {
+    const i = +tr_.dataset.i, r = res[i], row = state.compare[i]; if (!r) return;
+    const html = summonSubs(byName[row.name], r, row).map(x => `<tr class="subrow" data-i="${i}"><td></td>
+      <td class="sub">↳ ${esc(x.name)}<div class="hint" style="font-weight:400">${x.what}</div></td><td colspan="7" class="hint">${x.info}</td>
+      ${cmpCols().map(k => `<td class="num ${k === 'dps' ? 'dps' : ''}">${k === 'dmg' || k === 'maxhit' ? short(x.hit) : k === 'dps' || (k === 'sumdps' && x.kind !== 'dg') ? short(x.dps) : ''}</td>`).join('')}</tr>`).join('');
+    if (html) tr_.insertAdjacentHTML('afterend', html);
   });
   drawCharts(res);
 }
@@ -790,6 +885,7 @@ const TL = {
 const tt = k => TL[state.lang][k] ?? k;
 function addTeam(n) { state.team.push({ name: n || '', upg: '', cnt: 1 }); save(); renderTeam(); }
 function renderTeam() {
+  $('#teamAct').innerHTML = Object.entries(ACT_LAB()).map(([k, v]) => `<option value="${k}" ${(state.teamAct || '') === k ? 'selected' : ''}>${esc(v)}</option>`).join('');
   $('#teamCount').textContent = state.team.length;
   const heads = ['', t('unit'), t('upg'), tt('cnt'), ...TOUT.map(k => tt(k))];
   $('#teamTable thead tr').innerHTML = heads.map((h, i) => `<th class="${i > 3 && i < 9 || i === 11 || i === 12 ? 'num' : ''}">${esc(h)}</th>`).join('');
@@ -810,7 +906,7 @@ function teamCalc() {
   const res = state.team.map(row => {
     const u = byName[row.name]; if (!u) return null;
     const cnt = Math.max(0, parseInt(row.cnt, 10) || 0);
-    const r = M.calc(ED, u, { upg: row.upg, buffs: given, inp: inpFor(u.n) }, s);
+    const r = M.calc(ED, u, { upg: row.upg, buffs: given, inp: inpFor(u.n), fx: fxFor(u), act: state.teamAct || '' }, s);
     return Object.assign(r, { cnt, costall: r.cost * cnt, dpsall: r.dps * cnt, dps0all: r.dps0 * cnt,
       gives: given.filter(g => g.from === u.n) });
   });
@@ -860,6 +956,14 @@ function updateTeam() {
       }
     });
   });
+  document.querySelectorAll('#teamTable tbody tr.subrow').forEach(x => x.remove());
+  document.querySelectorAll('#teamTable tbody tr[data-i]').forEach(tr_ => {
+    const i = +tr_.dataset.i, r = res[i], row = state.team[i]; if (!r) return;
+    const html = summonSubs(byName[row.name], r, row).map(x => `<tr class="subrow" data-i="${i}"><td></td>
+      <td class="sub">↳ ${esc(x.name)}<div class="hint" style="font-weight:400">${x.what}</div></td><td colspan="2" class="hint">${x.info}</td>
+      ${TOUT.map(k => `<td class="num ${k.startsWith('dps') && k !== 'dps0' ? 'dps' : ''}">${k === 'dps' ? short(x.dps) : k === 'dpsall' ? short(x.dps * r.cnt) : ''}</td>`).join('')}</tr>`).join('');
+    if (html) tr_.insertAdjacentHTML('afterend', html);
+  });
   const ok = res.filter(Boolean);
   const sum = k => ok.reduce((a, r) => a + (r[k] || 0), 0);
   const cost = sum('costall'), dps = sum('dpsall'), d0 = sum('dps0all');
@@ -890,6 +994,7 @@ teamBody.addEventListener('click', e => {
   state.team.splice(+b.closest('tr').dataset.i, 1); save(); renderTeam();
 });
 $('#teamAdd').onclick = () => { addTeam(''); const ins = teamBody.querySelectorAll('input.uin'); ins[ins.length - 1]?.focus(); };
+$('#teamAct').oninput = e => { state.teamAct = e.target.value; save(); updateTeam(); };
 $('#teamClear').onclick = () => { if (state.team.length && confirm(tt('clearQ'))) { state.team = []; save(); renderTeam(); } };
 
 // ── НАСТРОЙКИ ──
@@ -902,8 +1007,10 @@ function renderSettings() {
   const gb = gBuffs();
   $('#settingsGrid').innerHTML = `
     <div class="card"><div class="card-header"><h2>${L ? 'Общие' : 'General'}</h2></div><div class="card-body key-block" style="margin:12px">
-      ${f('lvl', L ? 'Уровень юнитов' : 'Unit level', L ? '100 ур. = ×9,204; 110 = ещё +19%' : 'lv100 = ×9.204; lv110 = +19% more', 'select', [['1', '1'], ['100', '100'], ['110', '110'], ['custom', L ? 'Свой множитель' : 'Custom multiplier']])}
-      ${s.lvl === 'custom' ? f('lvlCustom', L ? 'Свой множитель уровня' : 'Custom level multiplier', '') : ''}
+      <div class="field"><span>${L ? 'Уровень юнитов' : 'Unit level'}<small>${L ? 'любой 1–110: 100 ур. = ×9,204, 110 = ещё +19%, между ними — плавный рост' : 'any 1–110: lv100 = ×9.204, lv110 = +19% more, smooth in between'}</small></span>
+        <select data-lvlmode="1"><option value="lvl" ${s.lvl !== 'custom' ? 'selected' : ''}>${L ? 'Уровень' : 'Level'}</option><option value="custom" ${s.lvl === 'custom' ? 'selected' : ''}>${L ? 'Свой множитель' : 'Custom multiplier'}</option></select></div>
+      ${s.lvl === 'custom' ? f('lvlCustom', L ? 'Свой множитель урона от уровня' : 'Custom level multiplier', '')
+        : `<div class="field"><span>${L ? '→ уровень (1–110)' : '→ level (1–110)'}<small>${L ? 'множитель' : 'multiplier'} ×${fmt(M.lvlMul(s.lvl, D), 3)}</small></span><input type="number" min="1" max="110" step="1" list="lvlList" data-s="lvl" value="${esc(s.lvl)}"></div>`}
       ${f('lb', L ? 'Юнитов с Limit Break в отряде' : 'Limit Break units in team', L ? '+5% урона всем за каждого, до 6' : '+5% dmg to all per unit, up to 6')}
       ${f('gDmg', L ? 'Общий бонус урона, %' : 'Global damage, %', '')}
       ${f('gSpa', L ? 'Общее снижение SPA, %' : 'Global SPA reduction, %', '')}
@@ -993,7 +1100,11 @@ $('#settingsGrid').addEventListener('input', e => {
   if (el.dataset.s) {
     const k = el.dataset.s;
     state.settings[k] = el.type === 'checkbox' ? el.checked : el.tagName === 'SELECT' ? el.value : (el.value === '' ? M.DEFAULT_SETTINGS[k] : Number(el.value));
-    if (k === 'lvl') renderSettings();
+    if (k === 'lvl') { state.settings.lvl = String(state.settings.lvl); state.settings.lvlLast = state.settings.lvl;
+      const sm = el.closest('.field').querySelector('small'); if (sm) sm.textContent = (state.lang === 'ru' ? 'множитель' : 'multiplier') + ' ×' + fmt(M.lvlMul(state.settings.lvl, D), 3); }
+  } else if (el.dataset.lvlmode) {
+    state.settings.lvl = el.value === 'custom' ? 'custom' : (state.settings.lvlLast || '1');
+    save(); computeUnits(); renderUnits(); renderCompare(); renderTeam(); renderSettings(); return;
   } else if (el.dataset.tg) {
     state.settings.targets = Object.assign({}, state.settings.targets, { [el.dataset.tg]: el.value === '' ? 1 : Number(el.value) });
   } else if (el.dataset.bv) {
@@ -1089,6 +1200,7 @@ document.querySelectorAll('nav button').forEach(b => b.onclick = () => setTab(b.
 document.querySelectorAll('.lang button').forEach(b => b.onclick = () => { state.lang = b.dataset.lang; save(); applyLang(); });
 
 // ── старт ──
+document.body.insertAdjacentHTML('beforeend', '<datalist id="lvlList">' + [1, 25, 50, 75, 90, 100, 105, 110].map(v => `<option value="${v}">`).join('') + '</datalist>');
 const dl = document.createElement('datalist'); dl.id = 'unitList';
 document.body.appendChild(dl);
 // список для выбора юнита: сначала мои (★), потом остальные

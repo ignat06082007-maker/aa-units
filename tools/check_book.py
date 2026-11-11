@@ -77,7 +77,7 @@ def expected_dps(u, row, lvl=1.0, buff_pct=0.0, trait=None, relic=None, passive=
              * (1 + ((inp['pas'] if passive else 0) + rd) / 100) * (1 + tr[1] / 100) * (1 + pwr * (_st['I11'].value or 1.75) / 100))
     mult = mult0 * (1 + buff_pct / 100)
     dmg = row['dmg'] * mult
-    dmg_dot = dmg if row['dotkind'] == 'Кровотечение' else row['dmg'] * mult0      # горение и пр. — без бафов
+    dmg_dot = dmg                    # любой DoT — от финального удара со всеми бафами
     pc, pcd, pdot = (inp['pasc'], inp['pascd'], inp['pasdot']) if passive else (0, 0, 0)
     base_crit = u['crit'] if inp['cc'] is None else inp['cc'] / 100
     crit = min(1, base_crit + (rc + pc + crit_buff) / 100)
@@ -102,6 +102,8 @@ def expected_dps(u, row, lvl=1.0, buff_pct=0.0, trait=None, relic=None, passive=
 
 
 _st = wb['Настройки']
+_b4 = _st['B4'].value
+lvl_set = (_st['B5'].value or 1) if _b4 == 'Свой' else B.lvl_mult(_b4)   # уровень из «Настроек» (для «Апгрейдов» и «Команды»)
 GD = _st['I7'].value or 0                       # общий бонус × LB отряда, % (как в книге)
 KPS = max(0, _st['I9'].value or 0)
 WALK = max(0, _st['I10'].value if _st['I10'].value is not None else 5)
@@ -114,7 +116,7 @@ r, bad, n = 5, 0, 0
 for u in units:
     inp = unit_inputs(Uws, col, urow[u['name']])
     for row in u['rows']:
-        exp = expected_dps(u, row, trait=inp['trait'], relic=inp['relic'], inp=inp)
+        exp = expected_dps(u, row, lvl_set, trait=inp['trait'], relic=inp['relic'], inp=inp)
         got = ws.cell(r, 26).value or 0
         if abs(got - exp) > 1e-6 * max(1, exp):
             bad += 1
@@ -140,7 +142,7 @@ for i in B.CMP_SLOTS:
     u = by[g('name')]
     upg = g('upg')
     row = u['rows'][-1] if upg in (None, '') else u['rows'][min(int(upg), len(u['rows']) - 1)]
-    lvl = {'100': B.LVL100, '110': B.LVL110}.get(str(g('lvl_in')).replace('.0', ''), 1.0)
+    lvl = lvl_set if g('lvl_in') in (None, '') else B.lvl_mult(g('lvl_in'))
     chosen = list(dict.fromkeys(s for s in (g(k) for k in ('b1', 'b2', 'b3', 'b4')) if s in buff))   # дубли — один раз
     who_ok = lambda s, who: buff[s][3] in ('Все', who)
 
@@ -173,7 +175,6 @@ H = wb['Главная']
 print('Главная топ-3 DPS:', [H.cell(r, 2).value for r in range(15, 18)], ' выгода:', [H.cell(r, 9).value for r in range(15, 18)])
 T = wb['Команда']
 tk = {k: ci(v) for k, v in B.TK.items()}
-lvl_set = {'100': B.LVL100, '110': B.LVL110}.get(str(wb['Настройки']['B4'].value).replace('.0', ''), 1.0)
 team = []
 for r in B.TEAM_ROWS:
     n = T.cell(r, tk['name']).value
