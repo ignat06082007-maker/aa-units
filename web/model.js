@@ -31,10 +31,10 @@
 
   // фрагменты правил призыва из генератора: только числа, {E}, {S}, + - * / ( ) — проверяем и считаем
   const SAFE = /^[0-9eE.+\-*/() ]*$/;
-  function evalFrag(expr, E, S) {
+  function evalFrag(expr, E, S, TC) {
     if (expr == null || expr === '') return 0;
     if (typeof expr === 'number') return expr;
-    const s = String(expr).split('{E}').join('(' + E + ')').split('{S}').join('(' + S + ')');
+    const s = String(expr).split('{E}').join('(' + E + ')').split('{S}').join('(' + S + ')').split('{TC}').join('(' + (TC || 1) + ')');
     if (!SAFE.test(s)) return 0;
     try { const v = Function('"use strict";return (' + s + ')')(); return isFinite(v) ? v : 0; } catch (e) { return 0; }
   }
@@ -147,7 +147,15 @@
 
     const sm = row.summon || {};
     const cyc = sm.c === 'spa' ? spa : sm.c === 'jelly' ? (spa > 0 ? Math.max(spa, (S.walk + 1.5 * spa) / 3) : 0) : (+sm.c || 0);
-    const fT = evalFrag(sm.t, E, spa), fK = evalFrag(sm.k, E, spa), fCap = evalFrag(sm.cap, E, spa), fHit = evalFrag(sm.hit, E, spa);
+    const tgC = S.targets && S.targets['AoE (Circle)'] != null ? +S.targets['AoE (Circle)'] : 1;
+    let fT = evalFrag(sm.t, E, spa, tgC), fHit = evalFrag(sm.hit, E, spa, tgC);
+    const fK = evalFrag(sm.k, E, spa, tgC), fCap = evalFrag(sm.cap, E, spa, tgC);
+    // Divine General: на сайте режим выбирается (opt.dgMode); «Атака» = то же, что в Excel
+    if (sm.dg) {
+      const hits = DG_MODES[opt.dgMode] || DG_MODES.attack;
+      const tgt = a => S.targets && S.targets[a] != null ? +S.targets[a] : 1;
+      fT = E * 0.51 * hits.reduce((a, h) => a + h.m * tgt(h.at) / h.every, 0); fHit = E * 0.51 * hits[0].m;
+    }
     // «свои» убийства (Shade Birth): юнит не убьёт больше, чем целей за атаку / SPA
     const kps = sm.own ? (spa > 0 ? Math.min(Math.max(0, S.kps), tg / spa) : 0) : Math.max(0, S.kps);
     const sbase = (cyc > 0 ? fT / cyc : 0) + Math.min(fK * kps, fCap > 0 ? fCap : Infinity);

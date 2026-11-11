@@ -88,7 +88,7 @@ def expected_dps(u, row, lvl=1.0, buff_pct=0.0, trait=None, relic=None, passive=
     clock = dmg * clk_p / 100 / clk_n if clk_n and u['dtype'] == 'Маг' else 0
     # призывы: фрагменты правил с {E} = урон по вики, {S} = SPA итог
     sm = row['summon']
-    ev = lambda key: eval(sm[key].replace('{E}', repr(row['dmg'])).replace('{S}', repr(spa)), {}) if sm.get(key) else 0
+    ev = lambda key: eval(sm[key].replace('{E}', repr(row['dmg'])).replace('{S}', repr(spa)).replace('{TC}', '1'), {}) if sm.get(key) else 0
     c = sm.get('c')
     cyc = spa if c == 'spa' else (max(spa, (WALK + 1.5 * spa) / 3) if spa > 0 else 0) if c == B.JELLY else (c or 0)
     kps = (min(KPS, targets / spa) if spa > 0 else 0) if sm.get('own') else KPS

@@ -134,11 +134,16 @@ SUMMON_RULES = {
                 'Abyssal Jelly: раз в SPA (без врага), до 3 на Elyssia; взрыв = урон Elyssia; после смерти откат 1,5×SPA. '
                 'Сама не атакует'),
     # + угорь за 5 убийств: урон ¼, SPA ×2, живёт 60 с, ≤3 одновременно → потолок 3 угря постоянно
+    # Divine General (вики): Ritual на макс. апгрейде — Shadow Sorcerer исчезает, бьёт DG. Крик = 0,51 × урона SS, скорость от SPA SS.
+    # В таблице — режим «Атака»: Car Toss 1,25 крика раз в SPA + Jump 2 крика раз в 2·SPA = 2,25 крика за SPA, обе AoE (Circle).
+    'Shadow Sorcerer (Ritual)': (lambda i, hp: dict(t='{E}*0.51*2.25*{TC}', c='spa', hit='{E}*0.51*1.25', noown=1, dg=1) if i >= 8 else {},
+                                 'Ritual (макс. апгрейд): Shadow Sorcerer исчезает, призывает Divine General — его урон и есть DPS юнита. '
+                                 'Крик = 0,51× урона, атаки со скоростью SPA юнита; в таблице режим «Атака» (на сайте — выбор режима)'),
     'Elyssia (Abyssal)': (lambda i, hp: dict(t='{E}', c=JELLY, hit='{E}', k='{E}/4*60/(2*{S})/5', cap='3*{E}/4/(2*{S})', khit='{E}/4'),
                           'Abyssal Jelly: раз в SPA (без врага), до 3; взрыв = урон Elyssia; откат 1,5×SPA. Abyssal Eel за 5 убийств: '
                           'урон ¼, SPA ×2, радиус ×2,5, живёт 60 с, до 3. Сама не атакует'),
 }
-NO_OWN_HITS = {'Elyssia', 'Elyssia (Abyssal)'}   # урон только призывами
+NO_OWN_HITS = {'Elyssia', 'Elyssia (Abyssal)'}   # урон только призывами (noown=1 в правиле — то же для одного апгрейда)
 # Призывы-тараны (ram=1) наносят ФИЗИЧЕСКИЙ урон: их усиливают только бафы физ. урона + «Все», кроме Idol
 # (вики, Supreme Being (Sovereign): «Elfy, Wind Dragon, Idol не влияют; Griffin и Commander — да»). own=1 — убийства только свои.
 RAM_EXCLUDE = ('Idol (макс. апгрейд)', 'Idol (Star) — урон')
@@ -388,7 +393,7 @@ def load():
             rule = SUMMON_RULES.get(u['name'])
             row['summon'] = {k: (v.replace('{hp}', repr(hp or 0)) if isinstance(v, str) else v)
                              for k, v in (rule[0](i, hp or 0) if rule else {}).items()}
-            row['own_hits'] = u['name'] not in NO_OWN_HITS
+            row['own_hits'] = u['name'] not in NO_OWN_HITS and not row['summon'].get('noown')
         summ = SUMMON_RULES[u['name']][1] if u['name'] in SUMMON_RULES else SUMMON_NOTES.get(u['name'], '')
         maxdmg = max(r['dmg'] for r in rows)
         role = ('Баффер' if u['name'] in BUFFERS or u.get('aura_buff') else
@@ -1008,7 +1013,7 @@ def sheet_upgrades(wb, units, end):
             ws.cell(r, 18, f'=E{r}*AI{r}')
             ws.cell(r, 38, 'Да' if row['own_hits'] else 'Нет').fill = GREY
             sm = row['summon']
-            frag = lambda s: s.replace('{E}', f'E{r}').replace('{S}', f'S{r}')
+            frag = lambda s: s.replace('{E}', f'E{r}').replace('{S}', f'S{r}').replace('{TC}', f'IFERROR(VLOOKUP("AoE (Circle)",{AOE},2,0),1)')
             cyc = sm.get('c')
             ws.cell(r, 32, f'={frag(sm["t"])}' if sm.get('t') else None)
             ws.cell(r, 33, f'=S{r}' if cyc == 'spa' else

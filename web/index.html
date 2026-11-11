@@ -75,6 +75,21 @@ th.sort:hover { color: var(--text); }
 th.sort.on { color: var(--accent2); }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 tbody tr:hover { background: rgba(14,165,233,.06); }
+/* ── таблицы: шапка и юнит закреплены, заметные ползунки ── */
+.tbl-wrap { max-height: 78vh; overflow: auto; scrollbar-width: auto; scrollbar-color: var(--accent) #001520; }
+.tbl-wrap::-webkit-scrollbar, .topscroll::-webkit-scrollbar { height: 14px; width: 14px; }
+.tbl-wrap::-webkit-scrollbar-track, .topscroll::-webkit-scrollbar-track { background: #001520; border-radius: 8px; }
+.tbl-wrap::-webkit-scrollbar-thumb, .topscroll::-webkit-scrollbar-thumb { background: #0e7fb8; border-radius: 8px; border: 3px solid #001520; }
+.tbl-wrap::-webkit-scrollbar-thumb:hover, .topscroll::-webkit-scrollbar-thumb:hover { background: var(--accent2); }
+.topscroll { overflow-x: auto; overflow-y: hidden; height: 18px; margin-bottom: 4px; scrollbar-width: auto; scrollbar-color: var(--accent) #001520; }
+.topscroll > div { height: 1px; }
+th { z-index: 2; }
+.stick1, .stick2 { position: sticky; z-index: 1; background: var(--card); }
+th.stick1, th.stick2 { z-index: 4; background: #001a29; }
+tr.subrow .stick1, tr.subrow .stick2 { background: #001019; }
+tbody tr:hover .stick1, tbody tr:hover .stick2 { background: #001b29; }
+.stick2 { box-shadow: 2px 0 0 var(--border2); }
+
 /* строки призывов под юнитом */
 tr.subrow td { background: rgba(14,165,233,.035); font-size: 12px; border-bottom-style: dashed; }
 tr.subrow .sub { padding-left: 24px; color: var(--accent2); font-weight: 600; white-space: normal; min-width: 160px; }
@@ -147,6 +162,7 @@ footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(
   #unitTable th:nth-child(10), #unitTable td:nth-child(10), #unitTable th:nth-child(15), #unitTable td:nth-child(15),
   #unitTable th:nth-child(17), #unitTable td:nth-child(17) { display: none; }
   .home-grid { grid-template-columns: 1fr !important; }
+  #cmpTable input.uin, #teamTable input.uin { width: 140px !important; }
   .uname { white-space: normal; min-width: 120px; }
 }
 </style>
@@ -191,7 +207,7 @@ footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(
       <span class="hint" id="shown"></span>
     </div>
     <div class="hint" style="margin-bottom:8px" data-ru="Всё на максимальном апгрейде, с уровнем и бафами из «Настроек» и твоими трейтами/реликвиями. Нажми на юнита — откроется карточка. ★ — юнит у тебя есть." data-en="All at max upgrade, with level and buffs from Settings and your traits/relics. Click a unit to open its card. ★ — you own it."></div>
-    <div class="tbl-wrap" style="max-height:72vh">
+    <div class="tbl-wrap">
       <table id="unitTable">
         <thead><tr></tr></thead>
         <tbody></tbody>
@@ -237,7 +253,7 @@ footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(
       <span class="hint" id="uShown"></span>
     </div>
     <div class="hint" style="margin-bottom:8px" data-ru="Все апгрейды всех юнитов (как лист «Апгрейды» в Excel) — с твоими настройками, постоянными бафами, трейтами и реликвиями. «Прирост на 1000» — сколько DPS даёт этот шаг на каждую 1000 денег: чем больше, тем выгоднее его покупать. Нажми на строку — карточка юнита." data-en="All upgrades of all units (like the Upgrades sheet in Excel) — with your settings, always-on buffs, traits and relics. “Gain per 1000” — DPS this step adds per 1000 money: higher = better buy. Click a row — unit card."></div>
-    <div class="tbl-wrap" style="max-height:72vh"><table id="upgTable"><thead><tr></tr></thead><tbody></tbody></table></div>
+    <div class="tbl-wrap"><table id="upgTable"><thead><tr></tr></thead><tbody></tbody></table></div>
     <div style="text-align:center;margin-top:10px"><button class="btn" id="uMore" data-ru="Показать ещё 200" data-en="Show 200 more"></button></div>
   </section>
 
@@ -417,6 +433,42 @@ function setProf(n, k, v) {
 // глобальные бафы из «Настроек» (как «Активен = Да» в Excel)
 const gBuffs = () => state.settings.buffs || [];
 
+
+// ── закрепление первых столбцов (кнопки + юнит) и верхняя полоса прокрутки ──
+function stickCols(table, n) {
+  const first = table.querySelector('tbody tr:not(.subrow)') || table.querySelector('thead tr');
+  if (!first) return;
+  const w1 = n >= 2 && first.children[0] ? first.children[0].getBoundingClientRect().width : 0;
+  table.querySelectorAll('tr').forEach(tr => {
+    const c = tr.children;
+    if (n >= 2) { if (c[0]) { c[0].classList.add('stick1'); c[0].style.left = '0px'; } if (c[1]) { c[1].classList.add('stick2'); c[1].style.left = w1 + 'px'; } }
+    else if (c[0]) { c[0].classList.add('stick2'); c[0].style.left = '0px'; }
+  });
+}
+function topScroll(wrap) {
+  let bar = wrap.previousElementSibling;
+  if (!bar || !bar.classList.contains('topscroll')) {
+    bar = document.createElement('div'); bar.className = 'topscroll'; bar.innerHTML = '<div></div>';
+    wrap.before(bar);
+    let lock = false;
+    bar.addEventListener('scroll', () => { if (lock) { lock = false; return; } lock = true; wrap.scrollLeft = bar.scrollLeft; });
+    wrap.addEventListener('scroll', () => { if (lock) { lock = false; return; } lock = true; bar.scrollLeft = wrap.scrollLeft; });
+  }
+  bar.firstChild.style.width = wrap.scrollWidth + 'px';
+  bar.style.display = wrap.scrollWidth > wrap.clientWidth + 2 ? '' : 'none';
+}
+const STICK = { unitTable: 2, cmpTable: 2, teamTable: 2, upgTable: 1 };
+let scrT = 0;
+function refreshScrollers() {
+  clearTimeout(scrT);
+  scrT = setTimeout(() => {
+    for (const [id, n] of Object.entries(STICK)) {
+      const t = document.getElementById(id); if (!t || !t.offsetParent) continue;
+      stickCols(t, n); topScroll(t.closest('.tbl-wrap'));
+    }
+  }, 0);
+}
+window.addEventListener('resize', refreshScrollers);
 // ── ЮНИТЫ ──
 const UCOLS = [
   { k: 'mine', h: '★', w: 1 }, { k: 'name', h: 'unit' }, { k: 'rarity', h: 'rarity' }, { k: 'dt', h: 'type' }, { k: 'role', h: 'role' },
@@ -467,6 +519,7 @@ function renderUnits() {
     : k === 'best' || k === 'bestUp' ? x[k] ?? -1 : k === 'rankv' ? -(x.rankv || 1e9) : x.r[k];
   rows.sort((a, b) => { const va = val(a), vb = val(b); return (va > vb ? 1 : va < vb ? -1 : 0) * dir || a.u.n.localeCompare(b.u.n); });
   $('#shown').textContent = t('shown')(rows.length, unitRows.length);
+  refreshScrollers();
   $('#unitTable tbody').innerHTML = rows.map(x => {
     const u = x.u, r = x.r;
     return `<tr data-n="${esc(u.n)}"><td><button class="star ${x.mine ? 'on' : ''}" data-star="${esc(u.n)}" title="${esc(t('mine'))}">★</button></td>
@@ -528,9 +581,8 @@ function renderModal() {
     <div><div class="kv"><span>${t('dps')}</span><span class="dps">${fmt(r.dps)}</span></div><div class="kv"><span>${t('dpsk')}</span><span>${fmt(r.dpsk, 1)}</span></div>
       <div class="kv"><span>${t('cost')}</span><span>${fmt(r.cost, 0)}</span></div><div class="kv"><span>${t('maxhit')}</span><span>${fmt(r.maxhit)}</span></div>
       <div class="kv"><span>${t('dotdps')}</span><span>${fmt(r.dotdps)}</span></div><div class="kv"><span>${t('sumdps')}</span><span>${fmt(r.sumdps)}</span></div>
-      ${summonSubs(u, r, {}).map(x => x.kind === 'dg'
-        ? `<div class="kv"><span>↳ Divine General (${L ? 'Атака / Защита / Босс' : 'Attack / Defend / Boss'})</span><span>${['attack', 'defend', 'boss'].map(m => short(M.divineGeneral(r, s, m).dps)).join(' / ')}</span></div>`
-        : `<div class="kv"><span>↳ ${esc(x.name)}</span><span>${short(x.dps)}</span></div>`).join('')}
+      ${summonSubs(u, r, {}).map(x => `<div class="kv"><span>↳ ${esc(x.name)}</span><span>${short(x.dps)}</span></div>`).join('')}
+      ${(D.summonNames[u.n] || {}).dg && r.upg === r.maxUpg ? `<div class="kv"><span>↳ Divine General (${L ? 'Атака / Защита / Босс' : 'Attack / Defend / Boss'})</span><span>${['attack', 'defend', 'boss'].map(m => short(M.calc(ED, u, { buffs: gb, inp: inpFor(u.n), dgMode: m }, s).dps)).join(' / ')}</span></div>` : ''}
       ${u.cap ? `<div class="kv"><span>${L ? 'DPS всех копий (× ' + u.cap + ')' : 'DPS of all copies (× ' + u.cap + ')'}</span><span class="dps">${fmt(r.dps * u.cap)}</span></div>
         <div class="kv"><span>${L ? 'Цена всех копий' : 'Cost of all copies'}</span><span>${fmt(r.cost * u.cap, 0)}</span></div>` : ''}
       ${u.farm ? `<div class="kv"><span>${L ? 'Ферма (за волну)' : 'Farm (per wave)'}</span><span>${fmt(u.farm, 0)}</span></div>` : ''}
@@ -687,7 +739,7 @@ function cmpCalc() {
   return state.compare.map(row => {
     const u = byName[row.name]; if (!u) return null;
     return Object.assign(M.calc(ED, u, { upg: row.upg, lvl: row.lvl || null, buffs: [...row.buffs, ...gb], trait: row.trait, relic: row.relic,
-      passive: row.passive, inp: inpFor(u.n), fx: fxFor(u), act: row.act || '' }, s), { cap: u.cap || 0 });
+      passive: row.passive, inp: inpFor(u.n), fx: fxFor(u), act: row.act || '', dgMode: row.dgMode }, s), { cap: u.cap || 0 });
   });
 }
 
@@ -695,19 +747,16 @@ function cmpCalc() {
 function summonSubs(u, r, row) {
   if (!u) return [];
   const L = state.lang === 'ru', names = (D.summonNames || {})[u.n] || {}, out = [];
+  const lab = { attack: L ? 'Атака' : 'Attack', defend: L ? 'Защита' : 'Defend', boss: L ? 'Босс' : 'Boss' };
   for (const p of r.sumParts || []) {
+    const dg = names.dg && p.kind === 't';
     out.push({ kind: p.kind, name: names[p.kind] || (L ? 'Призыв' : 'Summon'), hit: p.hit, dps: p.dps,
-      what: L ? 'призыв · входит в DPS юнита' : 'summon · included in unit DPS',
-      info: p.kind === 't' ? (L ? `1 раз в ${fmt(p.every, 1)} с` : `once per ${fmt(p.every, 1)} s`)
+      what: dg ? (L ? 'после Ritual вместо юнита · это и есть его DPS' : 'replaces the unit after Ritual · this is its DPS')
+        : (L ? 'призыв · входит в DPS юнита' : 'summon · included in unit DPS'),
+      info: dg ? `<select data-f="dgMode">${Object.keys(lab).map(k => `<option value="${k}" ${k === (row.dgMode || 'attack') ? 'selected' : ''}>${lab[k]}</option>`).join('')}</select> `
+          + esc(L ? 'крик = 0,51 × удара, скорость от SPA юнита (вики); в Excel — «Атака»' : 'scream = 0.51 × hit, speed from unit SPA (wiki); Excel uses Attack')
+        : p.kind === 't' ? (L ? `1 раз в ${fmt(p.every, 1)} с` : `once per ${fmt(p.every, 1)} s`)
         : (L ? `за убийства: ${fmt(p.kps, 2)} убийств/с${p.capped ? ' · упёрлось в лимит живых' : ''}` : `per kill: ${fmt(p.kps, 2)} kills/s${p.capped ? ' · alive cap reached' : ''}`) });
-  }
-  if (names.dg && r.upg === r.maxUpg) {
-    const mode = row.dgMode || 'attack', g = M.divineGeneral(r, S(), mode);
-    const lab = { attack: L ? 'Атака' : 'Attack', defend: L ? 'Защита' : 'Defend', boss: L ? 'Босс' : 'Boss' };
-    out.push({ kind: 'dg', name: names.dg, hit: g.hit, dps: g.dps,
-      what: L ? 'после Ritual заменяет юнита · в DPS не складывается' : 'replaces the unit after Ritual · not added to DPS',
-      info: `<select data-f="dgMode">${Object.keys(lab).map(k => `<option value="${k}" ${k === mode ? 'selected' : ''}>${lab[k]}</option>`).join('')}</select> `
-        + esc(L ? 'крик = 0,51 × удара, скорость от SPA юнита (вики)' : 'scream = 0.51 × hit, speed from unit SPA (wiki)') });
   }
   return out;
 }
@@ -743,6 +792,7 @@ function updateCompare() {
     if (html) tr_.insertAdjacentHTML('afterend', html);
   });
   drawCharts(res);
+  refreshScrollers();
 }
 const cmpBody = $('#cmpTable tbody');
 cmpBody.addEventListener('input', e => {
@@ -852,6 +902,7 @@ function renderUpg() {
   rows.sort((a, b) => { const va = val(a), vb = val(b); return (va > vb ? 1 : va < vb ? -1 : 0) * upgSort.dir || a.u.n.localeCompare(b.u.n) || a.i - b.i; });
   $('#uShown').textContent = t('shown')(Math.min(upgLimit, rows.length), rows.length);
   $('#uMore').style.display = rows.length > upgLimit ? '' : 'none';
+  refreshScrollers();
   $('#upgTable tbody').innerHTML = rows.slice(0, upgLimit).map(x => `<tr data-n="${esc(x.u.n)}" style="cursor:pointer">
     <td class="uname">${prof(x.u.n).mine ? '★ ' : ''}${esc(x.u.n)}</td><td>${rarBadge(x.u.r)}</td><td class="num">${x.i}</td>
     <td class="num">${fmt(x.step, 0)}</td><td class="num">${fmt(x.cost, 0)}</td><td class="num">${short(x.dmg)}</td><td class="num">${fmt(x.spa, 2)}</td>
@@ -906,7 +957,7 @@ function teamCalc() {
   const res = state.team.map(row => {
     const u = byName[row.name]; if (!u) return null;
     const cnt = Math.max(0, parseInt(row.cnt, 10) || 0);
-    const r = M.calc(ED, u, { upg: row.upg, buffs: given, inp: inpFor(u.n), fx: fxFor(u), act: state.teamAct || '' }, s);
+    const r = M.calc(ED, u, { upg: row.upg, buffs: given, inp: inpFor(u.n), fx: fxFor(u), act: state.teamAct || '', dgMode: row.dgMode }, s);
     return Object.assign(r, { cnt, costall: r.cost * cnt, dpsall: r.dps * cnt, dps0all: r.dps0 * cnt,
       gives: given.filter(g => g.from === u.n) });
   });
@@ -964,6 +1015,7 @@ function updateTeam() {
       ${TOUT.map(k => `<td class="num ${k.startsWith('dps') && k !== 'dps0' ? 'dps' : ''}">${k === 'dps' ? short(x.dps) : k === 'dpsall' ? short(x.dps * r.cnt) : ''}</td>`).join('')}</tr>`).join('');
     if (html) tr_.insertAdjacentHTML('afterend', html);
   });
+  refreshScrollers();
   const ok = res.filter(Boolean);
   const sum = k => ok.reduce((a, r) => a + (r[k] || 0), 0);
   const cost = sum('costall'), dps = sum('dpsall'), d0 = sum('dps0all');
@@ -1195,6 +1247,7 @@ function setTab(id) {
   if (id === 'compare') drawCharts(cmpCalc());
   if (id === 'team') updateTeam();
   if (id === 'upgrades') renderUpg();
+  refreshScrollers();
 }
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => setTab(b.dataset.tab));
 document.querySelectorAll('.lang button').forEach(b => b.onclick = () => { state.lang = b.dataset.lang; save(); applyLang(); });

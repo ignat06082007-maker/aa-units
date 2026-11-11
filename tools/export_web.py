@@ -71,7 +71,7 @@ def main():
             'Supreme Being (Sovereign)': {'k': 'Shade Birth'}, 'Jackal (Alpha)': {'t': 'Spirit Wolf'},
             'Iron Knight (Arsenal)': {'k': 'Drone'}, 'Elyssia': {'t': 'Abyssal Jelly'},
             'Elyssia (Abyssal)': {'t': 'Abyssal Jelly', 'k': 'Abyssal Eel'},
-            'Shadow Sorcerer (Ritual)': {'dg': 'Divine General'},
+            'Shadow Sorcerer (Ritual)': {'t': 'Divine General', 'dg': 1},
         },
         atypes=['Single', 'AoE (Circle)', 'AoE (Cone)', 'AoE (Line)', 'AoE (Full)', '(нет данных)'],
         units=out_units,
