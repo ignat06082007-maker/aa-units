@@ -228,6 +228,7 @@ footer { max-width: 1500px; margin: 0 auto; padding: 10px 16px 30px; color: var(
       <label><span data-ru="Время боя, с" data-en="Battle time, s"></span>
         <select id="cmpTime"><option>5</option><option>15</option><option>30</option><option>45</option><option>60</option><option>120</option></select></label>
       <label><input type="checkbox" id="cmpGlobal"> <span data-ru="+ бафы из «Настроек»" data-en="+ buffs from Settings"></span></label>
+      <label><input type="checkbox" id="chartSort"> <span data-ru="Графики по убыванию" data-en="Sort charts"></span></label>
       <label><input type="checkbox" id="cmpMore"> <span data-ru="Подробно (DoT, призывы, урон за бой по частям)" data-en="Details (DoT, summons, battle damage split)"></span></label>
       <span class="grow"></span>
       <button class="btn ghost" id="cmpClear" data-ru="Очистить всё" data-en="Clear all"></button>
@@ -715,6 +716,7 @@ function renderCompare(full) {
   $('#cmpTime').value = String(state.settings.time ?? 30);
   $('#cmpGlobal').checked = !!state.cmpGlobal;
   $('#cmpMore').checked = !!state.cmpMore;
+  $('#chartSort').checked = state.chartSort !== false;
   const heads = ['', 'unit', 'upg', 'lvl', 'buffs', 'trait', 'relic', 'pas', 'act', ...cmpCols()];
   $('#cmpTable thead tr').innerHTML = heads.map((k, i) => `<th class="${i > 7 ? 'num' : ''}">${k ? esc(t(k)) : ''}</th>`).join('');
   $('#cmpEmpty').style.display = state.compare.length ? 'none' : 'block';
@@ -819,6 +821,7 @@ $('#cmpAdd').onclick = () => { addCmp(''); const ins = cmpBody.querySelectorAll(
 $('#cmpClear').onclick = () => { if (state.compare.length && confirm(t('clearQ'))) { state.compare = []; save(); renderCompare(); } };
 $('#cmpTime').oninput = e => { state.settings.time = +e.target.value; save(); updateCompare(); renderSettings(); };
 $('#cmpGlobal').oninput = e => { state.cmpGlobal = e.target.checked; save(); updateCompare(); };
+$('#chartSort').oninput = e => { state.chartSort = e.target.checked; save(); drawCharts(cmpCalc()); };
 $('#cmpMore').oninput = e => { state.cmpMore = e.target.checked; save(); renderCompare(); };
 
 // ── графики (canvas, без библиотек) ──
@@ -838,7 +841,17 @@ function drawCharts(res) {
       <div class="card-body">${c.stack ? `<div class="legend">${['hits', 'dot', 'summ'].map((k, j) => `<span><i style="background:${COLORS[j]}"></i>${esc(t(k))}</span>`).join('')}</div>` : ''}<canvas data-c="${c.id}"></canvas></div></div>`).join('');
   }
   box.querySelector('.chart:nth-child(4) h2').textContent = `${t('chTot')} (${S().time} ${state.lang === 'ru' ? 'с' : 's'})`;
-  CHARTS.forEach(c => barChart(box.querySelector(`canvas[data-c="${c.id}"]`), items, c));
+  // каждый график — по своему значению: лидер сверху (у SPA лидер — самый быстрый, т.е. меньшее), слева место
+  const sortOn = state.chartSort !== false;
+  CHARTS.forEach(c => {
+    const val = x => c.keys.reduce((a, k) => a + (x.r[k] > 0 ? x.r[k] : 0), 0);
+    let list = items.map(x => Object.assign({}, x));
+    if (sortOn) {
+      list.sort((a, b) => c.id === 'spa' ? (val(a) || Infinity) - (val(b) || Infinity) : val(b) - val(a));
+      list.forEach((x, i) => { x.label = `${i + 1}. ${x.label}`; });
+    }
+    barChart(box.querySelector(`canvas[data-c="${c.id}"]`), list, c);
+  });
 }
 function barChart(cv, items, c) {
   const dpr = window.devicePixelRatio || 1, W = cv.clientWidth || 360, rowH = 24, padT = 6, padB = 6;
