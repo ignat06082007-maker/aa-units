@@ -751,7 +751,7 @@ function summonSubs(u, r, row) {
   for (const p of r.sumParts || []) {
     const dg = names.dg && p.kind === 't';
     out.push({ kind: p.kind, name: names[p.kind] || (L ? 'Призыв' : 'Summon'), hit: p.hit, dps: p.dps,
-      what: dg ? (L ? 'после Ritual вместо юнита · это и есть его DPS' : 'replaces the unit after Ritual · this is its DPS')
+      what: dg ? (L ? 'призыв Ritual · складывается с ударами юнита' : 'Ritual summon · added to unit hits')
         : (L ? 'призыв · входит в DPS юнита' : 'summon · included in unit DPS'),
       info: dg ? `<select data-f="dgMode">${Object.keys(lab).map(k => `<option value="${k}" ${k === (row.dgMode || 'attack') ? 'selected' : ''}>${lab[k]}</option>`).join('')}</select> `
           + esc(L ? 'крик = 0,51 × удара, скорость от SPA юнита (вики); в Excel — «Атака»' : 'scream = 0.51 × hit, speed from unit SPA (wiki); Excel uses Attack')

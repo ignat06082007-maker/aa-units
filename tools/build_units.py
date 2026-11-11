@@ -136,8 +136,9 @@ SUMMON_RULES = {
     # + угорь за 5 убийств: урон ¼, SPA ×2, живёт 60 с, ≤3 одновременно → потолок 3 угря постоянно
     # Divine General (вики): Ritual на макс. апгрейде — Shadow Sorcerer исчезает, бьёт DG. Крик = 0,51 × урона SS, скорость от SPA SS.
     # В таблице — режим «Атака»: Car Toss 1,25 крика раз в SPA + Jump 2 крика раз в 2·SPA = 2,25 крика за SPA, обе AoE (Circle).
-    'Shadow Sorcerer (Ritual)': (lambda i, hp: dict(t='{E}*0.51*2.25*{TC}', c='spa', hit='{E}*0.51*1.25', noown=1, dg=1) if i >= 8 else {},
-                                 'Ritual (макс. апгрейд): Shadow Sorcerer исчезает, призывает Divine General — его урон и есть DPS юнита. '
+    'Shadow Sorcerer (Ritual)': (lambda i, hp: dict(t='{E}*0.51*2.25*{TC}', c='spa', hit='{E}*0.51*1.25', dg=1) if i >= 8 else {},
+                                 'Ritual (макс. апгрейд): призывает Divine General. DPS = удары Shadow Sorcerer + Divine General '
+                                 '(решение пользователя; по вики Shadow Sorcerer при ритуале исчезает). '
                                  'Крик = 0,51× урона, атаки со скоростью SPA юнита; в таблице режим «Атака» (на сайте — выбор режима)'),
     'Elyssia (Abyssal)': (lambda i, hp: dict(t='{E}', c=JELLY, hit='{E}', k='{E}/4*60/(2*{S})/5', cap='3*{E}/4/(2*{S})', khit='{E}/4'),
                           'Abyssal Jelly: раз в SPA (без врага), до 3; взрыв = урон Elyssia; откат 1,5×SPA. Abyssal Eel за 5 убийств: '
